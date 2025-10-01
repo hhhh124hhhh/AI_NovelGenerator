@@ -2,139 +2,193 @@
 # -*- coding: utf-8 -*-
 import os
 import customtkinter as ctk
-from tkinter import messagebox
+from tkinter import filedialog, messagebox
 from ui.context_menu import TextWidgetContextMenu
-from utils import read_file, save_string_to_txt, clear_file_content
+from .chinese_labels import chinese_labels
 
 def build_chapters_tab(self):
-    self.chapters_view_tab = self.tabview.add("Chapters Manage")
-    self.chapters_view_tab.rowconfigure(0, weight=0)
-    self.chapters_view_tab.rowconfigure(1, weight=1)
-    self.chapters_view_tab.columnconfigure(0, weight=1)
+    self.chapters_tab = self.tabview.add(chinese_labels["chapters_tab"])
+    self.chapters_tab.columnconfigure(0, weight=1)
+    self.chapters_tab.rowconfigure(1, weight=1)
+    self.chapters_tab.rowconfigure(3, weight=2)
 
-    top_frame = ctk.CTkFrame(self.chapters_view_tab)
-    top_frame.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
-    top_frame.columnconfigure(0, weight=0)
-    top_frame.columnconfigure(1, weight=0)
-    top_frame.columnconfigure(2, weight=0)
-    top_frame.columnconfigure(3, weight=0)
-    top_frame.columnconfigure(4, weight=1)
+    # 章节列表标签
+    chapter_list_label = ctk.CTkLabel(self.chapters_tab, text=chinese_labels["chapter_list"], font=("Microsoft YaHei", 14, "bold"))
+    chapter_list_label.grid(row=0, column=0, padx=10, pady=(10, 5), sticky="w")
 
-    prev_btn = ctk.CTkButton(top_frame, text="<< 上一章", command=self.prev_chapter, font=("Microsoft YaHei", 12))
-    prev_btn.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+    # 章节列表框架
+    list_frame = ctk.CTkFrame(self.chapters_tab)
+    list_frame.grid(row=1, column=0, padx=10, pady=5, sticky="nsew")
+    list_frame.columnconfigure(0, weight=1)
+    list_frame.rowconfigure(0, weight=1)
 
-    next_btn = ctk.CTkButton(top_frame, text="下一章 >>", command=self.next_chapter, font=("Microsoft YaHei", 12))
-    next_btn.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+    # 章节列表
+    self.chapter_listbox = ctk.CTkScrollableFrame(list_frame, orientation="vertical")
+    self.chapter_listbox.grid(row=0, column=0, sticky="nsew")
 
-    self.chapter_select_var = ctk.StringVar(value="")
-    self.chapter_select_menu = ctk.CTkOptionMenu(top_frame, values=[], variable=self.chapter_select_var, command=self.on_chapter_selected, font=("Microsoft YaHei", 12))
-    self.chapter_select_menu.grid(row=0, column=2, padx=5, pady=5, sticky="w")
+    # 章节内容标签
+    content_label = ctk.CTkLabel(self.chapters_tab, text=chinese_labels["chapter_content_display"], font=("Microsoft YaHei", 14, "bold"))
+    content_label.grid(row=2, column=0, padx=10, pady=(10, 5), sticky="w")
 
-    save_btn = ctk.CTkButton(top_frame, text="保存修改", command=self.save_current_chapter, font=("Microsoft YaHei", 12))
-    save_btn.grid(row=0, column=3, padx=5, pady=5, sticky="w")
+    # 章节内容文本框
+    self.chapter_content_text = ctk.CTkTextbox(self.chapters_tab, wrap="word")
+    TextWidgetContextMenu(self.chapter_content_text)
+    self.chapter_content_text.grid(row=3, column=0, padx=10, pady=5, sticky="nsew")
 
-    refresh_btn = ctk.CTkButton(top_frame, text="刷新章节列表", command=self.refresh_chapters_list, font=("Microsoft YaHei", 12))
-    refresh_btn.grid(row=0, column=5, padx=5, pady=5, sticky="e")
+    # 按钮框架
+    btn_frame = ctk.CTkFrame(self.chapters_tab)
+    btn_frame.grid(row=4, column=0, padx=10, pady=5, sticky="ew")
+    btn_frame.columnconfigure((0, 1, 2, 3, 4), weight=1)
 
-    self.chapters_word_count_label = ctk.CTkLabel(top_frame, text="字数：0", font=("Microsoft YaHei", 12))
-    self.chapters_word_count_label.grid(row=0, column=4, padx=(0,10), sticky="e")
+    # 刷新列表按钮
+    refresh_btn = ctk.CTkButton(btn_frame, text=chinese_labels["refresh_chapter_list"], command=self.refresh_chapters_list, font=("Microsoft YaHei", 12))
+    refresh_btn.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
 
-    self.chapter_view_text = ctk.CTkTextbox(self.chapters_view_tab, wrap="word", font=("Microsoft YaHei", 12))
-    
-    def update_word_count(event=None):
-        text = self.chapter_view_text.get("0.0", "end-1c")
-        text_length = len(text)
-        self.chapters_word_count_label.configure(text=f"字数：{text_length}")
-    
-    self.chapter_view_text.bind("<KeyRelease>", update_word_count)
-    self.chapter_view_text.bind("<ButtonRelease>", update_word_count)
-    TextWidgetContextMenu(self.chapter_view_text)
-    self.chapter_view_text.grid(row=1, column=0, sticky="nsew", padx=5, pady=5, columnspan=6)
+    # 上一章按钮
+    prev_btn = ctk.CTkButton(btn_frame, text=chinese_labels["prev_chapter"], command=self.prev_chapter, font=("Microsoft YaHei", 12))
+    prev_btn.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
 
-    self.chapters_list = []
-    refresh_chapters_list(self)
+    # 下一章按钮
+    next_btn = ctk.CTkButton(btn_frame, text=chinese_labels["next_chapter"], command=self.next_chapter, font=("Microsoft YaHei", 12))
+    next_btn.grid(row=0, column=2, padx=5, pady=5, sticky="ew")
+
+    # 保存当前章节按钮
+    save_btn = ctk.CTkButton(btn_frame, text=chinese_labels["save_current_chapter"], command=self.save_current_chapter, font=("Microsoft YaHei", 12))
+    save_btn.grid(row=0, column=3, padx=5, pady=5, sticky="ew")
 
 def refresh_chapters_list(self):
-    filepath = self.filepath_var.get().strip()
-    chapters_dir = os.path.join(filepath, "chapters")
-    if not os.path.exists(chapters_dir):
-        self.safe_log("尚未找到 chapters 文件夹，请先生成章节或检查保存路径。")
-        self.chapter_select_menu.configure(values=[])
-        return
-
-    all_files = os.listdir(chapters_dir)
-    chapter_nums = []
-    for f in all_files:
-        if f.startswith("chapter_") and f.endswith(".txt"):
-            number_part = f.replace("chapter_", "").replace(".txt", "")
-            if number_part.isdigit():
-                chapter_nums.append(number_part)
-    chapter_nums.sort(key=lambda x: int(x))
-    self.chapters_list = chapter_nums
-    self.chapter_select_menu.configure(values=self.chapters_list)
-    current_selected = self.chapter_select_var.get()
-    if current_selected not in self.chapters_list:
-        if self.chapters_list:
-            self.chapter_select_var.set(self.chapters_list[0])
-            load_chapter_content(self, self.chapters_list[0])
-        else:
-            self.chapter_select_var.set("")
-            self.chapter_view_text.delete("0.0", "end")
-
-def on_chapter_selected(self, value):
-    load_chapter_content(self, value)
-
-def load_chapter_content(self, chapter_number_str):
-    if not chapter_number_str:
-        return
-    filepath = self.filepath_var.get().strip()
-    chapter_file = os.path.join(filepath, "chapters", f"chapter_{chapter_number_str}.txt")
-    if not os.path.exists(chapter_file):
-        self.safe_log(f"章节文件 {chapter_file} 不存在！")
-        return
-    content = read_file(chapter_file)
-    self.chapter_view_text.delete("0.0", "end")
-    self.chapter_view_text.insert("0.0", content)
-
-def save_current_chapter(self):
-    chapter_number_str = self.chapter_select_var.get()
-    if not chapter_number_str:
-        messagebox.showwarning("警告", "尚未选择章节，无法保存。")
-        return
+    """刷新章节列表"""
+    # 清空现有章节按钮
+    for widget in self.chapter_listbox.winfo_children():
+        widget.destroy()
+        
+    # 获取章节文件路径
     filepath = self.filepath_var.get().strip()
     if not filepath:
-        messagebox.showwarning("警告", "请先配置保存文件路径")
+        self.log("请先设置保存路径。")
         return
-    chapter_file = os.path.join(filepath, "chapters", f"chapter_{chapter_number_str}.txt")
-    content = self.chapter_view_text.get("0.0", "end").strip()
-    clear_file_content(chapter_file)
-    save_string_to_txt(content, chapter_file)
-    self.safe_log(f"已保存对第 {chapter_number_str} 章的修改。")
+        
+    chapters_dir = os.path.join(filepath, "Chapters")
+    if not os.path.exists(chapters_dir):
+        self.log("章节目录不存在。")
+        return
+        
+    # 获取章节文件列表
+    chapter_files = []
+    try:
+        for filename in os.listdir(chapters_dir):
+            if filename.startswith("chapter_") and filename.endswith(".txt"):
+                chapter_files.append(filename)
+        chapter_files.sort()  # 按文件名排序
+        
+        # 创建章节按钮
+        for i, filename in enumerate(chapter_files):
+            chapter_num = filename.replace("chapter_", "").replace(".txt", "")
+            btn = ctk.CTkButton(
+                self.chapter_listbox,
+                text=f"第{chapter_num}章",
+                command=lambda f=filename: self.on_chapter_selected(f),
+                font=("Microsoft YaHei", 12),
+                width=120
+            )
+            btn.grid(row=i, column=0, padx=5, pady=2, sticky="ew")
+            
+        self.log(f"已刷新章节列表，共找到 {len(chapter_files)} 个章节。")
+    except Exception as e:
+        self.log(f"刷新章节列表时出错: {str(e)}")
+
+def on_chapter_selected(self, filename):
+    """当选中章节时加载内容"""
+    try:
+        filepath = self.filepath_var.get().strip()
+        if not filepath:
+            self.log("请先设置保存路径。")
+            return
+            
+        chapter_path = os.path.join(filepath, "Chapters", filename)
+        with open(chapter_path, "r", encoding="utf-8") as f:
+            content = f.read()
+            
+        self.chapter_content_text.delete("0.0", "end")
+        self.chapter_content_text.insert("0.0", content)
+        self.log(f"已加载章节: {filename}")
+    except Exception as e:
+        self.log(f"加载章节内容时出错: {str(e)}")
+
+def load_chapter_content(self, chapter_num):
+    """加载指定章节内容"""
+    try:
+        filepath = self.filepath_var.get().strip()
+        if not filepath:
+            self.log("请先设置保存路径。")
+            return
+            
+        chapter_path = os.path.join(filepath, "Chapters", f"chapter_{chapter_num}.txt")
+        with open(chapter_path, "r", encoding="utf-8") as f:
+            content = f.read()
+            
+        self.chapter_content_text.delete("0.0", "end")
+        self.chapter_content_text.insert("0.0", content)
+        self.log(f"已加载第{chapter_num}章内容。")
+    except FileNotFoundError:
+        self.log(f"未找到第{chapter_num}章文件。")
+    except Exception as e:
+        self.log(f"加载章节内容时出错: {str(e)}")
+
+def save_current_chapter(self):
+    """保存当前章节内容"""
+    try:
+        # 从章节内容文本框获取内容
+        content = self.chapter_content_text.get("0.0", "end").strip()
+        
+        # 获取当前章节号
+        chapter_num = self.chapter_num_var.get().strip()
+        if not chapter_num:
+            self.log("请先设置章节号。")
+            return
+            
+        # 获取保存路径
+        filepath = self.filepath_var.get().strip()
+        if not filepath:
+            self.log("请先设置保存路径。")
+            return
+            
+        # 创建章节目录
+        chapters_dir = os.path.join(filepath, "Chapters")
+        os.makedirs(chapters_dir, exist_ok=True)
+        
+        # 保存文件
+        chapter_path = os.path.join(chapters_dir, f"chapter_{chapter_num}.txt")
+        with open(chapter_path, "w", encoding="utf-8") as f:
+            f.write(content)
+            
+        self.log(f"第{chapter_num}章已保存。")
+    except Exception as e:
+        self.log(f"保存章节时出错: {str(e)}")
 
 def prev_chapter(self):
-    if not self.chapters_list:
-        return
-    current = self.chapter_select_var.get()
-    if current not in self.chapters_list:
-        return
-    idx = self.chapters_list.index(current)
-    if idx > 0:
-        new_idx = idx - 1
-        self.chapter_select_var.set(self.chapters_list[new_idx])
-        load_chapter_content(self, self.chapters_list[new_idx])
-    else:
-        messagebox.showinfo("提示", "已经是第一章了。")
+    """上一章"""
+    try:
+        current_chapter = int(self.chapter_num_var.get().strip())
+        if current_chapter > 1:
+            new_chapter = current_chapter - 1
+            self.chapter_num_var.set(str(new_chapter))
+            self.load_chapter_content(new_chapter)
+        else:
+            self.log("已经是第一章了。")
+    except ValueError:
+        self.log("章节号格式不正确。")
+    except Exception as e:
+        self.log(f"切换章节时出错: {str(e)}")
 
 def next_chapter(self):
-    if not self.chapters_list:
-        return
-    current = self.chapter_select_var.get()
-    if current not in self.chapters_list:
-        return
-    idx = self.chapters_list.index(current)
-    if idx < len(self.chapters_list) - 1:
-        new_idx = idx + 1
-        self.chapter_select_var.set(self.chapters_list[new_idx])
-        load_chapter_content(self, self.chapters_list[new_idx])
-    else:
-        messagebox.showinfo("提示", "已经是最后一章了。")
+    """下一章"""
+    try:
+        current_chapter = int(self.chapter_num_var.get().strip())
+        new_chapter = current_chapter + 1
+        self.chapter_num_var.set(str(new_chapter))
+        self.load_chapter_content(new_chapter)
+    except ValueError:
+        self.log("章节号格式不正确。")
+    except Exception as e:
+        self.log(f"切换章节时出错: {str(e)}")

@@ -16,6 +16,20 @@ config_test.json
 app.log
 test.py
 /backup
+
+# uv 相关
 uv.lock
 .python-version
-pyproject.toml
+
+# pyproject.toml 是项目配置文件，不应忽略
+# pyproject.toml
+
+# requirements-uv.txt 是 uv 使用的依赖文件
+requirements-uv.txt
+# Environment variables
+.env.local
+
+.env
+产品分析报告.md
+cloudbaserc.json
+PRD.md

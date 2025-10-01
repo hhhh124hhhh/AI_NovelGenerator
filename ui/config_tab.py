@@ -8,6 +8,7 @@ import customtkinter as ctk
 
 from config_manager import load_config, save_config
 from tooltips import tooltips
+from .chinese_labels import chinese_labels
 
 import os
 
@@ -43,12 +44,12 @@ def build_config_tabview(self):
     self.config_tabview = ctk.CTkTabview(self.config_frame)
     self.config_tabview.grid(row=0, column=0, sticky="we", padx=5, pady=5)
 
-    self.ai_config_tab = self.config_tabview.add("LLM Model settings")
-    self.embeddings_config_tab = self.config_tabview.add("Embedding settings")
-    self.config_choose = self.config_tabview.add("Config choose")
+    self.ai_config_tab = self.config_tabview.add(chinese_labels["llm_config_tab"])
+    self.embeddings_config_tab = self.config_tabview.add(chinese_labels["embedding_config_tab"])
+    self.config_choose = self.config_tabview.add(chinese_labels["config_choose_tab"])
 
     # PenBo 增加代理功能支持
-    self.proxy_setting_tab = self.config_tabview.add("Proxy setting")
+    self.proxy_setting_tab = self.config_tabview.add(chinese_labels["proxy_setting_tab"])
 
 
     build_ai_config_tab(self)
@@ -129,21 +130,21 @@ def build_ai_config_tab(self):
                 return
                 
             confirm = messagebox.askyesno(
-            "确认删除",
-            f"确定要删除配置 '{selected_config}' 吗?\n此操作不可撤销!"
-        )
-        if not confirm:
-            return
+                "确认删除",
+                f"确定要删除配置 '{selected_config}' 吗?\n此操作不可撤销!"
+            )
+            if not confirm:
+                return
+                
+            del self.loaded_config["llm_configs"][selected_config]
+            refresh_config_dropdown()
             
-        del self.loaded_config["llm_configs"][selected_config]
-        refresh_config_dropdown()
-        
-        # 保存到JSON文件
-        try:
-            save_config(self.loaded_config, self.config_file)
-            messagebox.showinfo("提示", f"已删除配置: {selected_config}，并已更新配置文件")
-        except Exception as e:
-            messagebox.showerror("错误", f"保存配置文件失败: {str(e)}")
+            # 保存到JSON文件
+            try:
+                save_config(self.loaded_config, self.config_file)
+                messagebox.showinfo("提示", f"已删除配置: {selected_config}，并已更新配置文件")
+            except Exception as e:
+                messagebox.showerror("错误", f"保存配置文件失败: {str(e)}")
         else:
             messagebox.showerror("错误", "未找到选中的配置!")
 
@@ -243,7 +244,7 @@ def build_ai_config_tab(self):
     self.ai_config_tab.grid_columnconfigure(2, weight=0)
 
     # 配置选择控件
-    create_label_with_help(self, self.ai_config_tab, "当前配置", "interface_config", 0, 0)
+    create_label_with_help(self, self.ai_config_tab, chinese_labels["current_config"], "interface_config", 0, 0)
     config_names = list(self.loaded_config.get("llm_configs", {}).keys())
     if not config_names:
         self.loaded_config["llm_configs"] = {
@@ -282,7 +283,7 @@ def build_ai_config_tab(self):
 
     add_btn = ctk.CTkButton(
         btn_frame, 
-        text="➕ 新增", 
+        text=chinese_labels["add_config"], 
         command=add_new_config,
         font=("Microsoft YaHei", 12),
         fg_color="#2E8B57",
@@ -292,7 +293,7 @@ def build_ai_config_tab(self):
 
     rename_btn = ctk.CTkButton(
         btn_frame, 
-        text="✏️ 重命名", 
+        text=chinese_labels["rename_config"], 
         command=rename_current_config,
         font=("Microsoft YaHei", 12),
         fg_color="#DAA520",
@@ -302,7 +303,7 @@ def build_ai_config_tab(self):
 
     del_btn = ctk.CTkButton(
         btn_frame, 
-        text="🗑️ 删除", 
+        text=chinese_labels["delete_config"], 
         command=delete_current_config,
         font=("Microsoft YaHei", 12),
         fg_color="#8B0000",
@@ -312,7 +313,7 @@ def build_ai_config_tab(self):
 
     save_btn = ctk.CTkButton(
         btn_frame, 
-        text="💾 保存", 
+        text=chinese_labels["save_config"], 
         command=save_current_config,
         font=("Microsoft YaHei", 12),
         fg_color="#1E90FF",
@@ -323,7 +324,7 @@ def build_ai_config_tab(self):
     # 配置参数控件
     row_start = 2
     # 1) API Key
-    create_label_with_help(self, self.ai_config_tab, "API Key:", "api_key", row_start, 0)
+    create_label_with_help(self, self.ai_config_tab, chinese_labels["api_key"] + ":", "api_key", row_start, 0)
     self.api_key_var = ctk.StringVar(value="")
     api_key_entry = ctk.CTkEntry(
         self.ai_config_tab, 
@@ -334,7 +335,7 @@ def build_ai_config_tab(self):
     api_key_entry.grid(row=row_start, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
     
     # 2) Base URL
-    create_label_with_help(self, self.ai_config_tab, "Base URL:", "base_url", row_start+1, 0)
+    create_label_with_help(self, self.ai_config_tab, chinese_labels["base_url"] + ":", "base_url", row_start+1, 0)
     self.base_url_var = ctk.StringVar(value="")
     base_url_entry = ctk.CTkEntry(
         self.ai_config_tab, 
@@ -344,19 +345,48 @@ def build_ai_config_tab(self):
     base_url_entry.grid(row=row_start+1, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
     
     # 3) 接口格式
-    create_label_with_help(self, self.ai_config_tab, "接口格式:", "interface_format", row_start+2, 0)
+    create_label_with_help(self, self.ai_config_tab, chinese_labels["interface_format"] + ":", "interface_format", row_start+2, 0)
     self.interface_format_var = ctk.StringVar(value="OpenAI")
-    interface_options = ["OpenAI", "Azure OpenAI", "Ollama", "DeepSeek", "Gemini", "ML Studio"]
+    
+    def on_interface_format_changed(new_value):
+        """当接口格式改变时，自动填充对应的base_url和model_name"""
+        if new_value == "OpenAI":
+            self.base_url_var.set("https://api.openai.com/v1")
+            self.model_name_var.set("gpt-4o-mini")
+        elif new_value == "Azure OpenAI":
+            self.base_url_var.set("https://[region].api.cognitive.microsoft.com/openai/deployments/[deployment]/chat/completions?api-version=[version]")
+            self.model_name_var.set("[deployment]")
+        elif new_value == "Ollama":
+            self.base_url_var.set("http://localhost:11434/v1")
+            self.model_name_var.set("llama3")
+        elif new_value == "DeepSeek":
+            self.base_url_var.set("https://api.deepseek.com/v1")
+            self.model_name_var.set("deepseek-chat")
+        elif new_value == "Gemini":
+            self.base_url_var.set("https://generativelanguage.googleapis.com/v1beta/openai")
+            self.model_name_var.set("gemini-pro")
+        elif new_value == "ML Studio":
+            self.base_url_var.set("http://localhost:1234/v1")
+            self.model_name_var.set("local-model")
+        elif new_value == "智谱":
+            self.base_url_var.set("https://open.bigmodel.cn/api/paas/v4")
+            self.model_name_var.set("glm-4.5-air")
+        elif new_value == "SiliconFlow":
+            self.base_url_var.set("https://api.siliconflow.cn/v1")
+            self.model_name_var.set("Qwen/Qwen3-7B-Instruct")  # 使用默认模型
+
+    interface_options = ["OpenAI", "Azure OpenAI", "Ollama", "DeepSeek", "Gemini", "ML Studio", "智谱", "SiliconFlow"]
     interface_dropdown = ctk.CTkOptionMenu(
         self.ai_config_tab,
         values=interface_options,
         variable=self.interface_format_var,
+        command=on_interface_format_changed,
         font=("Microsoft YaHei", 12)
     )
     interface_dropdown.grid(row=row_start+2, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
     
     # 4) Model Name
-    create_label_with_help(self, self.ai_config_tab, "模型名称:", "model_name", row_start+3, 0)
+    create_label_with_help(self, self.ai_config_tab, chinese_labels["model_name"] + ":", "model_name", row_start+3, 0)
     self.model_name_var = ctk.StringVar(value="")
     model_name_entry = ctk.CTkEntry(
         self.ai_config_tab, 
@@ -366,14 +396,14 @@ def build_ai_config_tab(self):
     model_name_entry.grid(row=row_start+3, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
     
     # 5) Temperature
-    create_label_with_help(self, self.ai_config_tab, "Temperature:", "temperature", row_start+4, 0)
+    create_label_with_help(self, self.ai_config_tab, chinese_labels["temperature"] + ":", "temperature", row_start+4, 0)
     self.temperature_var = ctk.DoubleVar(value=0.7)
     def update_temp_label(value):
         self.temp_value_label.configure(text=f"{float(value):.2f}")
     temp_scale = ctk.CTkSlider(
         self.ai_config_tab, 
-        from_=0.0, 
-        to=2.0, 
+        from_=0, 
+        to=2, 
         number_of_steps=200, 
         command=update_temp_label,
         variable=self.temperature_var
@@ -387,7 +417,7 @@ def build_ai_config_tab(self):
     self.temp_value_label.grid(row=row_start+4, column=2, padx=5, pady=5, sticky="w")
     
     # 6) Max Tokens
-    create_label_with_help(self, self.ai_config_tab, "Max Tokens:", "max_tokens", row_start+5, 0)
+    create_label_with_help(self, self.ai_config_tab, chinese_labels["max_tokens"] + ":", "max_tokens", row_start+5, 0)
     self.max_tokens_var = ctk.IntVar(value=8192)
     def update_max_tokens_label(value):
         self.max_tokens_value_label.configure(text=str(int(float(value))))
@@ -408,7 +438,7 @@ def build_ai_config_tab(self):
     self.max_tokens_value_label.grid(row=row_start+5, column=2, padx=5, pady=5, sticky="w")
     
     # 7) Timeout
-    create_label_with_help(self, self.ai_config_tab, "Timeout (sec):", "timeout", row_start+6, 0)
+    create_label_with_help(self, self.ai_config_tab, chinese_labels["timeout"] + ":", "timeout", row_start+6, 0)
     self.timeout_var = ctk.IntVar(value=600)
     def update_timeout_label(value):
         self.timeout_value_label.configure(text=str(int(float(value))))
@@ -431,11 +461,38 @@ def build_ai_config_tab(self):
     # 测试按钮
     test_btn = ctk.CTkButton(
         self.ai_config_tab, 
-        text="测试配置", 
+        text=chinese_labels["test_config"], 
         command=self.test_llm_config,
         font=("Microsoft YaHei", 12)
     )
-    test_btn.grid(row=row_start+7, column=0, columnspan=3, padx=5, pady=5, sticky="ew")
+    test_btn.grid(row=row_start+7, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
+
+    # 获取模型列表按钮（仅对智谱接口有效）
+    def get_model_list():
+        """获取模型列表"""
+        interface_format = self.interface_format_var.get()
+        if interface_format == "智谱":
+            api_key = self.api_key_var.get()
+            base_url = self.base_url_var.get()
+            
+            if not api_key or not base_url:
+                messagebox.showwarning("警告", "请先填写API密钥和基础URL")
+                return
+                
+            # 调用配置管理器中的函数获取模型列表
+            from config_manager import get_zhipu_model_list
+            get_zhipu_model_list(api_key, base_url, self.log)
+        else:
+            messagebox.showinfo("提示", "当前接口格式不支持获取模型列表功能")
+
+    get_models_btn = ctk.CTkButton(
+        self.ai_config_tab,
+        text=chinese_labels["get_model_list"],
+        command=get_model_list,
+        font=("Microsoft YaHei", 12),
+        fg_color="#9370DB"
+    )
+    get_models_btn.grid(row=row_start+7, column=2, padx=5, pady=5, sticky="ew")
 
     # 初始化当前配置
     on_config_selected(config_names[0])
@@ -449,7 +506,7 @@ def build_ai_config_tab(self):
     self.ai_config_tab.grid_columnconfigure(2, weight=0)
 
     # 配置选择控件
-    create_label_with_help(self, self.ai_config_tab, "当前配置", "interface_config", 0, 0)
+    create_label_with_help(self, self.ai_config_tab, chinese_labels["current_config"], "interface_config", 0, 0)
     config_names = list(self.loaded_config.get("llm_configs", {}).keys())
     if not config_names:  # 如果没有配置，创建一个默认配置
         self.loaded_config["llm_configs"] = {
@@ -490,23 +547,34 @@ def build_embeddings_config_tab(self):
             self.embedding_model_name_var.set(emb_conf.get("model_name", ""))
             self.embedding_retrieval_k_var.set(str(emb_conf.get("retrieval_k", 4)))
         else:
+            # 添加免费选项的自动填充
             if new_value == "Ollama":
                 self.embedding_url_var.set("http://localhost:11434/api")
+                self.embedding_model_name_var.set("nomic-embed-text")
             elif new_value == "ML Studio":
                 self.embedding_url_var.set("http://localhost:1234/v1")
+                self.embedding_model_name_var.set("local-embedding-model")
             elif new_value == "OpenAI":
                 self.embedding_url_var.set("https://api.openai.com/v1")
                 self.embedding_model_name_var.set("text-embedding-ada-002")
             elif new_value == "Azure OpenAI":
                 self.embedding_url_var.set("https://[az].openai.azure.com/openai/deployments/[model]/embeddings?api-version=2023-05-15")
+                self.embedding_model_name_var.set("text-embedding-ada-002")
             elif new_value == "DeepSeek":
                 self.embedding_url_var.set("https://api.deepseek.com/v1")
+                self.embedding_model_name_var.set("text-embedding-ada-002")
             elif new_value == "Gemini":
                 self.embedding_url_var.set("https://generativelanguage.googleapis.com/v1beta/")
                 self.embedding_model_name_var.set("models/text-embedding-004")
             elif new_value == "SiliconFlow":
                 self.embedding_url_var.set("https://api.siliconflow.cn/v1/embeddings")
                 self.embedding_model_name_var.set("BAAI/bge-m3")
+            elif new_value == "智谱":  # 添加智谱嵌入模型支持
+                self.embedding_url_var.set("https://open.bigmodel.cn/api/paas/v4")
+                self.embedding_model_name_var.set("embedding-2")
+            elif new_value == "Gitee AI":  # 添加Gitee AI嵌入模型支持
+                self.embedding_url_var.set("https://ai.gitee.com/v1")
+                self.embedding_model_name_var.set("bge-m3")
 
     for i in range(5):
         self.embeddings_config_tab.grid_rowconfigure(i, weight=0)
@@ -515,35 +583,36 @@ def build_embeddings_config_tab(self):
     self.embeddings_config_tab.grid_columnconfigure(2, weight=0)
 
     # 1) Embedding API Key
-    create_label_with_help(self, parent=self.embeddings_config_tab, label_text="Embedding API Key:", tooltip_key="embedding_api_key", row=0, column=0, font=("Microsoft YaHei", 12))
+    create_label_with_help(self, parent=self.embeddings_config_tab, label_text=chinese_labels["embedding_api_key"] + ":", tooltip_key="embedding_api_key", row=0, column=0, font=("Microsoft YaHei", 12))
     emb_api_key_entry = ctk.CTkEntry(self.embeddings_config_tab, textvariable=self.embedding_api_key_var, font=("Microsoft YaHei", 12), show="*")
     emb_api_key_entry.grid(row=0, column=1, padx=5, pady=5, sticky="nsew")
 
     # 2) Embedding 接口格式
-    create_label_with_help(self, parent=self.embeddings_config_tab, label_text="Embedding 接口格式:", tooltip_key="embedding_intexrface_format", row=1, column=0, font=("Microsoft YaHei", 12))
+    create_label_with_help(self, parent=self.embeddings_config_tab, label_text=chinese_labels["embedding_interface_format"] + ":", tooltip_key="embedding_intexrface_format", row=1, column=0, font=("Microsoft YaHei", 12))
 
-    emb_interface_options = ["DeepSeek", "OpenAI", "Azure OpenAI", "Gemini", "Ollama", "ML Studio","SiliconFlow"]
+    # 添加"智谱"和"Gitee AI"到嵌入式模型接口选项
+    emb_interface_options = ["DeepSeek", "OpenAI", "Azure OpenAI", "Gemini", "Ollama", "ML Studio", "SiliconFlow", "智谱", "Gitee AI"]
 
     emb_interface_dropdown = ctk.CTkOptionMenu(self.embeddings_config_tab, values=emb_interface_options, variable=self.embedding_interface_format_var, command=on_embedding_interface_changed, font=("Microsoft YaHei", 12))
     emb_interface_dropdown.grid(row=1, column=1, padx=5, pady=5, sticky="nsew")
 
     # 3) Embedding Base URL
-    create_label_with_help(self, parent=self.embeddings_config_tab, label_text="Embedding Base URL:", tooltip_key="embedding_url", row=2, column=0, font=("Microsoft YaHei", 12))
+    create_label_with_help(self, parent=self.embeddings_config_tab, label_text=chinese_labels["embedding_base_url"] + ":", tooltip_key="embedding_url", row=2, column=0, font=("Microsoft YaHei", 12))
     emb_url_entry = ctk.CTkEntry(self.embeddings_config_tab, textvariable=self.embedding_url_var, font=("Microsoft YaHei", 12))
     emb_url_entry.grid(row=2, column=1, padx=5, pady=5, sticky="nsew")
 
     # 4) Embedding Model Name
-    create_label_with_help(self, parent=self.embeddings_config_tab, label_text="Embedding Model Name:", tooltip_key="embedding_model_name", row=3, column=0, font=("Microsoft YaHei", 12))
+    create_label_with_help(self, parent=self.embeddings_config_tab, label_text=chinese_labels["embedding_model_name"] + ":", tooltip_key="embedding_model_name", row=3, column=0, font=("Microsoft YaHei", 12))
     emb_model_name_entry = ctk.CTkEntry(self.embeddings_config_tab, textvariable=self.embedding_model_name_var, font=("Microsoft YaHei", 12))
     emb_model_name_entry.grid(row=3, column=1, padx=5, pady=5, sticky="nsew")
 
     # 5) Retrieval Top-K
-    create_label_with_help(self, parent=self.embeddings_config_tab, label_text="Retrieval Top-K:", tooltip_key="embedding_retrieval_k", row=4, column=0, font=("Microsoft YaHei", 12))
+    create_label_with_help(self, parent=self.embeddings_config_tab, label_text=chinese_labels["embedding_retrieval_k"] + ":", tooltip_key="embedding_retrieval_k", row=4, column=0, font=("Microsoft YaHei", 12))
     emb_retrieval_k_entry = ctk.CTkEntry(self.embeddings_config_tab, textvariable=self.embedding_retrieval_k_var, font=("Microsoft YaHei", 12))
     emb_retrieval_k_entry.grid(row=4, column=1, padx=5, pady=5, sticky="nsew")
 
     # 添加测试按钮
-    test_btn = ctk.CTkButton(self.embeddings_config_tab, text="测试配置", command=self.test_embedding_config, font=("Microsoft YaHei", 12))
+    test_btn = ctk.CTkButton(self.embeddings_config_tab, text=chinese_labels["test_config"], command=self.test_embedding_config, font=("Microsoft YaHei", 12))
     test_btn.grid(row=5, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
 
 def build_config_choose_tab(self):
@@ -553,23 +622,23 @@ def build_config_choose_tab(self):
     self.config_choose.grid_columnconfigure(0, weight=0)
     self.config_choose.grid_columnconfigure(1, weight=1)
     config_choose_options = list(self.loaded_config.get("llm_configs", {}).keys())
-    create_label_with_help(self, parent=self.config_choose, label_text="生成架构所用大模型", tooltip_key="architecture_llm_config", row=0, column=0, font=("Microsoft YaHei", 12))
+    create_label_with_help(self, parent=self.config_choose, label_text=chinese_labels["architecture_llm"], tooltip_key="architecture_llm_config", row=0, column=0, font=("Microsoft YaHei", 12))
     architecture_dropdown = ctk.CTkOptionMenu(self.config_choose, values=config_choose_options, variable=self.architecture_llm_var, font=("Microsoft YaHei", 12))
     architecture_dropdown.grid(row=0, column=1, padx=5, pady=5, sticky="nsew")
 
-    create_label_with_help(self, parent=self.config_choose, label_text="生成大目录所用大模型", tooltip_key="chapter_outline_llm_config", row=1, column=0, font=("Microsoft YaHei", 12))
+    create_label_with_help(self, parent=self.config_choose, label_text=chinese_labels["chapter_outline_llm"], tooltip_key="chapter_outline_llm_config", row=1, column=0, font=("Microsoft YaHei", 12))
     chapter_outline_dropdown = ctk.CTkOptionMenu(self.config_choose, values=config_choose_options, variable=self.chapter_outline_llm_var, font=("Microsoft YaHei", 12))
     chapter_outline_dropdown.grid(row=1, column=1, padx=5, pady=5, sticky="nsew")
 
-    create_label_with_help(self, parent=self.config_choose, label_text="生成草稿所用大模型", tooltip_key="prompt_draft_llm_config", row=2, column=0, font=("Microsoft YaHei", 12))
+    create_label_with_help(self, parent=self.config_choose, label_text=chinese_labels["prompt_draft_llm"], tooltip_key="prompt_draft_llm_config", row=2, column=0, font=("Microsoft YaHei", 12))
     prompt_draft_dropdown = ctk.CTkOptionMenu(self.config_choose, values=config_choose_options, variable=self.prompt_draft_llm_var, font=("Microsoft YaHei", 12))
     prompt_draft_dropdown.grid(row=2, column=1, padx=5, pady=5, sticky="nsew")
 
-    create_label_with_help(self, parent=self.config_choose, label_text="定稿章节所用大模型", tooltip_key="final_chapter_llm_config", row=3, column=0, font=("Microsoft YaHei", 12))
+    create_label_with_help(self, parent=self.config_choose, label_text=chinese_labels["final_chapter_llm"], tooltip_key="final_chapter_llm_config", row=3, column=0, font=("Microsoft YaHei", 12))
     final_chapter_dropdown = ctk.CTkOptionMenu(self.config_choose, values=config_choose_options, variable=self.final_chapter_llm_var, font=("Microsoft YaHei", 12))
     final_chapter_dropdown.grid(row=3, column=1, padx=5, pady=5, sticky="nsew")
 
-    create_label_with_help(self, parent=self.config_choose, label_text="一致性审校所用大模型", tooltip_key="consistency_review_llm_config", row=4, column=0, font=("Microsoft YaHei", 12))
+    create_label_with_help(self, parent=self.config_choose, label_text=chinese_labels["consistency_review_llm"], tooltip_key="consistency_review_llm_config", row=4, column=0, font=("Microsoft YaHei", 12))
     consistency_review_dropdown = ctk.CTkOptionMenu(self.config_choose, values=config_choose_options, variable=self.consistency_review_llm_var, font=("Microsoft YaHei", 12))
     consistency_review_dropdown.grid(row=4, column=1, padx=5, pady=5, sticky="nsew")
 
@@ -599,7 +668,7 @@ def build_config_choose_tab(self):
 
     save_btn = ctk.CTkButton(
         self.config_choose, 
-        text="保存配置", 
+        text=chinese_labels["save_config"], 
         command=save_config_choose,
         font=("Microsoft YaHei", 12)
     )
@@ -628,7 +697,7 @@ def build_proxy_setting_tab(self):
     proxy_setting = config_data.get("proxy_setting", {})
     
     # 代理启用开关
-    create_label_with_help(self, self.proxy_setting_tab, "启用代理:", "proxy_enabled", 0, 0)
+    create_label_with_help(self, self.proxy_setting_tab, chinese_labels["proxy_enabled"] + ":", "proxy_enabled", 0, 0)
     self.proxy_enabled_var = ctk.BooleanVar(value=proxy_setting.get("enabled", False))
     proxy_enabled_switch = ctk.CTkSwitch(
         self.proxy_setting_tab,
@@ -641,7 +710,7 @@ def build_proxy_setting_tab(self):
     proxy_enabled_switch.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
     # 地址输入框
-    create_label_with_help(self, self.proxy_setting_tab, "地址:", "proxy_address", 1, 0)
+    create_label_with_help(self, self.proxy_setting_tab, chinese_labels["proxy_address"] + ":", "proxy_address", 1, 0)
     self.proxy_address_var = ctk.StringVar(value=proxy_setting.get("proxy_url", "127.0.0.1"))
     proxy_address_entry = ctk.CTkEntry(
         self.proxy_setting_tab,
@@ -651,7 +720,7 @@ def build_proxy_setting_tab(self):
     proxy_address_entry.grid(row=1, column=1, padx=5, pady=5, sticky="nsew")
 
     # 端口输入框
-    create_label_with_help(self, self.proxy_setting_tab, "端口:", "proxy_port", 2, 0)
+    create_label_with_help(self, self.proxy_setting_tab, chinese_labels["proxy_port"] + ":", "proxy_port", 2, 0)
     self.proxy_port_var = ctk.StringVar(value=proxy_setting.get("proxy_port", "10809"))
     proxy_port_entry = ctk.CTkEntry(
         self.proxy_setting_tab,
@@ -688,7 +757,7 @@ def build_proxy_setting_tab(self):
     # 添加保存按钮
     save_btn = ctk.CTkButton(
         self.proxy_setting_tab,
-        text="保存代理设置",
+        text=chinese_labels["save_proxy_setting"],
         command=save_proxy_setting,
         font=("Microsoft YaHei", 12)
     )

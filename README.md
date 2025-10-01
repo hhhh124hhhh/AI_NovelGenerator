@@ -34,14 +34,13 @@
 
 ## 🛠 环境准备
 确保满足以下运行条件：
-- **Python 3.9+** 运行环境（推荐3.10-3.12之间）
-- **pip** 包管理工具
+- **Python 3.11+** 运行环境（推荐3.11-3.12之间）
+- **pip** 包管理工具 或 **uv** 包管理工具
 - 有效API密钥：
-  - 云端服务：OpenAI / DeepSeek 等
+  - 云端服务：OpenAI / DeepSeek / 智谱 / SiliconFlow 等
   - 本地服务：Ollama 等兼容 OpenAI 的接口
 
 ---
-
 
 ## 📥 安装说明
 1. **下载项目**  
@@ -54,7 +53,15 @@
    - 如果对某些包无法正常安装，访问 [Visual Studio Build Tools](https://visualstudio.microsoft.com/zh-hans/visual-cpp-build-tools/) 下载并安装C++编译工具，用于构建部分模块包；
    - 安装时，默认只包含 MSBuild 工具，需手动勾选左上角列表栏中的 **C++ 桌面开发** 选项。
 
-3. **安装依赖并运行**  
+3. **配置环境变量**  
+   - 复制 [.env.example](file://d:\AI_NovelGenerator\.env.example) 文件为 `.env`：
+     ```bash
+     cp .env.example .env
+     ```
+   - 编辑 `.env` 文件，填入您的API密钥和其他配置
+
+4. **安装依赖并运行**  
+   ### 使用 pip 安装（传统方式）
    - 打开终端，进入项目源文件目录：
      ```bash
      cd AI_NovelGenerator
@@ -66,6 +73,29 @@
    - 安装完成后，运行主程序：
      ```bash
      python main.py
+     ```
+
+   ### 使用 uv 安装（推荐方式）
+   - 确保已安装 [uv](https://github.com/astral-sh/uv) 包管理器
+   - 打开终端，进入项目源文件目录：
+     ```bash
+     cd AI_NovelGenerator
+     ```
+   - 使用 uv 安装项目依赖（完整版）：
+     ```bash
+     uv pip install -r requirements-uv-full.txt
+     ```
+   - 或者使用精简版依赖（如果完整版安装遇到问题）：
+     ```bash
+     uv pip install -r requirements-uv.txt
+     ```
+   - 安装完成后，运行主程序：
+     ```bash
+     python main.py
+     ```
+     或者使用 uv 直接运行：
+     ```bash
+     uv run python main.py
      ```
 
 >如果缺失部分依赖，后续**手动执行**
@@ -86,6 +116,8 @@ novel-generator/
 ├── utils.py                     # 常用工具函数, 文件操作
 ├── config_manager.py            # 管理配置 (API Key, Base URL)
 ├── config.json                  # 用户配置文件 (可选)
+├── config.yaml                  # 用户配置文件 (推荐)
+├── .env                         # 环境变量配置文件
 ├── novel_generator/             # 章节生成核心逻辑
 ├── ui/                          # 图形界面
 └── vectorstore/                 # (可选) 本地向量数据库存储
@@ -94,137 +126,205 @@ novel-generator/
 ---
 
 ## ⚙️ 配置指南
-### 📌 基础配置（config.json）
-```json
-{
-    "api_key": "sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-    "base_url": "https://api.openai.com/v1",
-    "interface_format": "OpenAI",
-    "model_name": "gpt-4o-mini",
-    "temperature": 0.7,
-    "max_tokens": 4096,
-    "embedding_api_key": "sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-    "embedding_interface_format": "OpenAI",
-    "embedding_url": "https://api.openai.com/v1",
-    "embedding_model_name": "text-embedding-ada-002",
-    "embedding_retrieval_k": 4,
-    "topic": "星穹铁道主角星穿越到原神提瓦特大陆，拯救提瓦特大陆，并与其中的角色展开爱恨情仇的小说",
-    "genre": "玄幻",
-    "num_chapters": 120,
-    "word_number": 4000,
-    "filepath": "D:/AI_NovelGenerator/filepath"
-}
+### 📌 基础配置（config.yaml）
+项目支持JSON和YAML两种配置格式，推荐使用YAML格式，支持环境变量引用。
+
+```yaml
+# AI Novel Generator 配置文件
+# 使用YAML格式，支持环境变量引用
+
+# 最后使用的接口格式
+last_interface_format: "OpenAI"
+last_embedding_interface_format: "OpenAI"
+
+# LLM模型配置
+llm_configs:
+  "DeepSeek V3":
+    api_key: "${DEEPSEEK_API_KEY}"  # 从环境变量读取
+    base_url: "https://api.deepseek.com/v1"
+    model_name: "deepseek-chat"
+    temperature: 0.7
+    max_tokens: 8192
+    timeout: 600
+    interface_format: "OpenAI"
+  
+  "GPT 5":
+    api_key: "${OPENAI_API_KEY}"  # 从环境变量读取
+    base_url: "https://api.openai.com/v1"
+    model_name: "gpt-5"
+    temperature: 0.7
+    max_tokens: 32768
+    timeout: 600
+    interface_format: "OpenAI"
+  
+  "智谱GLM-4.5":
+    api_key: "${ZHIPUAI_API_KEY}"  # 从环境变量读取
+    base_url: "https://open.bigmodel.cn/api/paas/v4"
+    model_name: "glm-4.5-air"
+    temperature: 0.7
+    max_tokens: 8192
+    timeout: 600
+    interface_format: "智谱"
+  
+  "SiliconFlow Qwen3":
+    api_key: "${SILICONFLOW_API_KEY}"  # 从环境变量读取
+    base_url: "https://api.siliconflow.cn/v1"
+    model_name: "Qwen/Qwen3-7B-Instruct"
+    temperature: 0.7
+    max_tokens: 8192
+    timeout: 600
+    interface_format: "SiliconFlow"
+
+# Embedding模型配置
+embedding_configs:
+  "OpenAI":
+    api_key: "${OPENAI_EMBEDDING_API_KEY}"  # 从环境变量读取
+    base_url: "https://api.openai.com/v1"
+    model_name: "text-embedding-ada-002"
+    retrieval_k: 4
+    interface_format: "OpenAI"
+  "智谱":
+    api_key: "${ZHIPUAI_API_KEY}"  # 从环境变量读取
+    base_url: "https://open.bigmodel.cn/api/paas/v4"
+    model_name: "embedding-2"
+    retrieval_k: 4
+    interface_format: "智谱"
+  "SiliconFlow":
+    api_key: "${SILICONFLOW_API_KEY}"  # 从环境变量读取
+    base_url: "https://api.siliconflow.cn/v1"
+    model_name: "BAAI/bge-m3"
+    retrieval_k: 4
+    interface_format: "SiliconFlow"
+
+# 其他参数
+other_params:
+  topic: "星穹铁道主角星穿越到原神提瓦特大陆，拯救提瓦特大陆，并与其中的角色展开爱恨情仇的小说"
+  genre: "玄幻"
+  num_chapters: 120
+  word_number: 4000
+  filepath: "./novel_output"
 ```
 
 ### 🔧 配置说明
 1. **生成模型配置**
-   - `api_key`: 大模型服务的API密钥
+   - `api_key`: 大模型服务的API密钥，推荐使用环境变量引用方式 `${API_KEY_NAME}`
    - `base_url`: API终端地址（本地服务填Ollama等地址）
    - `interface_format`: 接口模式
    - `model_name`: 主生成模型名称（如gpt-4, claude-3等）
    - `temperature`: 创意度参数（0-1，越高越有创造性）
    - `max_tokens`: 模型最大回复长度
 
-2. **Embedding模型配置**
-   - `embedding_model_name`: 模型名称（如Ollama的nomic-embed-text）
-   - `embedding_url`: 服务地址
-   - `embedding_retrieval_k`: 
+### 🆕 新增支持的模型服务
 
-3. **小说参数配置**
-   - `topic`: 核心故事主题
-   - `genre`: 作品类型
-   - `num_chapters`: 总章节数
-   - `word_number`: 单章目标字数
-   - `filepath`: 生成文件存储路径
+#### SiliconFlow（硅基流动）
+SiliconFlow是一个提供多种大模型API服务的平台，支持多种开源模型，包括Qwen系列等。
 
----
+**配置示例：**
+```yaml
+# LLM配置
+"SiliconFlow Qwen3":
+  api_key: "${SILICONFLOW_API_KEY}"
+  base_url: "https://api.siliconflow.cn/v1"
+  model_name: "Qwen/Qwen3-7B-Instruct"
+  temperature: 0.7
+  max_tokens: 8192
+  timeout: 600
+  interface_format: "SiliconFlow"
 
-## 🚀 运行说明
-### **方式 1：使用 Python 解释器**
-```bash
-python main.py
+# Embedding配置
+"SiliconFlow":
+  api_key: "${SILICONFLOW_API_KEY}"
+  base_url: "https://api.siliconflow.cn/v1"
+  model_name: "BAAI/bge-m3"
+  retrieval_k: 4
+  interface_format: "SiliconFlow"
 ```
-执行后，GUI 将会启动，你可以在图形界面中进行各项操作。
 
-### **方式 2：打包为可执行文件**
-如果你想在无 Python 环境的机器上使用本工具，可以使用 **PyInstaller** 进行打包：
+**获取API密钥：**
+1. 访问 [SiliconFlow官网](https://siliconflow.cn/)
+2. 注册账号并登录
+3. 在控制台获取API密钥
+4. 将密钥添加到 `.env` 文件中的 `SILICONFLOW_API_KEY` 变量
 
-```bash
-pip install pyinstaller
-pyinstaller main.spec
+**免费额度说明：**
+SiliconFlow为新用户提供免费额度，可以满足基本的小说生成需求。
+
+#### Gitee AI
+Gitee AI提供了免费的向量模型服务。
+
+**配置示例：**
+```yaml
+# Embedding配置
+"Gitee AI":
+  api_key: "${GITEE_AI_API_KEY}"
+  base_url: "https://ai.gitee.com/v1"
+  model_name: "bge-m3"
+  retrieval_k: 4
+  interface_format: "Gitee AI"
 ```
-打包完成后，会在 `dist/` 目录下生成可执行文件（如 Windows 下的 `main.exe`）。
 
----
+### 🎯 配置示例和推荐方案
 
-## 📘 使用教程
-1. **启动后，先完成基本参数设置：**  
-   - **API Key & Base URL**（如 `https://api.openai.com/v1`）  
-   - **模型名称**（如 `gpt-3.5-turbo`、`gpt-4o` 等）  
-   - **Temperature** (0~1，决定文字创意程度)  
-   - **主题(Topic)**（如 “废土世界的 AI 叛乱”）  
-   - **类型(Genre)**（如 “科幻”/“魔幻”/“都市幻想”）  
-   - **章节数**、**每章字数**（如 10 章，每章约 3000 字）  
-   - **保存路径**（建议创建一个新的输出文件夹）
+为了帮助用户更好地使用本工具，我们提供了多种配置方案：
 
-2. **点击「Step1. 生成设定」**  
-   - 系统将基于主题、类型、章节数等信息，生成：  
-     - `Novel_setting.txt`：包含世界观、角色信息、雷点暗线等。  
-   - 可以在生成后的 `Novel_setting.txt` 中查看或修改设定内容。
+#### 方案一：高性价比方案（适合预算有限的用户）
+- **大模型配置**: 使用DeepSeek作为主要模型，智谱GLM-4.5用于最终定稿
+- **向量模型配置**: 使用SiliconFlow或Gitee AI的免费向量模型
+- **适用场景**: 日常小说创作，对生成速度和成本有要求
 
-3. **点击「Step2. 生成目录」**  
-   - 系统会根据已完成的 `Novel_setting.txt` 内容，为全部章节生成：  
-     - `Novel_directory.txt`：包括每章标题和简要提示。  
-   - 可以在生成后的文件中查看、修改或补充章节标题和描述。
+#### 方案二：高质量方案（适合对质量要求较高的用户）
+- **大模型配置**: 使用GPT-4或智谱GLM-4.5作为主要模型
+- **向量模型配置**: 使用OpenAI或智谱的付费向量模型
+- **适用场景**: 专业写作，出版级别的小说创作
 
-4. **点击「Step3. 生成章节草稿」**  
-   - 在生成章节之前，你可以：  
-     - **设置章节号**（如写第 1 章，就填 `1`）  
-     - **在“本章指导”输入框**中提供对本章剧情的任何期望或提示  
-   - 点击按钮后，系统将：  
-     - 自动读取前文设定、`Novel_directory.txt`、以及已定稿章节  
-     - 调用向量检索回顾剧情，保证上下文连贯  
-     - 生成本章大纲 (`outline_X.txt`) 及正文 (`chapter_X.txt`)  
-   - 生成完成后，你可在左侧的文本框查看、编辑本章草稿内容。
+#### 方案三：完全免费方案（适合测试使用）
+- **大模型配置**: 使用Ollama在本地运行的开源模型
+- **向量模型配置**: 使用Ollama本地向量模型
+- **适用场景**: 学习和测试，无任何费用支出
 
-5. **点击「Step4. 定稿当前章节」**  
-   - 系统将：  
-     - **更新全局摘要**（写入 `global_summary.txt`）  
-     - **更新角色状态**（写入 `character_state.txt`）  
-     - **更新向量检索库**（保证后续章节可以调用最新信息）  
-     - **更新剧情要点**（如 `plot_arcs.txt`）  
-   - 定稿完成后，你可以在 `chapter_X.txt` 中看到定稿后的文本。
+### 📝 小说参数填写示例
 
-6. **一致性检查（可选）**  
-   - 点击「[可选] 一致性审校」按钮，对最新章节进行冲突检测，如角色逻辑、剧情前后矛盾等。  
-   - 若有冲突，会在日志区输出详细提示。
+#### 示例一：玄幻小说
+```yaml
+other_params:
+  topic: "一个现代青年穿越到修仙世界，通过自己的智慧和努力最终成为一代仙帝的故事"
+  genre: "玄幻"
+  num_chapters: 120
+  word_number: 4000
+  filepath: "./novel_output/仙帝之路"
+  user_guidance: "重点描写修炼过程中的奇遇和战斗场面，人物性格要鲜明，情节要有起伏"
+  characters_involved: "主角李凡（现代青年）、师父青云子（仙门长老）、反派血魔宗宗主"
+  key_items: "九转金丹（提升修为）、诛仙剑（神兵利器）、天机图（藏宝图）"
+  scene_location: "青云山脉（修仙圣地）、血魔域（邪恶之地）、天界（最终目标）"
+  time_constraint: "千年内必须突破到仙帝境界，否则将被天道惩罚"
+```
 
-7. **重复第 4-6 步** 直到所有章节生成并定稿！
+#### 示例二：科幻小说
+```yaml
+other_params:
+  topic: "人类在火星建立殖民地后，发现古老文明遗迹并揭开宇宙秘密的故事"
+  genre: "科幻"
+  num_chapters: 80
+  word_number: 5000
+  filepath: "./novel_output/火星遗迹"
+  user_guidance: "注重科学细节和逻辑性，描写高科技设备和外星文明"
+  characters_involved: "主角陈博士（考古学家）、AI助手ARIA、火星总督"
+  key_items: "量子探测器、古代星图、能量核心"
+  scene_location: "火星新北京城、古代遗迹区、地球总部"
+  time_constraint: "太阳风暴将在30天内摧毁火星殖民地"
+```
 
-> **向量检索配置提示**  
-> 1. embedding模型需要显示指定接口和模型名称；
-> 2. 使用**本地Ollama**的**Embedding**时需提前启动Ollama服务：  
->    ```bash
->    ollama serve  # 启动服务
->    ollama pull nomic-embed-text  # 下载/启用模型
->    ```
-> 3. 切换不同Embedding模型后建议清空vectorstore目录
-> 4. 云端Embedding需确保对应API权限已开通
-
----
-
-## ❓ 疑难解答
-### Q1: Expecting value: line 1 column 1 (char 0)
-
-该问题大概率由于API未正确响应造成，也许响应了一个html？其它内容，导致出现该报错；
-
-
-### Q2: HTTP/1.1 504 Gateway Timeout？
-确认接口是否稳定；
-
-### Q3: 如何切换不同的Embedding提供商？
-在GUI界面中对应输入即可。
-
----
-
-如有更多问题或需求，欢迎在**项目 Issues** 中提出。
+#### 示例三：都市小说
+```yaml
+other_params:
+  topic: "年轻人创业失败后，通过直播带货重新站起来的励志故事"
+  genre: "都市"
+  num_chapters: 60
+  word_number: 3000
+  filepath: "./novel_output/直播人生"
+  user_guidance: "贴近现实生活，描写商业竞争和人际关系"
+  characters_involved: "主角张小明（创业者）、合伙人李娜、竞争对手王总"
+  key_items: "手机直播设备、爆款产品、商业合同"
+  scene_location: "创业园区、直播间、商业中心"
+  time_constraint: "必须在三个月内还清债务，否则将失去所有"
+```

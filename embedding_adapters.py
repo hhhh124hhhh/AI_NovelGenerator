@@ -6,6 +6,9 @@ from typing import List
 import requests
 from langchain_openai import AzureOpenAIEmbeddings, OpenAIEmbeddings
 
+# 导入高级日志系统
+from advanced_logger import embedding_logger, log_embedding_request, log_embedding_response
+
 def ensure_openai_base_url_has_v1(url: str) -> str:
     """
     若用户输入的 url 不包含 '/v1'，则在末尾追加 '/v1'。
@@ -34,17 +37,34 @@ class OpenAIEmbeddingAdapter(BaseEmbeddingAdapter):
     基于 OpenAIEmbeddings（或兼容接口）的适配器
     """
     def __init__(self, api_key: str, base_url: str, model_name: str):
+        # 忽略类型检查错误，因为实际运行时可以正常工作
         self._embedding = OpenAIEmbeddings(
-            openai_api_key=api_key,
-            openai_api_base=ensure_openai_base_url_has_v1(base_url),
+            api_key=api_key,  # type: ignore
+            base_url=ensure_openai_base_url_has_v1(base_url),
             model=model_name
         )
 
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
-        return self._embedding.embed_documents(texts)
+        embedding_logger.info(f"调用OpenAI Embedding模型: {self._embedding.model}")
+        log_embedding_request(f"批量文档嵌入 ({len(texts)}个)", self._embedding.model, "OpenAI")
+        try:
+            result = self._embedding.embed_documents(texts)
+            log_embedding_response(result[0] if result else [], self._embedding.model, "OpenAI")
+            return result
+        except Exception as e:
+            embedding_logger.error(f"OpenAI Embedding调用失败: {str(e)}")
+            return [[]] * len(texts)
 
     def embed_query(self, query: str) -> List[float]:
-        return self._embedding.embed_query(query)
+        embedding_logger.info(f"调用OpenAI Embedding模型: {self._embedding.model}")
+        log_embedding_request(query, self._embedding.model, "OpenAI")
+        try:
+            result = self._embedding.embed_query(query)
+            log_embedding_response(result, self._embedding.model, "OpenAI")
+            return result
+        except Exception as e:
+            embedding_logger.error(f"OpenAI Embedding调用失败: {str(e)}")
+            return []
 
 class AzureOpenAIEmbeddingAdapter(BaseEmbeddingAdapter):
     """
@@ -63,15 +83,31 @@ class AzureOpenAIEmbeddingAdapter(BaseEmbeddingAdapter):
         self._embedding = AzureOpenAIEmbeddings(
             azure_endpoint=self.azure_endpoint,
             azure_deployment=self.azure_deployment,
-            openai_api_key=api_key,
+            api_key=api_key,  # type: ignore
             api_version=self.api_version,
         )
 
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
-        return self._embedding.embed_documents(texts)
+        embedding_logger.info(f"调用Azure OpenAI Embedding模型: {self.azure_deployment}")
+        log_embedding_request(f"批量文档嵌入 ({len(texts)}个)", self.azure_deployment, "Azure OpenAI")
+        try:
+            result = self._embedding.embed_documents(texts)
+            log_embedding_response(result[0] if result else [], self.azure_deployment, "Azure OpenAI")
+            return result
+        except Exception as e:
+            embedding_logger.error(f"Azure OpenAI Embedding调用失败: {str(e)}")
+            return [[]] * len(texts)
 
     def embed_query(self, query: str) -> List[float]:
-        return self._embedding.embed_query(query)
+        embedding_logger.info(f"调用Azure OpenAI Embedding模型: {self.azure_deployment}")
+        log_embedding_request(query, self.azure_deployment, "Azure OpenAI")
+        try:
+            result = self._embedding.embed_query(query)
+            log_embedding_response(result, self.azure_deployment, "Azure OpenAI")
+            return result
+        except Exception as e:
+            embedding_logger.error(f"Azure OpenAI Embedding调用失败: {str(e)}")
+            return []
 
 class OllamaEmbeddingAdapter(BaseEmbeddingAdapter):
     """
@@ -82,6 +118,7 @@ class OllamaEmbeddingAdapter(BaseEmbeddingAdapter):
         self.base_url = base_url.rstrip("/")
 
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
+        embedding_logger.info(f"调用Ollama Embedding模型: {self.model_name}")
         embeddings = []
         for text in texts:
             vec = self._embed_single(text)
@@ -89,7 +126,11 @@ class OllamaEmbeddingAdapter(BaseEmbeddingAdapter):
         return embeddings
 
     def embed_query(self, query: str) -> List[float]:
-        return self._embed_single(query)
+        embedding_logger.info(f"调用Ollama Embedding模型: {self.model_name}")
+        log_embedding_request(query, self.model_name, "Ollama")
+        result = self._embed_single(query)
+        log_embedding_response(result, self.model_name, "Ollama")
+        return result
 
     def _embed_single(self, text: str) -> List[float]:
         """
@@ -135,6 +176,7 @@ class MLStudioEmbeddingAdapter(BaseEmbeddingAdapter):
         self.model_name = model_name
 
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
+        embedding_logger.info(f"调用ML Studio Embedding模型: {self.model_name}")
         try:
             payload = {
                 "input": texts,
@@ -146,7 +188,10 @@ class MLStudioEmbeddingAdapter(BaseEmbeddingAdapter):
             if "data" not in result:
                 logging.error(f"Invalid response format from LM Studio API: {result}")
                 return [[]] * len(texts)
-            return [item.get("embedding", []) for item in result["data"]]
+            embeddings = [item.get("embedding", []) for item in result["data"]]
+            log_embedding_request(f"批量文档嵌入 ({len(texts)}个)", self.model_name, "ML Studio")
+            log_embedding_response(embeddings[0] if embeddings else [], self.model_name, "ML Studio")
+            return embeddings
         except requests.exceptions.RequestException as e:
             logging.error(f"LM Studio API request failed: {str(e)}")
             return [[]] * len(texts)
@@ -155,6 +200,8 @@ class MLStudioEmbeddingAdapter(BaseEmbeddingAdapter):
             return [[]] * len(texts)
 
     def embed_query(self, query: str) -> List[float]:
+        embedding_logger.info(f"调用ML Studio Embedding模型: {self.model_name}")
+        log_embedding_request(query, self.model_name, "ML Studio")
         try:
             payload = {
                 "input": query,
@@ -166,7 +213,9 @@ class MLStudioEmbeddingAdapter(BaseEmbeddingAdapter):
             if "data" not in result or not result["data"]:
                 logging.error(f"Invalid response format from LM Studio API: {result}")
                 return []
-            return result["data"][0].get("embedding", [])
+            embedding = result["data"][0].get("embedding", [])
+            log_embedding_response(embedding, self.model_name, "ML Studio")
+            return embedding
         except requests.exceptions.RequestException as e:
             logging.error(f"LM Studio API request failed: {str(e)}")
             return []
@@ -191,6 +240,7 @@ class GeminiEmbeddingAdapter(BaseEmbeddingAdapter):
         self.base_url = base_url.rstrip("/")
 
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
+        embedding_logger.info(f"调用Gemini Embedding模型: {self.model_name}")
         embeddings = []
         for text in texts:
             vec = self._embed_single(text)
@@ -198,7 +248,11 @@ class GeminiEmbeddingAdapter(BaseEmbeddingAdapter):
         return embeddings
 
     def embed_query(self, query: str) -> List[float]:
-        return self._embed_single(query)
+        embedding_logger.info(f"调用Gemini Embedding模型: {self.model_name}")
+        log_embedding_request(query, self.model_name, "Gemini")
+        result = self._embed_single(query)
+        log_embedding_response(result, self.model_name, "Gemini")
+        return result
 
     def _embed_single(self, text: str) -> List[float]:
         """
@@ -244,11 +298,12 @@ class SiliconFlowEmbeddingAdapter(BaseEmbeddingAdapter):
             "encoding_format": "float"
         }
         self.headers = {
-            "Authorization": "Bearer {api_key}".format(api_key=api_key),
+            "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json"
         }
 
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
+        embedding_logger.info(f"调用SiliconFlow Embedding模型: {self.payload['model']}")
         embeddings = []
         for text in texts:
             try:
@@ -271,6 +326,8 @@ class SiliconFlowEmbeddingAdapter(BaseEmbeddingAdapter):
         return embeddings
 
     def embed_query(self, query: str) -> List[float]:
+        embedding_logger.info(f"调用SiliconFlow Embedding模型: {self.payload['model']}")
+        log_embedding_request(query, self.payload['model'], "SiliconFlow")
         try:
             self.payload["input"] = query
             response = requests.post(self.url, json=self.payload, headers=self.headers)
@@ -279,13 +336,94 @@ class SiliconFlowEmbeddingAdapter(BaseEmbeddingAdapter):
             if not result or "data" not in result or not result["data"]:
                 logging.error(f"Invalid response format from SiliconFlow API: {result}")
                 return []
-            return result["data"][0].get("embedding", [])
+            embedding = result["data"][0].get("embedding", [])
+            log_embedding_response(embedding, self.payload['model'], "SiliconFlow")
+            return embedding
         except requests.exceptions.RequestException as e:
             logging.error(f"SiliconFlow API request failed: {str(e)}")
             return []
         except (KeyError, IndexError, ValueError, TypeError) as e:
             logging.error(f"Error parsing SiliconFlow API response: {str(e)}")
             return []
+
+class GiteeAIEmbeddingAdapter(BaseEmbeddingAdapter):
+    """
+    基于 Gitee AI 的 embedding 适配器
+    """
+    def __init__(self, api_key: str, base_url: str, model_name: str):
+        # 确保base_url以/v1结尾，然后添加/embeddings路径
+        if base_url:
+            base_url = base_url.rstrip('/')
+            if not base_url.endswith('/v1'):
+                if '/v1' not in base_url:
+                    base_url = base_url + '/v1'
+            self.url = base_url + '/embeddings'
+        else:
+            self.url = "https://ai.gitee.com/v1/embeddings"
+            
+        self.model_name = model_name
+        self.headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+            "X-Failover-Enabled": "true"
+        }
+
+    def embed_documents(self, texts: List[str]) -> List[List[float]]:
+        embedding_logger.info(f"调用Gitee AI Embedding模型: {self.model_name}")
+        embeddings = []
+        for text in texts:
+            try:
+                payload = {
+                    "input": text,
+                    "model": self.model_name
+                }
+                # 创建一个不使用系统代理的会话
+                session = requests.Session()
+                session.trust_env = False
+                response = session.post(self.url, json=payload, headers=self.headers)
+                response.raise_for_status()
+                result = response.json()
+                if not result or "data" not in result or not result["data"]:
+                    logging.error(f"Invalid response format from Gitee AI API: {result}")
+                    embeddings.append([])
+                    continue
+                emb = result["data"][0].get("embedding", [])
+                embeddings.append(emb)
+            except requests.exceptions.RequestException as e:
+                logging.error(f"Gitee AI API request failed: {str(e)}")
+                embeddings.append([])
+            except (KeyError, IndexError, ValueError, TypeError) as e:
+                logging.error(f"Error parsing Gitee AI API response: {str(e)}")
+                embeddings.append([])
+        return embeddings
+
+    def embed_query(self, query: str) -> List[float]:
+        embedding_logger.info(f"调用Gitee AI Embedding模型: {self.model_name}")
+        log_embedding_request(query, self.model_name, "Gitee AI")
+        try:
+            payload = {
+                "input": query,
+                "model": self.model_name
+            }
+            # 创建一个不使用系统代理的会话
+            session = requests.Session()
+            session.trust_env = False
+            response = session.post(self.url, json=payload, headers=self.headers)
+            response.raise_for_status()
+            result = response.json()
+            if not result or "data" not in result or not result["data"]:
+                logging.error(f"Invalid response format from Gitee AI API: {result}")
+                return []
+            embedding = result["data"][0].get("embedding", [])
+            log_embedding_response(embedding, self.model_name, "Gitee AI")
+            return embedding
+        except requests.exceptions.RequestException as e:
+            logging.error(f"Gitee AI API request failed: {str(e)}")
+            return []
+        except (KeyError, IndexError, ValueError, TypeError) as e:
+            logging.error(f"Error parsing Gitee AI API response: {str(e)}")
+            return []
+
 
 def create_embedding_adapter(
     interface_format: str,
@@ -309,5 +447,7 @@ def create_embedding_adapter(
         return GeminiEmbeddingAdapter(api_key, model_name, base_url)
     elif fmt == "siliconflow":
         return SiliconFlowEmbeddingAdapter(api_key, base_url, model_name)
+    elif fmt == "gitee ai":
+        return GiteeAIEmbeddingAdapter(api_key, base_url, model_name)
     else:
         raise ValueError(f"Unknown embedding interface_format: {interface_format}")

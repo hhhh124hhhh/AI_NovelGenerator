@@ -10,9 +10,13 @@ from tkinter import filedialog, messagebox
 from .role_library import RoleLibrary
 from llm_adapters import create_llm_adapter
 
+# 导入高级日志系统
+from advanced_logger import main_logger, ui_logger, llm_logger, log_ui_action, log_error
+
 from config_manager import load_config, save_config, test_llm_config, test_embedding_config
 from utils import read_file, save_string_to_txt, clear_file_content
 from tooltips import tooltips
+from .chinese_labels import chinese_labels
 
 from ui.context_menu import TextWidgetContextMenu
 from ui.main_tab import build_main_tab, build_left_layout, build_right_layout
@@ -36,6 +40,11 @@ from ui.summary_tab import build_summary_tab, load_global_summary, save_global_s
 from ui.chapters_tab import build_chapters_tab, refresh_chapters_list, on_chapter_selected, load_chapter_content, save_current_chapter, prev_chapter, next_chapter
 from ui.other_settings import build_other_settings_tab
 
+# 类型注解
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from customtkinter import CTkTextbox
+
 
 class NovelGeneratorGUI:
     """
@@ -43,13 +52,20 @@ class NovelGeneratorGUI:
     """
     def __init__(self, master):
         self.master = master
-        self.master.title("Novel Generator GUI")
+        self.master.title("AI小说生成器")
         try:
             if os.path.exists("icon.ico"):
                 self.master.iconbitmap("icon.ico")
         except Exception:
             pass
         self.master.geometry("1350x840")
+
+        # 添加utils模块引用
+        import utils
+        self.utils = utils
+
+        # 记录UI初始化
+        log_ui_action("初始化主窗口")
 
         # --------------- 配置文件路径 ---------------
         self.config_file = "config.json"
@@ -122,15 +138,31 @@ class NovelGeneratorGUI:
 
 
         # -- 生成配置相关 --
-        self.architecture_llm_var = ctk.StringVar(value=choose_configs.get("architecture_llm", "DeepSeek"))
-        self.chapter_outline_llm_var = ctk.StringVar(value=choose_configs.get("chapter_outline_llm", "DeepSeek"))
-        self.final_chapter_llm_var = ctk.StringVar(value=choose_configs.get("final_chapter_llm", "DeepSeek"))
-        self.consistency_review_llm_var = ctk.StringVar(value=choose_configs.get("consistency_review_llm", "DeepSeek"))
-        self.prompt_draft_llm_var = ctk.StringVar(value=choose_configs.get("prompt_draft_llm", "DeepSeek"))
+        # 确保默认配置包含在可用配置中
+        available_configs = list(self.loaded_config.get("llm_configs", {}).keys())
+        default_architecture = choose_configs.get("architecture_llm", "DeepSeek V3")
+        default_chapter_outline = choose_configs.get("chapter_outline_llm", "DeepSeek V3")
+        default_final_chapter = choose_configs.get("final_chapter_llm", "DeepSeek V3")
+        default_consistency_review = choose_configs.get("consistency_review_llm", "DeepSeek V3")
+        default_prompt_draft = choose_configs.get("prompt_draft_llm", "DeepSeek V3")
+        
+        # 如果默认配置不在可用配置中，使用第一个可用配置
+        if default_architecture not in available_configs and available_configs:
+            default_architecture = available_configs[0]
+        if default_chapter_outline not in available_configs and available_configs:
+            default_chapter_outline = available_configs[0]
+        if default_final_chapter not in available_configs and available_configs:
+            default_final_chapter = available_configs[0]
+        if default_consistency_review not in available_configs and available_configs:
+            default_consistency_review = available_configs[0]
+        if default_prompt_draft not in available_configs and available_configs:
+            default_prompt_draft = available_configs[0]
 
-
-
-
+        self.architecture_llm_var = ctk.StringVar(value=default_architecture)
+        self.chapter_outline_llm_var = ctk.StringVar(value=default_chapter_outline)
+        self.final_chapter_llm_var = ctk.StringVar(value=default_final_chapter)
+        self.consistency_review_llm_var = ctk.StringVar(value=default_consistency_review)
+        self.prompt_draft_llm_var = ctk.StringVar(value=default_prompt_draft)
 
         # -- 小说参数相关 --
         if self.loaded_config and "other_params" in self.loaded_config:
@@ -179,6 +211,11 @@ class NovelGeneratorGUI:
         build_chapters_tab(self)
         build_other_settings_tab(self)
 
+        # 类型注解属性
+        self.log_text: 'CTkTextbox'
+        self.chapter_result: 'CTkTextbox'
+        self.char_inv_text: 'CTkTextbox'
+
 
     # ----------------- 通用辅助函数 -----------------
     def show_tooltip(self, key: str):
@@ -198,6 +235,8 @@ class NovelGeneratorGUI:
         self.log_text.insert("end", message + "\n")
         self.log_text.see("end")
         self.log_text.configure(state="disabled")
+        # 同时记录到日志文件
+        main_logger.info(message)
 
     def safe_log(self, message: str):
         self.master.after(0, lambda: self.log(message))
@@ -212,6 +251,7 @@ class NovelGeneratorGUI:
         full_message = f"{context}\n{traceback.format_exc()}"
         logging.error(full_message)
         self.safe_log(full_message)
+        log_error(context, traceback.format_exc())
 
     def show_chapter_in_textbox(self, text: str):
         self.chapter_result.delete("0.0", "end")
@@ -229,6 +269,9 @@ class NovelGeneratorGUI:
         temperature = self.temperature_var.get()
         max_tokens = self.max_tokens_var.get()
         timeout = self.timeout_var.get()
+        
+        # 记录测试操作
+        log_ui_action("测试LLM配置", f"接口格式: {interface_format}, 模型: {model_name}")
 
         test_llm_config(
             interface_format=interface_format,
@@ -250,6 +293,9 @@ class NovelGeneratorGUI:
         base_url = self.embedding_url_var.get().strip()
         interface_format = self.embedding_interface_format_var.get().strip()
         model_name = self.embedding_model_name_var.get().strip()
+        
+        # 记录测试操作
+        log_ui_action("测试Embedding配置", f"接口格式: {interface_format}, 模型: {model_name}")
 
         test_embedding_config(
             api_key=api_key,
@@ -272,6 +318,9 @@ class NovelGeneratorGUI:
         import_window.geometry("600x500")
         import_window.transient(self.master)  # 设置为父窗口的临时窗口
         import_window.grab_set()  # 保持窗口在顶层
+        
+        # 记录操作
+        log_ui_action("显示角色导入窗口")
         
         # 主容器
         main_frame = ctk.CTkFrame(import_window)
@@ -361,6 +410,9 @@ class NovelGeneratorGUI:
             messagebox.showwarning("警告", "请先设置保存路径")
             return
         
+        # 记录操作
+        log_ui_action("显示角色库", f"保存路径: {save_path}")
+        
         # 初始化LLM适配器
         llm_adapter = create_llm_adapter(
             interface_format=self.interface_format_var.get(),
@@ -378,6 +430,42 @@ class NovelGeneratorGUI:
                 self._role_lib.window.destroy()
         
         self._role_lib = RoleLibrary(self.master, save_path, llm_adapter)  # 新增参数
+
+    def load_other_settings(self):
+        """加载其他设置"""
+        try:
+            config = load_config(self.config_file)
+            if config and "webdav_config" in config:
+                webdav_config = config["webdav_config"]
+                self.webdav_url_var.set(webdav_config.get("webdav_url", ""))
+                self.webdav_username_var.set(webdav_config.get("webdav_username", ""))
+                self.webdav_password_var.set(webdav_config.get("webdav_password", ""))
+                self.log("已加载WebDAV配置。")
+            else:
+                self.log("未找到WebDAV配置。")
+        except Exception as e:
+            self.log(f"加载WebDAV配置时出错: {str(e)}")
+
+    def save_other_settings(self):
+        """保存其他设置"""
+        try:
+            config = load_config(self.config_file)
+            if not config:
+                config = {}
+                
+            if "webdav_config" not in config:
+                config["webdav_config"] = {}
+                
+            config["webdav_config"]["webdav_url"] = self.webdav_url_var.get()
+            config["webdav_config"]["webdav_username"] = self.webdav_username_var.get()
+            config["webdav_config"]["webdav_password"] = self.webdav_password_var.get()
+            
+            if save_config(config, self.config_file):
+                self.log("WebDAV配置已保存。")
+            else:
+                self.log("保存WebDAV配置失败。")
+        except Exception as e:
+            self.log(f"保存WebDAV配置时出错: {str(e)}")
 
     # ----------------- 将导入的各模块函数直接赋给类方法 -----------------
     generate_novel_architecture_ui = generate_novel_architecture_ui

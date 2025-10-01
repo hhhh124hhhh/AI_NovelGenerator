@@ -1,0 +1,5 @@
+[console_scripts]
+ai-novel-generator = main:main
+
+[gui_scripts]
+ai-novel-generator-gui = main:main

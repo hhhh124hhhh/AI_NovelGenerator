@@ -11,6 +11,9 @@ from utils import read_file, save_string_to_txt  # 导入 utils 中的函数
 from novel_generator.common import invoke_with_cleaning  # 新增导入
 from prompt_definitions import Character_Import_Prompt
 
+# 导入高级日志系统
+from advanced_logger import role_logger, log_role_operation
+
 DEFAULT_FONT = ("Microsoft YaHei", 12)
 
 class RoleLibrary:
@@ -21,6 +24,9 @@ class RoleLibrary:
         self.current_roles = []
         self.selected_del = []
         self.llm_adapter = llm_adapter  # 保存LLM适配器实例
+
+        # 记录角色库初始化
+        log_role_operation("初始化", "角色库", f"保存路径: {self.save_path}")
 
         # 初始化窗口
         self.window = ctk.CTkToplevel(master)
@@ -44,9 +50,13 @@ class RoleLibrary:
         os.makedirs(self.save_path, exist_ok=True)
         all_dir = os.path.join(self.save_path, "全部")
         os.makedirs(all_dir, exist_ok=True)
+        log_role_operation("创建目录结构", "角色库", f"创建目录: {self.save_path}, {all_dir}")
 
     def create_ui(self):
         """创建主界面"""
+        # 记录UI创建
+        log_role_operation("创建UI", "角色库")
+        
         # 分类按钮区
         self.create_category_bar()
 
@@ -139,7 +149,7 @@ class RoleLibrary:
             name_frame,
             text="修改",
             width=60,
-            command=self._rename_role_file,
+            command=lambda: self._rename_role_file(),
             font=DEFAULT_FONT
         ).pack(side="left", padx=(0, 5))
 
@@ -183,11 +193,16 @@ class RoleLibrary:
 
         new_category = self.category_combobox.get()
         
+        # 记录操作
+        log_role_operation("移动分类", self.current_role, f"从 {self.selected_category} 移动到 {new_category}")
+        
         # 如果当前在"全部"分类下，需要找到角色实际所在分类
         if self.selected_category == "全部":
             # 遍历所有分类查找实际存储位置（包含全部目录）
             actual_category = None
             for category in os.listdir(self.save_path):
+                if category == "全部":
+                    continue
                 test_path = os.path.join(
                     self.save_path, category, f"{self.current_role}.txt")
                 if os.path.exists(test_path):
@@ -258,6 +273,9 @@ class RoleLibrary:
 
     def import_roles(self):
         """导入角色窗口"""
+        # 记录操作
+        log_role_operation("打开导入窗口", "角色库")
+        
         import_window = ctk.CTkToplevel(self.window)
         import_window.title("角色导入")
         import_window.geometry("800x600")
@@ -349,6 +367,9 @@ class RoleLibrary:
 
     def analyze_character_state(self, right_panel, left_panel):
         """分析角色状态文件，使用LLM提取角色信息并保存到临时角色库"""
+        # 记录操作
+        log_role_operation("分析角色状态", "角色库", "使用LLM分析角色信息")
+        
         content = ""
         for widget in right_panel.winfo_children():
             if isinstance(widget, ctk.CTkTextbox):
@@ -587,6 +608,9 @@ class RoleLibrary:
 
     def import_from_file(self, right_panel):
         """从文件导入内容到右侧窗口"""
+        # 记录操作
+        log_role_operation("从文件导入", "角色库")
+        
         filetypes = (
             ('文本文件', '*.txt'),
             ('Word文档', '*.docx'),
@@ -626,6 +650,9 @@ class RoleLibrary:
 
     def load_default_character_state(self, right_panel):
         """加载character_state.txt文件到右侧窗口"""
+        # 记录操作
+        log_role_operation("加载默认角色状态", "角色库")
+        
         # 获取保存路径
         save_path = os.path.dirname(self.save_path)
         file_path = os.path.join(save_path, "character_state.txt")
@@ -666,6 +693,9 @@ class RoleLibrary:
 
     def confirm_import(self, import_window):
         """从临时角色库导入选中的角色"""
+        # 记录操作
+        log_role_operation("确认导入", "角色库")
+        
         # 创建必要的目录
         target_dir = os.path.join(self.save_path, "临时角色库")
         os.makedirs(target_dir, exist_ok=True)
