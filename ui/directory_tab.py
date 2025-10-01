@@ -1,6 +1,7 @@
 # ui/directory_tab.py
 # -*- coding: utf-8 -*-
 import customtkinter as ctk
+import os
 from tkinter import filedialog, messagebox
 from ui.context_menu import TextWidgetContextMenu
 from .chinese_labels import chinese_labels
@@ -34,7 +35,14 @@ def build_directory_tab(self):
 
 def load_chapter_blueprint(self):
     try:
-        content = self.utils.read_file("Novel_directory.txt")
+        # 修复文件路径问题，使用保存路径
+        filepath = self.filepath_var.get().strip()
+        if filepath:
+            full_path = os.path.join(filepath, "Novel_directory.txt")
+            content = self.utils.read_file(full_path)
+        else:
+            # 如果没有设置保存路径，使用默认路径
+            content = self.utils.read_file("Novel_directory.txt")
         self.chapter_blueprint_text.delete("0.0", "end")
         self.chapter_blueprint_text.insert("0.0", content)
         self.log("已加载章节目录。")
@@ -45,8 +53,15 @@ def load_chapter_blueprint(self):
 
 def save_chapter_blueprint(self):
     try:
+        # 修复文件路径问题，使用保存路径
         content = self.chapter_blueprint_text.get("0.0", "end").strip()
-        self.utils.save_string_to_txt(content, "Novel_directory.txt")
+        filepath = self.filepath_var.get().strip()
+        if filepath:
+            full_path = os.path.join(filepath, "Novel_directory.txt")
+            self.utils.save_string_to_txt(content, full_path)
+        else:
+            # 如果没有设置保存路径，使用默认路径
+            self.utils.save_string_to_txt(content, "Novel_directory.txt")
         self.log("章节目录已保存。")
     except Exception as e:
         self.log(f"保存章节目录时出错: {str(e)}")

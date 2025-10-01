@@ -1,6 +1,7 @@
 # ui/setting_tab.py
 # -*- coding: utf-8 -*-
 import customtkinter as ctk
+import os
 from tkinter import filedialog, messagebox
 from ui.context_menu import TextWidgetContextMenu
 from .chinese_labels import chinese_labels
@@ -34,19 +35,33 @@ def build_setting_tab(self):
 
 def load_novel_architecture(self):
     try:
-        content = self.utils.read_file("Novel_setting.txt")
+        # 修复文件路径问题，使用保存路径
+        filepath = self.filepath_var.get().strip()
+        if filepath:
+            full_path = os.path.join(filepath, "Novel_architecture.txt")
+            content = self.utils.read_file(full_path)
+        else:
+            # 如果没有设置保存路径，使用默认路径
+            content = self.utils.read_file("Novel_architecture.txt")
         self.novel_architecture_text.delete("0.0", "end")
         self.novel_architecture_text.insert("0.0", content)
         self.log("已加载小说设定。")
     except FileNotFoundError:
-        self.log("未找到 Novel_setting.txt 文件。")
+        self.log("未找到 Novel_architecture.txt 文件。")
     except Exception as e:
         self.log(f"加载小说设定时出错: {str(e)}")
 
 def save_novel_architecture(self):
     try:
         content = self.novel_architecture_text.get("0.0", "end").strip()
-        self.utils.save_string_to_txt(content, "Novel_setting.txt")
+        # 修复文件路径问题，使用保存路径
+        filepath = self.filepath_var.get().strip()
+        if filepath:
+            full_path = os.path.join(filepath, "Novel_architecture.txt")
+            self.utils.save_string_to_txt(content, full_path)
+        else:
+            # 如果没有设置保存路径，使用默认路径
+            self.utils.save_string_to_txt(content, "Novel_architecture.txt")
         self.log("小说设定已保存。")
     except Exception as e:
         self.log(f"保存小说设定时出错: {str(e)}")

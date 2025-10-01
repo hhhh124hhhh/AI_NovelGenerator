@@ -34,8 +34,6 @@ def generate_novel_architecture_ui(self):
 
         self.disable_button_safe(self.btn_generate_architecture)
         try:
-
-
             interface_format = self.loaded_config["llm_configs"][self.architecture_llm_var.get()]["interface_format"]
             api_key = self.loaded_config["llm_configs"][self.architecture_llm_var.get()]["api_key"]
             base_url = self.loaded_config["llm_configs"][self.architecture_llm_var.get()]["base_url"]
@@ -43,8 +41,6 @@ def generate_novel_architecture_ui(self):
             temperature = self.loaded_config["llm_configs"][self.architecture_llm_var.get()]["temperature"]
             max_tokens = self.loaded_config["llm_configs"][self.architecture_llm_var.get()]["max_tokens"]
             timeout_val = self.loaded_config["llm_configs"][self.architecture_llm_var.get()]["timeout"]
-
-
 
             topic = self.topic_text.get("0.0", "end").strip()
             genre = self.genre_var.get().strip()
@@ -70,6 +66,8 @@ def generate_novel_architecture_ui(self):
                 user_guidance=user_guidance  # 添加内容指导参数
             )
             self.safe_log("✅ 小说架构生成完成。请在 '设定管理' 标签页查看或编辑。")
+            # 添加自动加载功能，使用after确保在主线程中执行
+            self.master.after(100, lambda: self.load_novel_architecture())
         except Exception:
             self.handle_exception("生成小说架构时出错")
         finally:
@@ -116,6 +114,8 @@ def generate_chapter_blueprint_ui(self):
                 user_guidance=user_guidance  # 新增参数
             )
             self.safe_log("✅ 章节蓝图生成完成。请在 '目录管理' 标签页查看或编辑。")
+            # 添加自动加载功能
+            self.master.after(100, lambda: self.load_chapter_blueprint())
         except Exception:
             self.handle_exception("生成章节蓝图时出错")
         finally:

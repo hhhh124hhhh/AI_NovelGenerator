@@ -576,7 +576,41 @@ def build_embeddings_config_tab(self):
                 self.embedding_url_var.set("https://ai.gitee.com/v1")
                 self.embedding_model_name_var.set("bge-m3")
 
-    for i in range(5):
+    # 保存向量模型配置的函数
+    def save_embedding_config():
+        """保存当前向量模型配置"""
+        try:
+            # 获取当前配置
+            current_embedding_interface = self.embedding_interface_format_var.get().strip()
+            embedding_config = {
+                "api_key": self.embedding_api_key_var.get(),
+                "base_url": self.embedding_url_var.get(),
+                "model_name": self.embedding_model_name_var.get(),
+                "retrieval_k": self.safe_get_int(self.embedding_retrieval_k_var, 4),
+                "interface_format": current_embedding_interface
+            }
+            
+            # 更新配置
+            config_data = load_config(self.config_file)
+            if not config_data:
+                config_data = {}
+                
+            if "embedding_configs" not in config_data:
+                config_data["embedding_configs"] = {}
+                
+            config_data["embedding_configs"][current_embedding_interface] = embedding_config
+            config_data["last_embedding_interface_format"] = current_embedding_interface
+            
+            # 保存配置
+            if save_config(config_data, self.config_file):
+                messagebox.showinfo("提示", "向量模型配置已保存至 config.json")
+                self.log("向量模型配置已保存。")
+            else:
+                messagebox.showerror("错误", "保存向量模型配置失败。")
+        except Exception as e:
+            messagebox.showerror("错误", f"保存向量模型配置时出错: {str(e)}")
+
+    for i in range(6):  # 增加一行用于保存按钮
         self.embeddings_config_tab.grid_rowconfigure(i, weight=0)
     self.embeddings_config_tab.grid_columnconfigure(0, weight=0)
     self.embeddings_config_tab.grid_columnconfigure(1, weight=1)
@@ -611,9 +645,13 @@ def build_embeddings_config_tab(self):
     emb_retrieval_k_entry = ctk.CTkEntry(self.embeddings_config_tab, textvariable=self.embedding_retrieval_k_var, font=("Microsoft YaHei", 12))
     emb_retrieval_k_entry.grid(row=4, column=1, padx=5, pady=5, sticky="nsew")
 
-    # 添加测试按钮
+    # 添加测试按钮和保存按钮
     test_btn = ctk.CTkButton(self.embeddings_config_tab, text=chinese_labels["test_config"], command=self.test_embedding_config, font=("Microsoft YaHei", 12))
-    test_btn.grid(row=5, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
+    test_btn.grid(row=5, column=0, padx=5, pady=5, sticky="ew")
+
+    # 添加保存按钮
+    save_btn = ctk.CTkButton(self.embeddings_config_tab, text=chinese_labels["save_config"], command=save_embedding_config, font=("Microsoft YaHei", 12), fg_color="#1E90FF")
+    save_btn.grid(row=5, column=1, padx=5, pady=5, sticky="ew")
 
 def build_config_choose_tab(self):
 

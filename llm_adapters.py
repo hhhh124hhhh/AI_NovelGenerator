@@ -456,7 +456,11 @@ class ZhipuAIAdapter(BaseLLMAdapter):
             )
             if response and response.choices:
                 content = response.choices[0].message.content
+                # 修复：确保content不为None
                 result = content if content is not None else ""
+                # 添加调试信息
+                llm_logger.debug(f"原始响应内容: {content}")
+                llm_logger.debug(f"响应对象: {response}")
                 log_llm_response(result, self.model_name, "智谱")
                 return result
             else:
@@ -464,6 +468,10 @@ class ZhipuAIAdapter(BaseLLMAdapter):
                 return ""
         except Exception as e:
             logging.error(f"智谱AI API 调用失败: {e}")
+            # 添加异常详细信息
+            logging.error(f"异常详情: {type(e).__name__}: {str(e)}")
+            import traceback
+            logging.error(f"异常追踪: {traceback.format_exc()}")
             return ""
 
     def get_model_list(self):

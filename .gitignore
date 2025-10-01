@@ -16,7 +16,8 @@ config_test.json
 app.log
 test.py
 /backup
-
+logs/
+novel_output/
 # uv 相关
 uv.lock
 .python-version
@@ -33,3 +34,4 @@ requirements-uv.txt
 产品分析报告.md
 cloudbaserc.json
 PRD.md
+novel_output/角色库/测试角色.txt
