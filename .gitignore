@@ -18,6 +18,8 @@ test.py
 /backup
 logs/
 novel_output/
+web_bundles/
+
 # uv 相关
 uv.lock
 .python-version
