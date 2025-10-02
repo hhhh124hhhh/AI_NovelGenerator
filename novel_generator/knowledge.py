@@ -25,8 +25,29 @@ logging.basicConfig(
 )
 def advanced_split_content(content: str, similarity_threshold: float = 0.7, max_length: int = 500) -> list:
     """使用基本分段策略"""
-    # nltk.download('punkt', quiet=True)
-    # nltk.download('punkt_tab', quiet=True)
+    # 确保下载了NLTK所需的数据包
+    try:
+        nltk.data.find('tokenizers/punkt_tab')
+    except LookupError:
+        print("正在下载NLTK punkt_tab数据包...")
+        try:
+            nltk.download('punkt_tab', quiet=True)
+        except Exception as e:
+            print(f"下载punkt_tab数据包失败: {e}")
+            # 如果下载失败，尝试使用默认的punkt tokenizer
+            pass
+    
+    try:
+        nltk.data.find('tokenizers/punkt')
+    except LookupError:
+        print("正在下载NLTK punkt数据包...")
+        try:
+            nltk.download('punkt', quiet=True)
+        except Exception as e:
+            print(f"下载punkt数据包失败: {e}")
+            # 如果下载失败，抛出异常
+            raise e
+    
     sentences = nltk.sent_tokenize(content)
     if not sentences:
         return []
