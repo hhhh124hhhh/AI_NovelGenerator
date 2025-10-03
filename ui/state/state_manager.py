@@ -295,15 +295,25 @@ class StateManager:
 
     def _notify_observers(self, updates: Dict[str, Any], old_state: Dict[str, Any]) -> None:
         """通知观察者"""
-        for key, new_value in updates.items():
-            if key in self._observers:
-                old_value = self._get_nested_value(old_state, key)
+        def _notify_nested_updates(nested_updates: Dict[str, Any], prefix: str = ""):
+            for key, new_value in nested_updates.items():
+                full_key = f"{prefix}.{key}" if prefix else key
 
-                for observer in self._observers[key]:
-                    try:
-                        observer['callback'](key, new_value, old_value)
-                    except Exception as e:
-                        logger.error(f"状态观察者回调失败: {e}")
+                # 通知直接订阅此键的观察者
+                if full_key in self._observers:
+                    old_value = self._get_nested_value(old_state, full_key)
+
+                    for observer in self._observers[full_key]:
+                        try:
+                            observer['callback'](full_key, new_value, old_value)
+                        except Exception as e:
+                            logger.error(f"状态观察者回调失败: {e}")
+
+                # 如果是嵌套字典，递归通知
+                if isinstance(new_value, dict):
+                    _notify_nested_updates(new_value, full_key)
+
+        _notify_nested_updates(updates)
 
     def _get_nested_value(self, state: Dict[str, Any], key: str) -> Any:
         """获取嵌套状态值"""

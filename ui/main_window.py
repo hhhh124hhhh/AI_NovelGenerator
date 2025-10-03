@@ -83,6 +83,62 @@ class NovelGeneratorGUI:
         import utils
         self.utils = utils
 
+        # 绑定生成处理函数
+        from ui.generation_handlers import (
+            generate_novel_architecture_ui,
+            generate_chapter_blueprint_ui,
+            generate_chapter_draft_ui,
+            finalize_chapter_ui,
+            do_consistency_check,
+            import_knowledge_handler,
+            clear_vectorstore_handler,
+            show_plot_arcs_ui,
+            generate_batch_ui
+        )
+        
+        self.generate_novel_architecture_ui = generate_novel_architecture_ui.__get__(self, self.__class__)
+        self.generate_chapter_blueprint_ui = generate_chapter_blueprint_ui.__get__(self, self.__class__)
+        self.generate_chapter_draft_ui = generate_chapter_draft_ui.__get__(self, self.__class__)
+        self.finalize_chapter_ui = finalize_chapter_ui.__get__(self, self.__class__)
+        self.do_consistency_check = do_consistency_check.__get__(self, self.__class__)
+        self.import_knowledge_handler = import_knowledge_handler.__get__(self, self.__class__)
+        self.clear_vectorstore_handler = clear_vectorstore_handler.__get__(self, self.__class__)
+        self.show_plot_arcs_ui = show_plot_arcs_ui.__get__(self, self.__class__)
+        self.generate_batch_ui = generate_batch_ui.__get__(self, self.__class__)
+
+        # 绑定设置标签页函数
+        from ui.setting_tab import load_novel_architecture, save_novel_architecture
+        self.load_novel_architecture = load_novel_architecture.__get__(self, self.__class__)
+        self.save_novel_architecture = save_novel_architecture.__get__(self, self.__class__)
+
+        # 绑定目录标签页函数
+        from ui.directory_tab import load_chapter_blueprint, save_chapter_blueprint
+        self.load_chapter_blueprint = load_chapter_blueprint.__get__(self, self.__class__)
+        self.save_chapter_blueprint = save_chapter_blueprint.__get__(self, self.__class__)
+
+        # 绑定角色标签页函数
+        from ui.character_tab import load_character_state, save_character_state
+        self.load_character_state = load_character_state.__get__(self, self.__class__)
+        self.save_character_state = save_character_state.__get__(self, self.__class__)
+
+        # 绑定摘要标签页函数
+        from ui.summary_tab import load_global_summary, save_global_summary
+        self.load_global_summary = load_global_summary.__get__(self, self.__class__)
+        self.save_global_summary = save_global_summary.__get__(self, self.__class__)
+
+        # 绑定章节标签页函数
+        from ui.chapters_tab import refresh_chapters_list, on_chapter_selected, load_chapter_content, save_current_chapter, prev_chapter, next_chapter
+        self.refresh_chapters_list = refresh_chapters_list.__get__(self, self.__class__)
+        self.on_chapter_selected = on_chapter_selected.__get__(self, self.__class__)
+        self.load_chapter_content = load_chapter_content.__get__(self, self.__class__)
+        self.save_current_chapter = save_current_chapter.__get__(self, self.__class__)
+        self.prev_chapter = prev_chapter.__get__(self, self.__class__)
+        self.next_chapter = next_chapter.__get__(self, self.__class__)
+
+        # 绑定其他设置标签页函数
+        from ui.other_settings import save_theme_settings
+        self.save_theme_settings = save_theme_settings.__get__(self, self.__class__)
+
         # 记录UI初始化
         log_ui_action("初始化主窗口")
 
@@ -775,6 +831,12 @@ class NovelGeneratorGUI:
                 self.log("保存字体设置失败")
         except Exception as e:
             self.log(f"保存字体设置时出错: {str(e)}")
+            
+    def save_font_settings_main(self):
+        """
+        保存字体设置到配置文件 (主窗口方法)
+        """
+        self.save_font_settings()
             
     def load_font_settings(self):
         """

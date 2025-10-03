@@ -29,29 +29,19 @@ from ui.components.base_components import StyledComponent
 from theme_system.theme_manager import ThemeManager
 from ui.state.state_manager import StateManager
 
-# 创建一个测试组件 - 使用CTkFrame作为基础，避免复杂的CTkButton内部状态
-class TestComponent(ctk.CTkFrame):
-    """测试组件"""
-    def __init__(self, parent, **kwargs):
-        super().__init__(parent, **kwargs)
-        self.label = ctk.CTkLabel(self, text="测试组件")
-        self.label.pack(padx=10, pady=10)
-
-
-class TestStyledComponent(StyledComponent, TestComponent):
+# 创建一个简单的测试组件
+class TestStyledComponent(ctk.CTkFrame, StyledComponent):
     """测试样式化组件"""
 
     def __init__(self, parent, theme_manager, state_manager=None, **kwargs):
+        ctk.CTkFrame.__init__(self, parent, **kwargs)
         StyledComponent.__init__(self, parent, theme_manager, state_manager)
-        TestComponent.__init__(self, parent, **kwargs)
 
     def _initialize_component(self):
         """初始化组件"""
-        self.configure(
-            width=120,
-            height=60
-        )
-        self.label.configure(text="样式化测试组件")
+        # 不要在这里设置尺寸，避免CustomTkinter的缩放问题
+        self.label = ctk.CTkLabel(self, text="样式化测试组件")
+        self.label.pack(padx=10, pady=10)
 
     def get_component_type(self) -> str:
         """获取组件类型"""
@@ -156,13 +146,13 @@ def test_component_factory():
         factory = ComponentFactory()
 
         # 注册组件
-        success = factory.register_component("test_button", TestStyledButton)
+        success = factory.register_component("test_component", TestStyledComponent)
         assert success, "组件注册应该成功"
         logger.info("✅ 组件注册验证通过")
 
         # 测试获取注册类型
         registered_types = factory.get_registered_types()
-        assert "test_button" in registered_types, "注册类型应该包含test_button"
+        assert "test_component" in registered_types, "注册类型应该包含test_component"
         logger.info("✅ 注册类型验证通过")
 
         # 创建测试环境
@@ -171,24 +161,23 @@ def test_component_factory():
         state_manager = StateManager()
 
         # 创建组件
-        test_button = factory.create_component(
-            "test_button",
+        test_component = factory.create_component(
+            "test_component",
             root,
             theme_manager,
-            state_manager,
-            text="工厂创建的按钮"
+            state_manager
         )
-        assert test_button is not None, "组件创建应该成功"
+        assert test_component is not None, "组件创建应该成功"
         logger.info("✅ 组件创建验证通过")
 
         # 测试获取组件
-        component = factory.get_component(test_button._component_id)
-        assert component == test_button, "获取的组件应该正确"
+        component = factory.get_component(test_component._component_id)
+        assert component == test_component, "获取的组件应该正确"
         logger.info("✅ 组件获取验证通过")
 
         # 测试按类型获取组件
-        components_by_type = factory.get_components_by_type("test_button")
-        assert test_button in components_by_type, "按类型获取应该包含创建的组件"
+        components_by_type = factory.get_components_by_type("test_component")
+        assert test_component in components_by_type, "按类型获取应该包含创建的组件"
         logger.info("✅ 按类型获取验证通过")
 
         # 测试创建统计
@@ -222,7 +211,7 @@ def test_convenience_functions():
         from ui.components.base_components import register_component, create_component, get_component_factory
 
         # 注册组件
-        success = register_component("test_button2", TestStyledButton)
+        success = register_component("test_component2", TestStyledComponent)
         assert success, "便捷函数注册应该成功"
         logger.info("✅ 便捷函数注册验证通过")
 
@@ -232,14 +221,13 @@ def test_convenience_functions():
         state_manager = StateManager()
 
         # 创建组件
-        test_button = create_component(
-            "test_button2",
+        test_component = create_component(
+            "test_component2",
             root,
             theme_manager,
-            state_manager,
-            text="便捷函数创建的按钮"
+            state_manager
         )
-        assert test_button is not None, "便捷函数创建应该成功"
+        assert test_component is not None, "便捷函数创建应该成功"
         logger.info("✅ 便捷函数创建验证通过")
 
         # 获取工厂
@@ -272,38 +260,38 @@ def test_component_lifecycle():
         state_manager = StateManager()
 
         # 创建组件
-        test_button = TestStyledButton(
+        test_component = TestStyledComponent(
             root,
             theme_manager=theme_manager,
             state_manager=state_manager
         )
 
         # 测试初始状态
-        assert test_button.get_state() == ComponentState.READY, "初始状态应该为READY"
+        assert test_component.get_state() == ComponentState.READY, "初始状态应该为READY"
         logger.info("✅ 初始状态验证通过")
 
         # 测试显示/隐藏
-        test_button.show()
-        assert test_button.is_visible(), "显示后应该可见"
+        test_component.show()
+        assert test_component.is_visible(), "显示后应该可见"
         logger.info("✅ 显示功能验证通过")
 
-        test_button.hide()
-        assert not test_button.is_visible(), "隐藏后应该不可见"
+        test_component.hide()
+        assert not test_component.is_visible(), "隐藏后应该不可见"
         logger.info("✅ 隐藏功能验证通过")
 
         # 测试启用/禁用
-        test_button.enable()
-        assert test_button.is_ready(), "启用后应该就绪"
+        test_component.enable()
+        assert test_component.is_ready(), "启用后应该就绪"
         logger.info("✅ 启用功能验证通过")
 
-        test_button.disable()
-        assert test_button.get_state() == ComponentState.DISABLED, "禁用后状态应该为DISABLED"
+        test_component.disable()
+        assert test_component.get_state() == ComponentState.DISABLED, "禁用后状态应该为DISABLED"
         logger.info("✅ 禁用功能验证通过")
 
         # 测试性能监控
-        initial_metrics = test_button.get_performance_metrics()
-        test_button.apply_theme()  # 触发一次渲染
-        updated_metrics = test_button.get_performance_metrics()
+        initial_metrics = test_component.get_performance_metrics()
+        test_component.apply_theme()  # 触发一次渲染
+        updated_metrics = test_component.get_performance_metrics()
         assert updated_metrics['render_count'] > initial_metrics['render_count'], "渲染次数应该增加"
         logger.info("✅ 性能监控验证通过")
 

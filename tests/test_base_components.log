@@ -1,0 +1,425 @@
+2025-10-03 21:42:47,690 - __main__ - INFO - ============================================================
+2025-10-03 21:42:47,690 - __main__ - INFO - STORY-002 BUILD阶段Day1 任务1.2 测试
+2025-10-03 21:42:47,690 - __main__ - INFO - ============================================================
+2025-10-03 21:42:47,690 - __main__ - INFO - 
+--- StyledComponent基类 ---
+2025-10-03 21:42:47,690 - __main__ - INFO - 开始测试 StyledComponent...
+2025-10-03 21:42:47,923 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-03 21:42:47,923 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-03 21:42:47,923 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-03 21:42:47,924 - __main__ - ERROR - ❌ StyledComponent 测试失败: 'TestStyledButton' object has no attribute '_text_label'
+2025-10-03 21:42:47,925 - __main__ - ERROR - 错误详情:
+Traceback (most recent call last):
+  File "D:\AI_NovelGenerator\test_base_components.py", line 84, in test_styled_component
+    test_button = TestStyledButton(
+                  ^^^^^^^^^^^^^^^^^
+  File "D:\AI_NovelGenerator\test_base_components.py", line 41, in __init__
+    StyledComponent.__init__(self, parent, theme_manager, state_manager)
+  File "D:\AI_NovelGenerator\ui\components\base_components.py", line 70, in __init__
+    self._initialize_component()
+  File "D:\AI_NovelGenerator\test_base_components.py", line 46, in _initialize_component
+    self.configure(
+  File "D:\AI_NovelGenerator\.venv\Lib\site-packages\customtkinter\windows\widgets\ctk_button.py", line 394, in configure
+    if self._text_label is None:
+       ^^^^^^^^^^^^^^^^
+AttributeError: 'TestStyledButton' object has no attribute '_text_label'
+
+2025-10-03 21:42:47,925 - __main__ - ERROR - ❌ StyledComponent基类 失败
+2025-10-03 21:42:47,925 - __main__ - INFO - 
+--- ComponentFactory工厂 ---
+2025-10-03 21:42:47,925 - __main__ - INFO - 开始测试 ComponentFactory...
+2025-10-03 21:42:47,926 - ui.components.base_components - INFO - 注册组件类型: test_button -> TestStyledButton
+2025-10-03 21:42:47,926 - __main__ - INFO - ✅ 组件注册验证通过
+2025-10-03 21:42:47,926 - __main__ - INFO - ✅ 注册类型验证通过
+2025-10-03 21:42:47,984 - __main__ - ERROR - ❌ ComponentFactory 测试失败: name 'ThemeManager' is not defined
+2025-10-03 21:42:47,984 - __main__ - ERROR - 错误详情:
+Traceback (most recent call last):
+  File "D:\AI_NovelGenerator\test_base_components.py", line 168, in test_component_factory
+    theme_manager = ThemeManager()
+                    ^^^^^^^^^^^^
+NameError: name 'ThemeManager' is not defined
+
+2025-10-03 21:42:47,984 - __main__ - ERROR - ❌ ComponentFactory工厂 失败
+2025-10-03 21:42:47,984 - __main__ - INFO - 
+--- 便捷函数 ---
+2025-10-03 21:42:47,984 - __main__ - INFO - 开始测试便捷函数...
+2025-10-03 21:42:47,984 - ui.components.base_components - INFO - 注册组件类型: test_button2 -> TestStyledButton
+2025-10-03 21:42:47,984 - __main__ - INFO - ✅ 便捷函数注册验证通过
+2025-10-03 21:42:48,029 - __main__ - ERROR - ❌ 便捷函数测试失败: name 'ThemeManager' is not defined
+2025-10-03 21:42:48,029 - __main__ - ERROR - 错误详情:
+Traceback (most recent call last):
+  File "D:\AI_NovelGenerator\test_base_components.py", line 229, in test_convenience_functions
+    theme_manager = ThemeManager()
+                    ^^^^^^^^^^^^
+NameError: name 'ThemeManager' is not defined
+
+2025-10-03 21:42:48,029 - __main__ - ERROR - ❌ 便捷函数 失败
+2025-10-03 21:42:48,029 - __main__ - INFO - 
+--- 组件生命周期 ---
+2025-10-03 21:42:48,029 - __main__ - INFO - 开始测试组件生命周期...
+2025-10-03 21:42:48,069 - __main__ - ERROR - ❌ 组件生命周期测试失败: name 'ThemeManager' is not defined
+2025-10-03 21:42:48,070 - __main__ - ERROR - 错误详情:
+Traceback (most recent call last):
+  File "D:\AI_NovelGenerator\test_base_components.py", line 269, in test_component_lifecycle
+    theme_manager = ThemeManager()
+                    ^^^^^^^^^^^^
+NameError: name 'ThemeManager' is not defined
+
+2025-10-03 21:42:48,070 - __main__ - ERROR - ❌ 组件生命周期 失败
+2025-10-03 21:42:48,070 - __main__ - INFO - 
+============================================================
+2025-10-03 21:42:48,070 - __main__ - INFO - 测试结果: 0/4 通过
+2025-10-03 21:42:48,070 - __main__ - INFO - ============================================================
+2025-10-03 21:42:48,070 - __main__ - ERROR - 💥 有 4 个测试失败
+2025-10-03 21:43:28,016 - __main__ - INFO - ============================================================
+2025-10-03 21:43:28,016 - __main__ - INFO - STORY-002 BUILD阶段Day1 任务1.2 测试
+2025-10-03 21:43:28,016 - __main__ - INFO - ============================================================
+2025-10-03 21:43:28,016 - __main__ - INFO - 
+--- StyledComponent基类 ---
+2025-10-03 21:43:28,017 - __main__ - INFO - 开始测试 StyledComponent...
+2025-10-03 21:43:28,242 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-03 21:43:28,243 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-03 21:43:28,243 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-03 21:43:28,243 - __main__ - ERROR - ❌ StyledComponent 测试失败: 'TestStyledComponent' object has no attribute '_CTkScalingBaseClass__scaling_type'
+2025-10-03 21:43:28,245 - __main__ - ERROR - 错误详情:
+Traceback (most recent call last):
+  File "D:\AI_NovelGenerator\test_base_components.py", line 86, in test_styled_component
+    test_component = TestStyledComponent(
+                     ^^^^^^^^^^^^^^^^^^^^
+  File "D:\AI_NovelGenerator\test_base_components.py", line 45, in __init__
+    StyledComponent.__init__(self, parent, theme_manager, state_manager)
+  File "D:\AI_NovelGenerator\ui\components\base_components.py", line 70, in __init__
+    self._initialize_component()
+  File "D:\AI_NovelGenerator\test_base_components.py", line 50, in _initialize_component
+    self.configure(
+  File "D:\AI_NovelGenerator\.venv\Lib\site-packages\customtkinter\windows\widgets\ctk_frame.py", line 167, in configure
+    super().configure(require_redraw=require_redraw, **kwargs)
+  File "D:\AI_NovelGenerator\.venv\Lib\site-packages\customtkinter\windows\widgets\core_widget_classes\ctk_base_class.py", line 117, in configure
+    self._set_dimensions(width=kwargs.pop("width"))
+  File "D:\AI_NovelGenerator\.venv\Lib\site-packages\customtkinter\windows\widgets\ctk_frame.py", line 88, in _set_dimensions
+    super()._set_dimensions(width, height)
+  File "D:\AI_NovelGenerator\.venv\Lib\site-packages\customtkinter\windows\widgets\core_widget_classes\ctk_base_class.py", line 240, in _set_dimensions
+    super().configure(width=self._apply_widget_scaling(self._desired_width),
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AI_NovelGenerator\.venv\Lib\site-packages\customtkinter\windows\widgets\scaling\scaling_base_class.py", line 61, in _apply_widget_scaling
+    assert self.__scaling_type == "widget"
+           ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'TestStyledComponent' object has no attribute '_CTkScalingBaseClass__scaling_type'
+
+2025-10-03 21:43:28,245 - __main__ - ERROR - ❌ StyledComponent基类 失败
+2025-10-03 21:43:28,245 - __main__ - INFO - 
+--- ComponentFactory工厂 ---
+2025-10-03 21:43:28,245 - __main__ - INFO - 开始测试 ComponentFactory...
+2025-10-03 21:43:28,246 - ui.components.base_components - INFO - 注册组件类型: test_component -> TestStyledComponent
+2025-10-03 21:43:28,246 - __main__ - INFO - ✅ 组件注册验证通过
+2025-10-03 21:43:28,246 - __main__ - INFO - ✅ 注册类型验证通过
+2025-10-03 21:43:28,322 - ui.components.base_components - ERROR - 创建组件失败 test_component: 'TestStyledComponent' object has no attribute '_CTkScalingBaseClass__scaling_type'
+2025-10-03 21:43:28,322 - __main__ - ERROR - ❌ ComponentFactory 测试失败: 组件创建应该成功
+2025-10-03 21:43:28,323 - __main__ - ERROR - 错误详情:
+Traceback (most recent call last):
+  File "D:\AI_NovelGenerator\test_base_components.py", line 180, in test_component_factory
+    assert test_component is not None, "组件创建应该成功"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 组件创建应该成功
+
+2025-10-03 21:43:28,323 - __main__ - ERROR - ❌ ComponentFactory工厂 失败
+2025-10-03 21:43:28,323 - __main__ - INFO - 
+--- 便捷函数 ---
+2025-10-03 21:43:28,323 - __main__ - INFO - 开始测试便捷函数...
+2025-10-03 21:43:28,323 - __main__ - ERROR - ❌ 便捷函数测试失败: name 'TestStyledButton' is not defined
+2025-10-03 21:43:28,323 - __main__ - ERROR - 错误详情:
+Traceback (most recent call last):
+  File "D:\AI_NovelGenerator\test_base_components.py", line 224, in test_convenience_functions
+    success = register_component("test_button2", TestStyledButton)
+                                                 ^^^^^^^^^^^^^^^^
+NameError: name 'TestStyledButton' is not defined
+
+2025-10-03 21:43:28,323 - __main__ - ERROR - ❌ 便捷函数 失败
+2025-10-03 21:43:28,323 - __main__ - INFO - 
+--- 组件生命周期 ---
+2025-10-03 21:43:28,323 - __main__ - INFO - 开始测试组件生命周期...
+2025-10-03 21:43:28,371 - __main__ - ERROR - ❌ 组件生命周期测试失败: name 'TestStyledButton' is not defined
+2025-10-03 21:43:28,371 - __main__ - ERROR - 错误详情:
+Traceback (most recent call last):
+  File "D:\AI_NovelGenerator\test_base_components.py", line 274, in test_component_lifecycle
+    test_button = TestStyledButton(
+                  ^^^^^^^^^^^^^^^^
+NameError: name 'TestStyledButton' is not defined
+
+2025-10-03 21:43:28,371 - __main__ - ERROR - ❌ 组件生命周期 失败
+2025-10-03 21:43:28,371 - __main__ - INFO - 
+============================================================
+2025-10-03 21:43:28,371 - __main__ - INFO - 测试结果: 0/4 通过
+2025-10-03 21:43:28,371 - __main__ - INFO - ============================================================
+2025-10-03 21:43:28,371 - __main__ - ERROR - 💥 有 4 个测试失败
+2025-10-03 21:43:55,525 - __main__ - INFO - ============================================================
+2025-10-03 21:43:55,525 - __main__ - INFO - STORY-002 BUILD阶段Day1 任务1.2 测试
+2025-10-03 21:43:55,525 - __main__ - INFO - ============================================================
+2025-10-03 21:43:55,525 - __main__ - INFO - 
+--- StyledComponent基类 ---
+2025-10-03 21:43:55,525 - __main__ - INFO - 开始测试 StyledComponent...
+2025-10-03 21:43:55,764 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-03 21:43:55,764 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-03 21:43:55,764 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-03 21:43:55,765 - __main__ - ERROR - ❌ StyledComponent 测试失败: 'TestStyledComponent' object has no attribute 'tk'
+2025-10-03 21:43:55,767 - __main__ - ERROR - 错误详情:
+Traceback (most recent call last):
+  File "D:\AI_NovelGenerator\test_base_components.py", line 76, in test_styled_component
+    test_component = TestStyledComponent(
+                     ^^^^^^^^^^^^^^^^^^^^
+  File "D:\AI_NovelGenerator\test_base_components.py", line 37, in __init__
+    StyledComponent.__init__(self, parent, theme_manager, state_manager)
+  File "D:\AI_NovelGenerator\ui\components\base_components.py", line 70, in __init__
+    self._initialize_component()
+  File "D:\AI_NovelGenerator\test_base_components.py", line 43, in _initialize_component
+    self.label = ctk.CTkLabel(self, text="样式化测试组件")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AI_NovelGenerator\.venv\Lib\site-packages\customtkinter\windows\widgets\ctk_label.py", line 45, in __init__
+    super().__init__(master=master, bg_color=bg_color, width=width, height=height)
+  File "D:\AI_NovelGenerator\.venv\Lib\site-packages\customtkinter\windows\widgets\core_widget_classes\ctk_base_class.py", line 41, in __init__
+    tkinter.Frame.__init__(self, master=master, width=width, height=height, **pop_from_dict_by_set(kwargs, self._valid_tk_frame_attributes))
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\tkinter\__init__.py", line 3212, in __init__
+    Widget.__init__(self, master, 'frame', cnf, {}, extra)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\tkinter\__init__.py", line 2641, in __init__
+    self._setup(master, cnf)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\tkinter\__init__.py", line 2610, in _setup
+    self.tk = master.tk
+              ^^^^^^^^^
+AttributeError: 'TestStyledComponent' object has no attribute 'tk'
+
+2025-10-03 21:43:55,767 - __main__ - ERROR - ❌ StyledComponent基类 失败
+2025-10-03 21:43:55,767 - __main__ - INFO - 
+--- ComponentFactory工厂 ---
+2025-10-03 21:43:55,767 - __main__ - INFO - 开始测试 ComponentFactory...
+2025-10-03 21:43:55,767 - ui.components.base_components - INFO - 注册组件类型: test_component -> TestStyledComponent
+2025-10-03 21:43:55,767 - __main__ - INFO - ✅ 组件注册验证通过
+2025-10-03 21:43:55,767 - __main__ - INFO - ✅ 注册类型验证通过
+2025-10-03 21:43:55,815 - ui.components.base_components - ERROR - 创建组件失败 test_component: 'TestStyledComponent' object has no attribute 'tk'
+2025-10-03 21:43:55,815 - __main__ - ERROR - ❌ ComponentFactory 测试失败: 组件创建应该成功
+2025-10-03 21:43:55,815 - __main__ - ERROR - 错误详情:
+Traceback (most recent call last):
+  File "D:\AI_NovelGenerator\test_base_components.py", line 170, in test_component_factory
+    assert test_component is not None, "组件创建应该成功"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 组件创建应该成功
+
+2025-10-03 21:43:55,816 - __main__ - ERROR - ❌ ComponentFactory工厂 失败
+2025-10-03 21:43:55,816 - __main__ - INFO - 
+--- 便捷函数 ---
+2025-10-03 21:43:55,816 - __main__ - INFO - 开始测试便捷函数...
+2025-10-03 21:43:55,816 - ui.components.base_components - INFO - 注册组件类型: test_component2 -> TestStyledComponent
+2025-10-03 21:43:55,816 - __main__ - INFO - ✅ 便捷函数注册验证通过
+2025-10-03 21:43:55,854 - ui.components.base_components - ERROR - 创建组件失败 test_component2: 'TestStyledComponent' object has no attribute 'tk'
+2025-10-03 21:43:55,854 - __main__ - ERROR - ❌ 便捷函数测试失败: 便捷函数创建应该成功
+2025-10-03 21:43:55,855 - __main__ - ERROR - 错误详情:
+Traceback (most recent call last):
+  File "D:\AI_NovelGenerator\test_base_components.py", line 230, in test_convenience_functions
+    assert test_component is not None, "便捷函数创建应该成功"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 便捷函数创建应该成功
+
+2025-10-03 21:43:55,855 - __main__ - ERROR - ❌ 便捷函数 失败
+2025-10-03 21:43:55,855 - __main__ - INFO - 
+--- 组件生命周期 ---
+2025-10-03 21:43:55,855 - __main__ - INFO - 开始测试组件生命周期...
+2025-10-03 21:43:55,895 - __main__ - ERROR - ❌ 组件生命周期测试失败: 'TestStyledComponent' object has no attribute 'tk'
+2025-10-03 21:43:55,895 - __main__ - ERROR - 错误详情:
+Traceback (most recent call last):
+  File "D:\AI_NovelGenerator\test_base_components.py", line 263, in test_component_lifecycle
+    test_component = TestStyledComponent(
+                     ^^^^^^^^^^^^^^^^^^^^
+  File "D:\AI_NovelGenerator\test_base_components.py", line 37, in __init__
+    StyledComponent.__init__(self, parent, theme_manager, state_manager)
+  File "D:\AI_NovelGenerator\ui\components\base_components.py", line 70, in __init__
+    self._initialize_component()
+  File "D:\AI_NovelGenerator\test_base_components.py", line 43, in _initialize_component
+    self.label = ctk.CTkLabel(self, text="样式化测试组件")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AI_NovelGenerator\.venv\Lib\site-packages\customtkinter\windows\widgets\ctk_label.py", line 45, in __init__
+    super().__init__(master=master, bg_color=bg_color, width=width, height=height)
+  File "D:\AI_NovelGenerator\.venv\Lib\site-packages\customtkinter\windows\widgets\core_widget_classes\ctk_base_class.py", line 41, in __init__
+    tkinter.Frame.__init__(self, master=master, width=width, height=height, **pop_from_dict_by_set(kwargs, self._valid_tk_frame_attributes))
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\tkinter\__init__.py", line 3212, in __init__
+    Widget.__init__(self, master, 'frame', cnf, {}, extra)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\tkinter\__init__.py", line 2641, in __init__
+    self._setup(master, cnf)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\tkinter\__init__.py", line 2610, in _setup
+    self.tk = master.tk
+              ^^^^^^^^^
+AttributeError: 'TestStyledComponent' object has no attribute 'tk'
+
+2025-10-03 21:43:55,896 - __main__ - ERROR - ❌ 组件生命周期 失败
+2025-10-03 21:43:55,896 - __main__ - INFO - 
+============================================================
+2025-10-03 21:43:55,896 - __main__ - INFO - 测试结果: 0/4 通过
+2025-10-03 21:43:55,896 - __main__ - INFO - ============================================================
+2025-10-03 21:43:55,896 - __main__ - ERROR - 💥 有 4 个测试失败
+2025-10-03 21:44:08,244 - __main__ - INFO - ============================================================
+2025-10-03 21:44:08,244 - __main__ - INFO - STORY-002 BUILD阶段Day1 任务1.2 测试
+2025-10-03 21:44:08,244 - __main__ - INFO - ============================================================
+2025-10-03 21:44:08,245 - __main__ - INFO - 
+--- StyledComponent基类 ---
+2025-10-03 21:44:08,245 - __main__ - INFO - 开始测试 StyledComponent...
+2025-10-03 21:44:08,475 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-03 21:44:08,475 - theme_system.theme_manager - INFO - 应用默认主题: neutral
+2025-10-03 21:44:08,475 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-03 21:44:08,487 - __main__ - INFO - ✅ StyledComponent 创建成功
+2025-10-03 21:44:08,487 - __main__ - INFO - ✅ 组件状态验证通过
+2025-10-03 21:44:08,487 - __main__ - INFO - 组件事件触发: 样式化测试组件
+2025-10-03 21:44:08,487 - __main__ - INFO - ✅ 事件处理验证通过
+2025-10-03 21:44:08,487 - __main__ - INFO - ✅ 主题应用验证通过
+2025-10-03 21:44:08,487 - __main__ - INFO - ✅ 性能指标验证通过
+2025-10-03 21:44:08,487 - __main__ - INFO - ✅ 组件信息验证通过
+2025-10-03 21:44:08,487 - __main__ - INFO - 显示测试窗口，请手动验证组件功能...
+2025-10-03 21:44:08,488 - __main__ - INFO - 测试项目:
+2025-10-03 21:44:08,488 - __main__ - INFO - 1. 按钮是否正常显示
+2025-10-03 21:44:08,488 - __main__ - INFO - 2. 主题是否正确应用
+2025-10-03 21:44:08,488 - __main__ - INFO - 3. 点击按钮是否触发事件
+2025-10-03 21:44:08,488 - __main__ - INFO - 按 Ctrl+C 或关闭窗口退出测试
+2025-10-03 21:45:20,588 - __main__ - INFO - ============================================================
+2025-10-03 21:45:20,588 - __main__ - INFO - STORY-002 BUILD阶段Day1 任务1.2 测试
+2025-10-03 21:45:20,589 - __main__ - INFO - ============================================================
+2025-10-03 21:45:20,589 - __main__ - INFO - 
+--- StyledComponent基类 ---
+2025-10-03 21:45:20,589 - __main__ - INFO - 开始测试 StyledComponent...
+2025-10-03 21:45:20,818 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-03 21:45:20,818 - theme_system.theme_manager - INFO - 应用默认主题: neutral
+2025-10-03 21:45:20,818 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-03 21:45:20,830 - __main__ - INFO - ✅ StyledComponent 创建成功
+2025-10-03 21:45:20,830 - __main__ - INFO - ✅ 组件状态验证通过
+2025-10-03 21:45:20,830 - __main__ - INFO - 组件事件触发: 样式化测试组件
+2025-10-03 21:45:20,831 - __main__ - INFO - ✅ 事件处理验证通过
+2025-10-03 21:45:20,831 - __main__ - INFO - ✅ 主题应用验证通过
+2025-10-03 21:45:20,831 - __main__ - INFO - ✅ 性能指标验证通过
+2025-10-03 21:45:20,831 - __main__ - INFO - ✅ 组件信息验证通过
+2025-10-03 21:45:20,831 - __main__ - INFO - 显示测试窗口，请手动验证组件功能...
+2025-10-03 21:45:20,831 - __main__ - INFO - 测试项目:
+2025-10-03 21:45:20,831 - __main__ - INFO - 1. 按钮是否正常显示
+2025-10-03 21:45:20,831 - __main__ - INFO - 2. 主题是否正确应用
+2025-10-03 21:45:20,831 - __main__ - INFO - 3. 点击按钮是否触发事件
+2025-10-03 21:45:20,832 - __main__ - INFO - 按 Ctrl+C 或关闭窗口退出测试
+2025-10-03 21:45:29,024 - __main__ - INFO - 组件事件触发: 样式化测试组件
+2025-10-03 21:46:00,036 - __main__ - INFO - ✅ StyledComponent 测试完成
+2025-10-03 21:46:00,036 - __main__ - INFO - ✅ StyledComponent基类 通过
+2025-10-03 21:46:00,036 - __main__ - INFO - 
+--- ComponentFactory工厂 ---
+2025-10-03 21:46:00,036 - __main__ - INFO - 开始测试 ComponentFactory...
+2025-10-03 21:46:00,036 - ui.components.base_components - INFO - 注册组件类型: test_component -> TestStyledComponent
+2025-10-03 21:46:00,037 - __main__ - INFO - ✅ 组件注册验证通过
+2025-10-03 21:46:00,037 - __main__ - INFO - ✅ 注册类型验证通过
+2025-10-03 21:46:00,130 - __main__ - INFO - ✅ 组件创建验证通过
+2025-10-03 21:46:00,130 - __main__ - INFO - ✅ 组件获取验证通过
+2025-10-03 21:46:00,130 - __main__ - INFO - ✅ 按类型获取验证通过
+2025-10-03 21:46:00,130 - __main__ - INFO - ✅ 创建统计验证通过
+2025-10-03 21:46:00,130 - __main__ - ERROR - ❌ ComponentFactory 测试失败: name 'test_button' is not defined
+2025-10-03 21:46:00,131 - __main__ - ERROR - 错误详情:
+Traceback (most recent call last):
+  File "d:\AI_NovelGenerator\test_base_components.py", line 190, in test_component_factory
+    destroy_success = factory.destroy_component(test_button._component_id)
+                                                ^^^^^^^^^^^
+NameError: name 'test_button' is not defined
+
+2025-10-03 21:46:00,131 - __main__ - ERROR - ❌ ComponentFactory工厂 失败
+2025-10-03 21:46:00,131 - __main__ - INFO - 
+--- 便捷函数 ---
+2025-10-03 21:46:00,132 - __main__ - INFO - 开始测试便捷函数...
+2025-10-03 21:46:00,132 - ui.components.base_components - INFO - 注册组件类型: test_component2 -> TestStyledComponent
+2025-10-03 21:46:00,132 - __main__ - INFO - ✅ 便捷函数注册验证通过
+2025-10-03 21:46:00,184 - __main__ - INFO - ✅ 便捷函数创建验证通过
+2025-10-03 21:46:00,184 - __main__ - INFO - ✅ 获取工厂验证通过
+2025-10-03 21:46:00,197 - __main__ - INFO - ✅ 便捷函数测试完成
+2025-10-03 21:46:00,197 - __main__ - INFO - ✅ 便捷函数 通过
+2025-10-03 21:46:00,197 - __main__ - INFO - 
+--- 组件生命周期 ---
+2025-10-03 21:46:00,198 - __main__ - INFO - 开始测试组件生命周期...
+2025-10-03 21:46:00,261 - __main__ - INFO - ✅ 初始状态验证通过
+2025-10-03 21:46:00,262 - __main__ - INFO - ✅ 显示功能验证通过
+2025-10-03 21:46:00,262 - __main__ - INFO - ✅ 隐藏功能验证通过
+2025-10-03 21:46:00,262 - ui.components.base_components - ERROR - 启用组件失败 TestStyledComponent_2013576322768: ['state'] are not supported arguments. Look at the documentation for supported arguments.
+2025-10-03 21:46:00,262 - __main__ - ERROR - ❌ 组件生命周期测试失败: 启用后应该就绪
+2025-10-03 21:46:00,263 - __main__ - ERROR - 错误详情:
+Traceback (most recent call last):
+  File "d:\AI_NovelGenerator\test_base_components.py", line 284, in test_component_lifecycle
+    assert test_component.is_ready(), "启用后应该就绪"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 启用后应该就绪
+
+2025-10-03 21:46:00,263 - __main__ - ERROR - ❌ 组件生命周期 失败
+2025-10-03 21:46:00,263 - __main__ - INFO - 
+============================================================
+2025-10-03 21:46:00,263 - __main__ - INFO - 测试结果: 2/4 通过
+2025-10-03 21:46:00,263 - __main__ - INFO - ============================================================
+2025-10-03 21:46:00,263 - __main__ - ERROR - 💥 有 2 个测试失败
+2025-10-03 21:51:07,800 - __main__ - INFO - ============================================================
+2025-10-03 21:51:07,800 - __main__ - INFO - STORY-002 BUILD阶段Day1 任务1.2 测试
+2025-10-03 21:51:07,800 - __main__ - INFO - ============================================================
+2025-10-03 21:51:07,800 - __main__ - INFO - 
+--- StyledComponent基类 ---
+2025-10-03 21:51:07,801 - __main__ - INFO - 开始测试 StyledComponent...
+2025-10-03 21:51:08,048 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-03 21:51:08,049 - theme_system.theme_manager - INFO - 应用默认主题: neutral
+2025-10-03 21:51:08,049 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-03 21:51:08,070 - __main__ - INFO - ✅ StyledComponent 创建成功
+2025-10-03 21:51:08,071 - __main__ - INFO - ✅ 组件状态验证通过
+2025-10-03 21:51:08,071 - __main__ - INFO - 组件事件触发: 样式化测试组件
+2025-10-03 21:51:08,071 - __main__ - INFO - ✅ 事件处理验证通过
+2025-10-03 21:51:08,071 - __main__ - INFO - ✅ 主题应用验证通过
+2025-10-03 21:51:08,071 - __main__ - INFO - ✅ 性能指标验证通过
+2025-10-03 21:51:08,072 - __main__ - INFO - ✅ 组件信息验证通过
+2025-10-03 21:51:08,072 - __main__ - INFO - 显示测试窗口，请手动验证组件功能...
+2025-10-03 21:51:08,072 - __main__ - INFO - 测试项目:
+2025-10-03 21:51:08,072 - __main__ - INFO - 1. 按钮是否正常显示
+2025-10-03 21:51:08,072 - __main__ - INFO - 2. 主题是否正确应用
+2025-10-03 21:51:08,072 - __main__ - INFO - 3. 点击按钮是否触发事件
+2025-10-03 21:51:08,072 - __main__ - INFO - 按 Ctrl+C 或关闭窗口退出测试
+2025-10-03 21:51:10,790 - __main__ - INFO - ✅ StyledComponent 测试完成
+2025-10-03 21:51:10,790 - __main__ - INFO - ✅ StyledComponent基类 通过
+2025-10-03 21:51:10,790 - __main__ - INFO - 
+--- ComponentFactory工厂 ---
+2025-10-03 21:51:10,791 - __main__ - INFO - 开始测试 ComponentFactory...
+2025-10-03 21:51:10,791 - ui.components.base_components - INFO - 注册组件类型: test_component -> TestStyledComponent
+2025-10-03 21:51:10,791 - __main__ - INFO - ✅ 组件注册验证通过
+2025-10-03 21:51:10,791 - __main__ - INFO - ✅ 注册类型验证通过
+2025-10-03 21:51:10,861 - __main__ - INFO - ✅ 组件创建验证通过
+2025-10-03 21:51:10,861 - __main__ - INFO - ✅ 组件获取验证通过
+2025-10-03 21:51:10,861 - __main__ - INFO - ✅ 按类型获取验证通过
+2025-10-03 21:51:10,861 - __main__ - INFO - ✅ 创建统计验证通过
+2025-10-03 21:51:10,862 - __main__ - ERROR - ❌ ComponentFactory 测试失败: name 'test_button' is not defined
+2025-10-03 21:51:10,863 - __main__ - ERROR - 错误详情:
+Traceback (most recent call last):
+  File "d:\AI_NovelGenerator\test_base_components.py", line 190, in test_component_factory
+    destroy_success = factory.destroy_component(test_button._component_id)
+                                                ^^^^^^^^^^^
+NameError: name 'test_button' is not defined
+
+2025-10-03 21:51:10,863 - __main__ - ERROR - ❌ ComponentFactory工厂 失败
+2025-10-03 21:51:10,863 - __main__ - INFO - 
+--- 便捷函数 ---
+2025-10-03 21:51:10,863 - __main__ - INFO - 开始测试便捷函数...
+2025-10-03 21:51:10,863 - ui.components.base_components - INFO - 注册组件类型: test_component2 -> TestStyledComponent
+2025-10-03 21:51:10,863 - __main__ - INFO - ✅ 便捷函数注册验证通过
+2025-10-03 21:51:10,911 - __main__ - INFO - ✅ 便捷函数创建验证通过
+2025-10-03 21:51:10,912 - __main__ - INFO - ✅ 获取工厂验证通过
+2025-10-03 21:51:10,920 - __main__ - INFO - ✅ 便捷函数测试完成
+2025-10-03 21:51:10,921 - __main__ - INFO - ✅ 便捷函数 通过
+2025-10-03 21:51:10,921 - __main__ - INFO - 
+--- 组件生命周期 ---
+2025-10-03 21:51:10,921 - __main__ - INFO - 开始测试组件生命周期...
+2025-10-03 21:51:10,967 - __main__ - INFO - ✅ 初始状态验证通过
+2025-10-03 21:51:10,968 - __main__ - INFO - ✅ 显示功能验证通过
+2025-10-03 21:51:10,968 - __main__ - INFO - ✅ 隐藏功能验证通过
+2025-10-03 21:51:10,968 - ui.components.base_components - ERROR - 启用组件失败 TestStyledComponent_2206908661968: ['state'] are not supported arguments. Look at the documentation for supported arguments.
+2025-10-03 21:51:10,968 - __main__ - ERROR - ❌ 组件生命周期测试失败: 启用后应该就绪
+2025-10-03 21:51:10,968 - __main__ - ERROR - 错误详情:
+Traceback (most recent call last):
+  File "d:\AI_NovelGenerator\test_base_components.py", line 284, in test_component_lifecycle
+    assert test_component.is_ready(), "启用后应该就绪"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 启用后应该就绪
+
+2025-10-03 21:51:10,969 - __main__ - ERROR - ❌ 组件生命周期 失败
+2025-10-03 21:51:10,969 - __main__ - INFO - 
+============================================================
+2025-10-03 21:51:10,969 - __main__ - INFO - 测试结果: 2/4 通过
+2025-10-03 21:51:10,970 - __main__ - INFO - ============================================================
+2025-10-03 21:51:10,970 - __main__ - ERROR - 💥 有 2 个测试失败

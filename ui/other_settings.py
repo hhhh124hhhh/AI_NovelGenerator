@@ -121,27 +121,32 @@ def build_other_settings_tab(self):
     )
     line_spacing_combo.grid(row=2, column=1, padx=5, pady=5, sticky="ew")
 
+    # 字体设置按钮框架
+    font_btn_frame = ctk.CTkFrame(font_frame, fg_color="transparent")
+    font_btn_frame.grid(row=2, column=2, columnspan=2, padx=5, pady=5, sticky="ew")
+    font_btn_frame.columnconfigure((0, 1), weight=1)
+
     # 重置按钮
     reset_fonts_btn = ctk.CTkButton(
-        font_frame,
+        font_btn_frame,
         text="重置字体",
         command=self.reset_fonts,
         font=("Microsoft YaHei", 12)
     )
-    reset_fonts_btn.grid(row=2, column=3, padx=5, pady=5, sticky="ew")
+    reset_fonts_btn.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
 
     # 保存字体设置按钮
     save_fonts_btn = ctk.CTkButton(
-        font_frame,
-        text="保存字体设置",
+        font_btn_frame,
+        text="保存字体",
         command=self.save_font_settings,
         font=("Microsoft YaHei", 12)
     )
-    save_fonts_btn.grid(row=2, column=2, padx=5, pady=5, sticky="ew")
+    save_fonts_btn.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
 
     # WebDAV配置标签
     label = ctk.CTkLabel(self.other_settings_tab, text=chinese_labels["webdav_config"], font=("Microsoft YaHei", 14, "bold"))
-    label.grid(row=4, column=0, padx=10, pady=(10, 5), sticky="w")
+    label.grid(row=4, column=0, padx=10, pady=(15, 5), sticky="w")
 
     # WebDAV配置框架
     webdav_frame = ctk.CTkFrame(self.other_settings_tab)
@@ -150,28 +155,28 @@ def build_other_settings_tab(self):
 
     # WebDAV URL
     url_label = ctk.CTkLabel(webdav_frame, text=chinese_labels["webdav_url"] + ":", font=("Microsoft YaHei", 12))
-    url_label.grid(row=0, column=0, padx=5, pady=5, sticky="e")
+    url_label.grid(row=0, column=0, padx=5, pady=8, sticky="e")
     self.webdav_url_var = ctk.StringVar(value="")
     url_entry = ctk.CTkEntry(webdav_frame, textvariable=self.webdav_url_var, font=("Microsoft YaHei", 12))
-    url_entry.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
+    url_entry.grid(row=0, column=1, padx=5, pady=8, sticky="ew")
 
     # WebDAV用户名
     username_label = ctk.CTkLabel(webdav_frame, text=chinese_labels["webdav_username"] + ":", font=("Microsoft YaHei", 12))
-    username_label.grid(row=1, column=0, padx=5, pady=5, sticky="e")
+    username_label.grid(row=1, column=0, padx=5, pady=8, sticky="e")
     self.webdav_username_var = ctk.StringVar(value="")
     username_entry = ctk.CTkEntry(webdav_frame, textvariable=self.webdav_username_var, font=("Microsoft YaHei", 12))
-    username_entry.grid(row=1, column=1, padx=5, pady=5, sticky="ew")
+    username_entry.grid(row=1, column=1, padx=5, pady=8, sticky="ew")
 
     # WebDAV密码
     password_label = ctk.CTkLabel(webdav_frame, text=chinese_labels["webdav_password"] + ":", font=("Microsoft YaHei", 12))
-    password_label.grid(row=2, column=0, padx=5, pady=5, sticky="e")
+    password_label.grid(row=2, column=0, padx=5, pady=8, sticky="e")
     self.webdav_password_var = ctk.StringVar(value="")
     password_entry = ctk.CTkEntry(webdav_frame, textvariable=self.webdav_password_var, font=("Microsoft YaHei", 12), show="*")
-    password_entry.grid(row=2, column=1, padx=5, pady=5, sticky="ew")
+    password_entry.grid(row=2, column=1, padx=5, pady=8, sticky="ew")
 
     # 按钮框架
-    btn_frame = ctk.CTkFrame(self.other_settings_tab)
-    btn_frame.grid(row=6, column=0, padx=10, pady=5, sticky="ew")
+    btn_frame = ctk.CTkFrame(self.other_settings_tab, fg_color="transparent")
+    btn_frame.grid(row=6, column=0, padx=10, pady=(15, 5), sticky="ew")
     btn_frame.columnconfigure((0, 1, 2), weight=1)
 
     # 加载按钮
@@ -183,7 +188,7 @@ def build_other_settings_tab(self):
     save_btn.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
 
     # 保存主题设置按钮
-    save_theme_btn = ctk.CTkButton(btn_frame, text="保存主题设置", command=self.save_theme_settings, font=("Microsoft YaHei", 12))
+    save_theme_btn = ctk.CTkButton(btn_frame, text="保存主题", command=self.save_theme_settings, font=("Microsoft YaHei", 12))
     save_theme_btn.grid(row=0, column=2, padx=5, pady=5, sticky="ew")
 
 def load_other_settings(self):
@@ -224,7 +229,15 @@ def save_other_settings(self):
 
 def save_font_settings(self):
     """保存字体设置"""
-    self.save_font_settings()
+    try:
+        # 调用主窗口的保存字体设置方法
+        if hasattr(self, 'save_font_settings_main') and callable(self.save_font_settings_main):
+            self.save_font_settings_main()
+        else:
+            # 如果没有专门的方法，直接调用主窗口的保存方法
+            self.master.save_font_settings()
+    except Exception as e:
+        self.log(f"保存字体设置时出错: {str(e)}")
 
 def save_theme_settings(self):
     """保存主题设置"""
