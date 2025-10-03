@@ -21,7 +21,7 @@ class ThemeManager:
     _instance = None
     _lock = Lock()
 
-    def __new__(cls, config_path: str = None):
+    def __new__(cls, config_path: Optional[str] = None):
         """单例模式实现"""
         if cls._instance is None:
             with cls._lock:
@@ -29,7 +29,7 @@ class ThemeManager:
                     cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self, config_path: str = None):
+    def __init__(self, config_path: Optional[str] = None):
         """
         初始化主题管理器
 
@@ -74,7 +74,7 @@ class ThemeManager:
 
     def _load_builtin_themes(self) -> None:
         """加载内置主题"""
-        builtin_themes = ['dark', 'light']
+        builtin_themes = ['dark', 'light', 'soft_light', 'neutral']
 
         for theme_name in builtin_themes:
             theme_file = os.path.join(self._config_path, f'{theme_name}_theme.json')
@@ -163,11 +163,11 @@ class ThemeManager:
                 "colors": {
                     "primary": "#0078D4",
                     "secondary": "#6C757D",
-                    "background": "#FFFFFF",
-                    "surface": "#F8F9FA",
-                    "text": "#212529",
+                    "background": "#F8F9FA",
+                    "surface": "#FFFFFF",
+                    "text": "#333333",
                     "text_secondary": "#6C757D",
-                    "border": "#DEE2E6",
+                    "border": "#E9ECEF",
                     "success": "#28A745",
                     "warning": "#FFC107",
                     "error": "#DC3545",
@@ -194,9 +194,95 @@ class ThemeManager:
                     "xxl": 32
                 },
                 "shadows": {
-                    "sm": "0 1px 2px rgba(0,0,0,0.1)",
-                    "md": "0 4px 6px rgba(0,0,0,0.1)",
-                    "lg": "0 10px 15px rgba(0,0,0,0.1)"
+                    "sm": "0 1px 2px rgba(0,0,0,0.05)",
+                    "md": "0 4px 6px rgba(0,0,0,0.05)",
+                    "lg": "0 10px 15px rgba(0,0,0,0.05)"
+                }
+            }
+        elif theme_name == 'soft_light':
+            return {
+                "name": "柔和浅色主题",
+                "description": "更柔和舒适的浅色主题，减少眼部疲劳",
+                "colors": {
+                    "primary": "#0078D4",
+                    "secondary": "#6C757D",
+                    "background": "#FAFAFA",
+                    "surface": "#FFFFFF",
+                    "text": "#444444",
+                    "text_secondary": "#777777",
+                    "border": "#EEEEEE",
+                    "success": "#28A745",
+                    "warning": "#FFC107",
+                    "error": "#DC3545",
+                    "info": "#17A2B8"
+                },
+                "typography": {
+                    "font_family": "Microsoft YaHei UI",
+                    "font_size": {
+                        "xs": 10,
+                        "sm": 12,
+                        "md": 14,
+                        "lg": 16,
+                        "xl": 18,
+                        "xxl": 24
+                    },
+                    "line_height": 1.5
+                },
+                "spacing": {
+                    "xs": 2,
+                    "sm": 4,
+                    "md": 8,
+                    "lg": 16,
+                    "xl": 24,
+                    "xxl": 32
+                },
+                "shadows": {
+                    "sm": "0 1px 2px rgba(0,0,0,0.03)",
+                    "md": "0 4px 6px rgba(0,0,0,0.03)",
+                    "lg": "0 10px 15px rgba(0,0,0,0.03)"
+                }
+            }
+        elif theme_name == 'neutral':
+            return {
+                "name": "中性主题",
+                "description": "舒适的中性主题，结合浅色和深色主题的优点，减少眼部疲劳",
+                "colors": {
+                    "primary": "#0078D4",
+                    "secondary": "#6C757D",
+                    "background": "#F5F5F5",
+                    "surface": "#FFFFFF",
+                    "text": "#333333",
+                    "text_secondary": "#666666",
+                    "border": "#DDDDDD",
+                    "success": "#28A745",
+                    "warning": "#FFC107",
+                    "error": "#DC3545",
+                    "info": "#17A2B8"
+                },
+                "typography": {
+                    "font_family": "Microsoft YaHei UI",
+                    "font_size": {
+                        "xs": 10,
+                        "sm": 12,
+                        "md": 14,
+                        "lg": 16,
+                        "xl": 18,
+                        "xxl": 24
+                    },
+                    "line_height": 1.5
+                },
+                "spacing": {
+                    "xs": 2,
+                    "sm": 4,
+                    "md": 8,
+                    "lg": 16,
+                    "xl": 24,
+                    "xxl": 32
+                },
+                "shadows": {
+                    "sm": "0 1px 2px rgba(0,0,0,0.03)",
+                    "md": "0 4px 6px rgba(0,0,0,0.03)",
+                    "lg": "0 10px 15px rgba(0,0,0,0.03)"
                 }
             }
         else:
@@ -305,12 +391,24 @@ class ThemeManager:
 
     def toggle_theme(self) -> str:
         """
-        切换主题 (深色<->浅色)
+        切换主题 (深色->浅色->柔和浅色->中性->深色)
 
         Returns:
             str: 新主题名称
         """
-        new_theme = 'light' if self._current_theme == 'dark' else 'dark'
+        # 定义主题切换顺序
+        theme_order = ['dark', 'light', 'soft_light', 'neutral']
+        
+        # 获取当前主题索引
+        try:
+            current_index = theme_order.index(self._current_theme)
+            # 切换到下一个主题
+            new_index = (current_index + 1) % len(theme_order)
+            new_theme = theme_order[new_index]
+        except ValueError:
+            # 如果当前主题不在列表中，默认切换到深色主题
+            new_theme = 'dark'
+        
         if self.apply_theme(new_theme):
             return new_theme
         else:
@@ -466,6 +564,12 @@ class ThemeManager:
             'is_current': theme_name == self._current_theme
         }
 
+    def save_theme_preferences(self) -> None:
+        """
+        保存主题偏好设置
+        """
+        self._save_preferences()
+
     def _save_theme(self, theme_name: str, theme_config: Dict[str, Any]) -> None:
         """保存主题到文件"""
         theme_file = os.path.join(self._config_path, f'{theme_name}_theme.json')
@@ -552,7 +656,7 @@ class ThemeManager:
             logger.error(f"导出主题 {theme_name} 失败: {e}")
             return False
 
-    def import_theme(self, import_path: str, theme_name: str = None) -> bool:
+    def import_theme(self, import_path: str, theme_name: Optional[str] = None) -> bool:
         """
         导入主题配置
 

@@ -24,7 +24,41 @@
       "xl": 18,
       "xxl": 24
     },
-    "line_height": 1.5
+    "line_height": 1.5,
+    "document_fonts": {
+      "reading": {
+        "family": "Microsoft YaHei UI",
+        "size": 14,
+        "line_spacing": 1.6,
+        "paragraph_spacing": 8
+      },
+      "editing": {
+        "family": "Microsoft YaHei UI",
+        "size": 13,
+        "line_spacing": 1.5,
+        "paragraph_spacing": 6
+      },
+      "preview": {
+        "family": "Microsoft YaHei UI",
+        "size": 15,
+        "line_spacing": 1.8,
+        "paragraph_spacing": 10
+      }
+    },
+    "available_fonts": [
+      "Microsoft YaHei UI",
+      "Microsoft YaHei",
+      "SimSun",
+      "SimHei",
+      "KaiTi",
+      "FangSong",
+      "Source Han Sans SC",
+      "Noto Sans CJK SC",
+      "PingFang SC",
+      "Arial",
+      "Times New Roman",
+      "Georgia"
+    ]
   },
   "spacing": {
     "xs": 2,

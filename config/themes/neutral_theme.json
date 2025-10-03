@@ -1,14 +1,14 @@
 {
-  "name": "浅色主题",
-  "description": "适合白天使用的浅色主题",
+  "name": "中性主题",
+  "description": "舒适的中性主题，结合浅色和深色主题的优点，减少眼部疲劳",
   "colors": {
     "primary": "#0078D4",
     "secondary": "#6C757D",
-    "background": "#F8F9FA",
+    "background": "#F5F5F5",
     "surface": "#FFFFFF",
     "text": "#333333",
-    "text_secondary": "#6C757D",
-    "border": "#E9ECEF",
+    "text_secondary": "#666666",
+    "border": "#DDDDDD",
     "success": "#28A745",
     "warning": "#FFC107",
     "error": "#DC3545",
@@ -35,8 +35,8 @@
     "xxl": 32
   },
   "shadows": {
-    "sm": "0 1px 2px rgba(0,0,0,0.05)",
-    "md": "0 4px 6px rgba(0,0,0,0.05)",
-    "lg": "0 10px 15px rgba(0,0,0,0.05)"
+    "sm": "0 1px 2px rgba(0,0,0,0.03)",
+    "md": "0 4px 6px rgba(0,0,0,0.03)",
+    "lg": "0 10px 15px rgba(0,0,0,0.03)"
   }
 }

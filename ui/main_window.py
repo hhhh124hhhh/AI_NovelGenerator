@@ -41,16 +41,19 @@ from ui.chapters_tab import build_chapters_tab, refresh_chapters_list, on_chapte
 from ui.other_settings import build_other_settings_tab
 
 # 类型注解
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict, Any
 if TYPE_CHECKING:
     from customtkinter import CTkTextbox
+
+# 获取日志记录器
+logger = logging.getLogger(__name__)
 
 
 class NovelGeneratorGUI:
     """
     小说生成器的主GUI类，包含所有的界面布局、事件处理、与后端逻辑的交互等。
     """
-    def __init__(self, master):
+    def __init__(self, master, theme_manager=None):
         self.master = master
         self.master.title("AI小说生成器")
         try:
@@ -59,6 +62,22 @@ class NovelGeneratorGUI:
         except Exception:
             pass
         self.master.geometry("1350x840")
+
+        # 初始化主题系统
+        self.theme_manager = theme_manager
+        if self.theme_manager:
+            # 订阅主题变化事件
+            self.theme_manager.subscribe(self._on_theme_changed)
+
+        # 初始化当前主题变量
+        self.current_theme_var = ctk.StringVar(value="默认")
+        
+        # 初始化字体设置变量
+        self.reading_font_var = ctk.StringVar(value="Microsoft YaHei UI")
+        self.reading_size_var = ctk.StringVar(value="14")
+        self.editing_font_var = ctk.StringVar(value="Microsoft YaHei UI")
+        self.editing_size_var = ctk.StringVar(value="13")
+        self.line_spacing_var = ctk.StringVar(value="1.5")
 
         # 添加utils模块引用
         import utils
@@ -211,11 +230,42 @@ class NovelGeneratorGUI:
         build_chapters_tab(self)
         build_other_settings_tab(self)
 
+        # 加载字体设置
+        self.load_font_settings()
+
         # 类型注解属性
         self.log_text: 'CTkTextbox'
         self.chapter_result: 'CTkTextbox'
         self.char_inv_text: 'CTkTextbox'
+        # 其他标签页的文本框组件
+        self.novel_architecture_text: 'CTkTextbox'
+        self.chapter_blueprint_text: 'CTkTextbox'
+        self.character_state_text: 'CTkTextbox'
+        self.global_summary_text: 'CTkTextbox'
+        self.chapter_content_text: 'CTkTextbox'
 
+    def get_theme_spacing(self, size_name: str = 'md') -> int:
+        """
+        获取主题间距值
+        
+        Args:
+            size_name: 间距名称 (xs, sm, md, lg, xl, xxl)
+            
+        Returns:
+            int: 间距值
+        """
+        if self.theme_manager:
+            return self.theme_manager.get_spacing(size_name)
+        # 默认间距值
+        spacing_map = {
+            'xs': 2,
+            'sm': 4,
+            'md': 8,
+            'lg': 16,
+            'xl': 24,
+            'xxl': 32
+        }
+        return spacing_map.get(size_name, 8)
 
     # ----------------- 通用辅助函数 -----------------
     def show_tooltip(self, key: str):
@@ -452,14 +502,14 @@ class NovelGeneratorGUI:
             config = load_config(self.config_file)
             if not config:
                 config = {}
-                
+
             if "webdav_config" not in config:
                 config["webdav_config"] = {}
-                
+
             config["webdav_config"]["webdav_url"] = self.webdav_url_var.get()
             config["webdav_config"]["webdav_username"] = self.webdav_username_var.get()
             config["webdav_config"]["webdav_password"] = self.webdav_password_var.get()
-            
+
             if save_config(config, self.config_file):
                 self.log("WebDAV配置已保存。")
             else:
@@ -467,31 +517,294 @@ class NovelGeneratorGUI:
         except Exception as e:
             self.log(f"保存WebDAV配置时出错: {str(e)}")
 
-    # ----------------- 将导入的各模块函数直接赋给类方法 -----------------
-    generate_novel_architecture_ui = generate_novel_architecture_ui
-    generate_chapter_blueprint_ui = generate_chapter_blueprint_ui
-    generate_chapter_draft_ui = generate_chapter_draft_ui
-    finalize_chapter_ui = finalize_chapter_ui
-    do_consistency_check = do_consistency_check
-    generate_batch_ui = generate_batch_ui
-    import_knowledge_handler = import_knowledge_handler
-    clear_vectorstore_handler = clear_vectorstore_handler
-    show_plot_arcs_ui = show_plot_arcs_ui
-    load_config_btn = load_config_btn
-    save_config_btn = save_config_btn
-    load_novel_architecture = load_novel_architecture
-    save_novel_architecture = save_novel_architecture
-    load_chapter_blueprint = load_chapter_blueprint
-    save_chapter_blueprint = save_chapter_blueprint
-    load_character_state = load_character_state
-    save_character_state = save_character_state
-    load_global_summary = load_global_summary
-    save_global_summary = save_global_summary
-    refresh_chapters_list = refresh_chapters_list
-    on_chapter_selected = on_chapter_selected
-    save_current_chapter = save_current_chapter
-    prev_chapter = prev_chapter
-    next_chapter = next_chapter
-    test_llm_config = test_llm_config
-    test_embedding_config = test_embedding_config
-    browse_folder = browse_folder
+    def on_theme_changed(self, theme_name: str):
+        """主题变化回调函数"""
+        try:
+            if hasattr(self, 'theme_manager') and self.theme_manager:
+                # 更新当前主题显示
+                if hasattr(self, 'current_theme_var'):
+                    self.current_theme_var.set(theme_name)
+                
+                self.log(f"主题已切换到: {theme_name}")
+
+                # 保存主题偏好设置
+                self.theme_manager.save_theme_preferences()
+
+                # 记录主题切换操作
+                log_ui_action("主题切换", f"新主题: {theme_name}")
+        except Exception as e:
+            self.log(f"主题切换失败: {str(e)}")
+            log_error("主题切换失败", str(e))
+
+    def _on_theme_changed(self, theme_name: str, theme_data: Dict[str, Any]) -> None:
+        """
+        主题变化回调函数 - 应用新主题到整个界面
+        
+        Args:
+            theme_name: 新主题名称
+            theme_data: 新主题数据
+        """
+        try:
+            # 更新当前主题显示
+            try:
+                self.current_theme_var.set(theme_name)
+            except:
+                pass  # current_theme_var 可能在其他地方定义
+            
+            self.log(f"主题已切换到: {theme_name}")
+            
+            # 应用新主题到整个界面
+            self._apply_theme_to_ui(theme_data)
+            
+            # 保存主题偏好设置
+            if self.theme_manager:
+                self.theme_manager.save_theme_preferences()
+            
+            # 记录主题切换操作
+            log_ui_action("主题切换", f"新主题: {theme_name}")
+        except Exception as e:
+            self.log(f"主题切换失败: {str(e)}")
+            log_error("主题切换失败", str(e))
+
+    def _apply_theme_to_ui(self, theme_data: Dict[str, Any]) -> None:
+        """
+        应用主题到整个用户界面
+        
+        Args:
+            theme_data: 主题数据
+        """
+        try:
+            # 获取主题颜色
+            colors = theme_data.get('colors', {})
+            background_color = colors.get('background', '#1E1E1E')
+            text_color = colors.get('text', '#CCCCCC')
+            primary_color = colors.get('primary', '#0078D4')
+            surface_color = colors.get('surface', '#252526')
+            border_color = colors.get('border', '#3E3E42')
+            
+            # 更新主窗口背景色
+            self.master.configure(fg_color=background_color)
+            
+            # 更新标签页背景色
+            if hasattr(self, 'tabview'):
+                self.tabview.configure(fg_color=background_color)
+                
+                # 更新所有标签页的内容
+                for tab_name in self.tabview._tab_dict.keys():
+                    tab = self.tabview.tab(tab_name)
+                    tab.configure(fg_color=background_color)
+                    
+                    # 更新标签页内所有组件的颜色
+                    self._update_widget_colors(tab, theme_data)
+            
+            # 更新当前主题显示
+            try:
+                current_theme = self.theme_manager.get_current_theme() if self.theme_manager else "默认"
+                self.current_theme_var.set(current_theme)
+            except:
+                pass  # current_theme_var 可能在其他地方定义
+                
+        except Exception as e:
+            logger.error(f"应用主题到UI失败: {e}")
+
+    def _update_widget_colors(self, parent_widget, theme_data: Dict[str, Any]) -> None:
+        """
+        递归更新组件颜色
+        
+        Args:
+            parent_widget: 父组件
+            theme_data: 主题数据
+        """
+        try:
+            # 获取主题颜色
+            colors = theme_data.get('colors', {})
+            background_color = colors.get('background', '#1E1E1E')
+            surface_color = colors.get('surface', '#252526')
+            text_color = colors.get('text', '#CCCCCC')
+            border_color = colors.get('border', '#3E3E42')
+            primary_color = colors.get('primary', '#0078D4')
+            
+            # 更新父组件颜色
+            if hasattr(parent_widget, 'configure'):
+                try:
+                    parent_widget.configure(fg_color=surface_color)
+                except:
+                    pass
+            
+            # 递归更新子组件
+            if hasattr(parent_widget, 'winfo_children'):
+                for child in parent_widget.winfo_children():
+                    # 更新组件颜色
+                    if hasattr(child, 'configure'):
+                        try:
+                            # 根据组件类型应用不同的颜色
+                            if isinstance(child, (ctk.CTkFrame, ctk.CTkScrollableFrame)):
+                                child.configure(fg_color=surface_color, border_color=border_color)
+                            elif isinstance(child, ctk.CTkLabel):
+                                child.configure(text_color=text_color)
+                            elif isinstance(child, ctk.CTkButton):
+                                # 保持按钮的原有样式，只更新文本颜色
+                                child.configure(text_color=text_color)
+                            elif isinstance(child, (ctk.CTkEntry, ctk.CTkTextbox)):
+                                child.configure(fg_color=surface_color, text_color=text_color, border_color=border_color)
+                            elif isinstance(child, ctk.CTkTabview):
+                                child.configure(fg_color=background_color)
+                            elif isinstance(child, ctk.CTkOptionMenu):
+                                child.configure(fg_color=surface_color, text_color=text_color, button_color=primary_color)
+                        except:
+                            pass
+                    
+                    # 递归处理子组件
+                    self._update_widget_colors(child, theme_data)
+        except Exception as e:
+            logger.error(f"更新组件颜色失败: {e}")
+
+    def reset_fonts(self):
+        """
+        重置字体设置到默认值
+        """
+        self.reading_font_var.set("Microsoft YaHei UI")
+        self.reading_size_var.set("14")
+        self.editing_font_var.set("Microsoft YaHei UI")
+        self.editing_size_var.set("13")
+        self.line_spacing_var.set("1.5")
+        self.log("字体设置已重置为默认值")
+        # 更新所有文本框的字体
+        self.update_all_textbox_fonts()
+        # 保存字体设置
+        self.save_font_settings()
+
+    def update_all_textbox_fonts(self):
+        """
+        更新所有文本框的字体设置
+        """
+        try:
+            # 获取当前字体设置
+            reading_font = self.reading_font_var.get()
+            reading_size = int(self.reading_size_var.get())
+            editing_font = self.editing_font_var.get()
+            editing_size = int(self.editing_size_var.get())
+            
+            self.log(f"更新字体设置 - 阅读: {reading_font} {reading_size}, 编辑: {editing_font} {editing_size}")
+            
+            # 更新主标签页中的文本框
+            updated_count = 0
+            if hasattr(self, 'chapter_result') and self.chapter_result:
+                self.chapter_result.configure(font=(editing_font, editing_size))
+                updated_count += 1
+                self.log("已更新 chapter_result 字体")
+                
+            if hasattr(self, 'log_text') and self.log_text:
+                self.log_text.configure(font=(reading_font, reading_size))
+                updated_count += 1
+                self.log("已更新 log_text 字体")
+                
+            # 更新设置标签页中的文本框
+            if hasattr(self, 'novel_architecture_text') and self.novel_architecture_text:
+                self.novel_architecture_text.configure(font=(editing_font, editing_size))
+                updated_count += 1
+                self.log("已更新 novel_architecture_text 字体")
+                
+            # 更新目录标签页中的文本框
+            if hasattr(self, 'chapter_blueprint_text') and self.chapter_blueprint_text:
+                self.chapter_blueprint_text.configure(font=(editing_font, editing_size))
+                updated_count += 1
+                self.log("已更新 chapter_blueprint_text 字体")
+                
+            # 更新角色标签页中的文本框
+            if hasattr(self, 'character_state_text') and self.character_state_text:
+                self.character_state_text.configure(font=(editing_font, editing_size))
+                updated_count += 1
+                self.log("已更新 character_state_text 字体")
+                
+            # 更新摘要标签页中的文本框
+            if hasattr(self, 'global_summary_text') and self.global_summary_text:
+                self.global_summary_text.configure(font=(reading_font, reading_size))
+                updated_count += 1
+                self.log("已更新 global_summary_text 字体")
+                
+            # 更新章节标签页中的文本框
+            if hasattr(self, 'chapter_content_text') and self.chapter_content_text:
+                self.chapter_content_text.configure(font=(reading_font, reading_size))
+                updated_count += 1
+                self.log("已更新 chapter_content_text 字体")
+                
+            self.log(f"字体更新完成，共更新了 {updated_count} 个文本框")
+        except Exception as e:
+            self.log(f"更新字体时出错: {str(e)}")
+            import traceback
+            self.log(f"错误详情: {traceback.format_exc()}")
+
+    def on_font_changed(self, event=None):
+        """
+        字体设置改变时的回调函数
+        """
+        self.log("检测到字体设置更改")
+        # 更新所有文本框的字体
+        self.update_all_textbox_fonts()
+        # 保存字体设置
+        self.save_font_settings()
+        
+    def save_font_settings(self):
+        """
+        保存字体设置到配置文件
+        """
+        try:
+            from config_manager import load_config, save_config
+            
+            # 加载现有配置
+            config = load_config(self.config_file)
+            if not config:
+                config = {}
+                
+            # 确保有字体设置部分
+            if "font_settings" not in config:
+                config["font_settings"] = {}
+                
+            # 保存字体设置
+            config["font_settings"]["reading_font"] = self.reading_font_var.get()
+            config["font_settings"]["reading_size"] = self.reading_size_var.get()
+            config["font_settings"]["editing_font"] = self.editing_font_var.get()
+            config["font_settings"]["editing_size"] = self.editing_size_var.get()
+            config["font_settings"]["line_spacing"] = self.line_spacing_var.get()
+            
+            # 保存配置
+            if save_config(config, self.config_file):
+                self.log("字体设置已保存")
+            else:
+                self.log("保存字体设置失败")
+        except Exception as e:
+            self.log(f"保存字体设置时出错: {str(e)}")
+            
+    def load_font_settings(self):
+        """
+        从配置文件加载字体设置
+        """
+        try:
+            from config_manager import load_config
+            
+            # 加载配置
+            config = load_config(self.config_file)
+            if not config or "font_settings" not in config:
+                self.log("未找到字体设置配置")
+                return
+                
+            font_settings = config["font_settings"]
+            
+            # 应用字体设置
+            if "reading_font" in font_settings:
+                self.reading_font_var.set(font_settings["reading_font"])
+            if "reading_size" in font_settings:
+                self.reading_size_var.set(font_settings["reading_size"])
+            if "editing_font" in font_settings:
+                self.editing_font_var.set(font_settings["editing_font"])
+            if "editing_size" in font_settings:
+                self.editing_size_var.set(font_settings["editing_size"])
+            if "line_spacing" in font_settings:
+                self.line_spacing_var.set(font_settings["line_spacing"])
+                
+            self.log("已加载字体设置")
+            # 更新所有文本框的字体
+            self.update_all_textbox_fonts()
+        except Exception as e:
+            self.log(f"加载字体设置时出错: {str(e)}")

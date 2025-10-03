@@ -1,0 +1,267 @@
+2025-10-03 21:38:12,763 - __main__ - INFO - ============================================================
+2025-10-03 21:38:12,763 - __main__ - INFO - STORY-002 BUILD阶段Day1 任务1.1 测试
+2025-10-03 21:38:12,764 - __main__ - INFO - ============================================================
+2025-10-03 21:38:12,764 - __main__ - INFO - 
+--- 主题系统集成 ---
+2025-10-03 21:38:12,764 - __main__ - INFO - 测试主题系统集成...
+2025-10-03 21:38:12,781 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-03 21:38:12,782 - theme_system.theme_manager - INFO - 应用默认主题: soft_light
+2025-10-03 21:38:12,782 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-03 21:38:12,782 - __main__ - ERROR - ❌ 主题系统集成测试失败: 'list' object has no attribute 'keys'
+2025-10-03 21:38:12,782 - __main__ - ERROR - ❌ 主题系统集成 失败
+2025-10-03 21:38:12,782 - __main__ - INFO - 
+--- 状态管理器集成 ---
+2025-10-03 21:38:12,782 - __main__ - INFO - 测试状态管理器集成...
+2025-10-03 21:38:16,214 - __main__ - ERROR - ❌ 状态管理器集成测试失败: 状态设置和获取失败
+2025-10-03 21:38:16,214 - __main__ - ERROR - ❌ 状态管理器集成 失败
+2025-10-03 21:38:16,214 - __main__ - INFO - 
+--- 响应式布局集成 ---
+2025-10-03 21:38:16,214 - __main__ - INFO - 测试响应式布局集成...
+2025-10-03 21:38:16,219 - ui.layout.responsive_manager - INFO - 布局类型变更: desktop -> mobile
+2025-10-03 21:38:16,219 - __main__ - ERROR - ❌ 响应式布局集成测试失败: 布局类型判断错误: 500px -> True, 期望: LayoutType.MOBILE
+2025-10-03 21:38:16,219 - __main__ - ERROR - ❌ 响应式布局集成 失败
+2025-10-03 21:38:16,219 - __main__ - INFO - 
+--- ModernMainWindow主测试 ---
+2025-10-03 21:38:16,219 - __main__ - INFO - 开始测试 ModernMainWindow...
+2025-10-03 21:38:16,486 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-03 21:38:16,558 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-03 21:38:16,558 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-03 21:38:16,558 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-03 21:38:16,558 - ui.modern_main_window - ERROR - 应用初始主题失败: 'ThemeManager' object has no attribute 'set_theme'
+2025-10-03 21:38:16,558 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-03 21:38:16,558 - __main__ - INFO - ✅ ModernMainWindow 创建成功
+2025-10-03 21:38:16,558 - __main__ - INFO - ✅ 窗口初始化验证通过
+2025-10-03 21:38:16,558 - __main__ - INFO - ✅ 管理器验证通过
+2025-10-03 21:38:16,558 - ui.modern_main_window - ERROR - 获取窗口信息失败: '<' not supported between instances of 'int' and 'NoneType'
+2025-10-03 21:38:16,558 - __main__ - ERROR - ❌ ModernMainWindow 测试失败: 窗口信息应包含标题
+2025-10-03 21:38:16,560 - __main__ - ERROR - 错误详情:
+Traceback (most recent call last):
+  File "D:\AI_NovelGenerator\test_modern_main_window.py", line 56, in test_modern_main_window
+    assert 'title' in window_info, "窗口信息应包含标题"
+           ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 窗口信息应包含标题
+
+2025-10-03 21:38:16,560 - __main__ - ERROR - ❌ ModernMainWindow主测试 失败
+2025-10-03 21:38:16,560 - __main__ - INFO - 
+============================================================
+2025-10-03 21:38:16,560 - __main__ - INFO - 测试结果: 0/4 通过
+2025-10-03 21:38:16,560 - __main__ - INFO - ============================================================
+2025-10-03 21:38:16,560 - __main__ - ERROR - 💥 有 4 个测试失败
+2025-10-03 21:39:32,034 - __main__ - INFO - ============================================================
+2025-10-03 21:39:32,034 - __main__ - INFO - STORY-002 BUILD阶段Day1 任务1.1 测试
+2025-10-03 21:39:32,034 - __main__ - INFO - ============================================================
+2025-10-03 21:39:32,034 - __main__ - INFO - 
+--- 主题系统集成 ---
+2025-10-03 21:39:32,034 - __main__ - INFO - 测试主题系统集成...
+2025-10-03 21:39:32,045 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-03 21:39:32,045 - theme_system.theme_manager - INFO - 应用默认主题: soft_light
+2025-10-03 21:39:32,045 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-03 21:39:32,045 - __main__ - INFO - 可用主题: ['dark', 'light', 'soft_light', 'neutral']
+2025-10-03 21:39:32,046 - theme_system.theme_manager - INFO - 主题切换成功: soft_light -> dark
+2025-10-03 21:39:32,046 - __main__ - INFO - ✅ 主题 'dark' 切换成功
+2025-10-03 21:39:32,046 - theme_system.theme_manager - INFO - 主题切换成功: dark -> light
+2025-10-03 21:39:32,046 - __main__ - INFO - ✅ 主题 'light' 切换成功
+2025-10-03 21:39:32,047 - theme_system.theme_manager - INFO - 主题切换成功: light -> soft_light
+2025-10-03 21:39:32,047 - __main__ - INFO - ✅ 主题 'soft_light' 切换成功
+2025-10-03 21:39:32,047 - theme_system.theme_manager - INFO - 主题切换成功: soft_light -> neutral
+2025-10-03 21:39:32,047 - __main__ - INFO - ✅ 主题 'neutral' 切换成功
+2025-10-03 21:39:32,047 - __main__ - INFO - ✅ 主题系统集成测试完成
+2025-10-03 21:39:32,047 - __main__ - INFO - ✅ 主题系统集成 通过
+2025-10-03 21:39:32,047 - __main__ - INFO - 
+--- 状态管理器集成 ---
+2025-10-03 21:39:32,047 - __main__ - INFO - 测试状态管理器集成...
+2025-10-03 21:39:34,578 - __main__ - ERROR - ❌ 状态管理器集成测试失败: 状态设置和获取失败
+2025-10-03 21:39:34,579 - __main__ - ERROR - ❌ 状态管理器集成 失败
+2025-10-03 21:39:34,579 - __main__ - INFO - 
+--- 响应式布局集成 ---
+2025-10-03 21:39:34,579 - __main__ - INFO - 测试响应式布局集成...
+2025-10-03 21:39:34,607 - ui.layout.responsive_manager - INFO - 布局类型变更: desktop -> mobile
+2025-10-03 21:39:34,608 - __main__ - INFO - ✅ 500px -> mobile 布局判断正确
+2025-10-03 21:39:34,608 - ui.layout.responsive_manager - INFO - 布局类型变更: mobile -> tablet
+2025-10-03 21:39:34,608 - __main__ - INFO - ✅ 800px -> tablet 布局判断正确
+2025-10-03 21:39:34,608 - ui.layout.responsive_manager - INFO - 布局类型变更: tablet -> desktop
+2025-10-03 21:39:34,608 - __main__ - INFO - ✅ 1200px -> desktop 布局判断正确
+2025-10-03 21:39:34,608 - ui.layout.responsive_manager - INFO - 布局类型变更: desktop -> large
+2025-10-03 21:39:34,608 - __main__ - INFO - ✅ 1800px -> large 布局判断正确
+2025-10-03 21:39:34,608 - __main__ - INFO - ✅ 响应式布局集成测试完成
+2025-10-03 21:39:34,608 - __main__ - INFO - ✅ 响应式布局集成 通过
+2025-10-03 21:39:34,608 - __main__ - INFO - 
+--- ModernMainWindow主测试 ---
+2025-10-03 21:39:34,608 - __main__ - INFO - 开始测试 ModernMainWindow...
+2025-10-03 21:39:34,866 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-03 21:39:34,877 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-03 21:39:34,877 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-03 21:39:34,878 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-03 21:39:34,878 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-03 21:39:34,880 - theme_system.theme_manager - INFO - 主题切换成功: neutral -> dark
+2025-10-03 21:39:34,882 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-03 21:39:34,882 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-03 21:39:34,882 - __main__ - INFO - ✅ ModernMainWindow 创建成功
+2025-10-03 21:39:34,882 - __main__ - INFO - ✅ 窗口初始化验证通过
+2025-10-03 21:39:34,882 - __main__ - INFO - ✅ 管理器验证通过
+2025-10-03 21:39:34,882 - ui.modern_main_window - ERROR - 获取窗口信息失败: '<' not supported between instances of 'int' and 'NoneType'
+2025-10-03 21:39:34,882 - __main__ - INFO - ✅ 窗口信息验证通过
+2025-10-03 21:39:34,882 - __main__ - INFO - 当前布局类型: desktop
+2025-10-03 21:39:34,882 - __main__ - INFO - 窗口尺寸: {'width': 1200, 'height': 800}
+2025-10-03 21:39:34,882 - __main__ - INFO - ✅ 响应式布局验证通过
+2025-10-03 21:39:34,883 - __main__ - ERROR - ❌ ModernMainWindow 测试失败: 'ThemeManager' object has no attribute 'get_current_theme_data'
+2025-10-03 21:39:34,883 - __main__ - ERROR - 错误详情:
+Traceback (most recent call last):
+  File "D:\AI_NovelGenerator\test_modern_main_window.py", line 68, in test_modern_main_window
+    theme_data = theme_manager.get_current_theme_data()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ThemeManager' object has no attribute 'get_current_theme_data'
+
+2025-10-03 21:39:34,883 - __main__ - ERROR - ❌ ModernMainWindow主测试 失败
+2025-10-03 21:39:34,883 - __main__ - INFO - 
+============================================================
+2025-10-03 21:39:34,883 - __main__ - INFO - 测试结果: 2/4 通过
+2025-10-03 21:39:34,883 - __main__ - INFO - ============================================================
+2025-10-03 21:39:34,883 - __main__ - ERROR - 💥 有 2 个测试失败
+2025-10-03 21:39:59,044 - __main__ - INFO - ============================================================
+2025-10-03 21:39:59,044 - __main__ - INFO - STORY-002 BUILD阶段Day1 任务1.1 测试
+2025-10-03 21:39:59,044 - __main__ - INFO - ============================================================
+2025-10-03 21:39:59,044 - __main__ - INFO - 
+--- 主题系统集成 ---
+2025-10-03 21:39:59,044 - __main__ - INFO - 测试主题系统集成...
+2025-10-03 21:39:59,056 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-03 21:39:59,058 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-03 21:39:59,058 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-03 21:39:59,058 - __main__ - INFO - 可用主题: ['dark', 'light', 'soft_light', 'neutral']
+2025-10-03 21:39:59,058 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-03 21:39:59,058 - __main__ - INFO - ✅ 主题 'dark' 切换成功
+2025-10-03 21:39:59,059 - theme_system.theme_manager - INFO - 主题切换成功: dark -> light
+2025-10-03 21:39:59,059 - __main__ - INFO - ✅ 主题 'light' 切换成功
+2025-10-03 21:39:59,059 - theme_system.theme_manager - INFO - 主题切换成功: light -> soft_light
+2025-10-03 21:39:59,059 - __main__ - INFO - ✅ 主题 'soft_light' 切换成功
+2025-10-03 21:39:59,059 - theme_system.theme_manager - INFO - 主题切换成功: soft_light -> neutral
+2025-10-03 21:39:59,059 - __main__ - INFO - ✅ 主题 'neutral' 切换成功
+2025-10-03 21:39:59,059 - __main__ - INFO - ✅ 主题系统集成测试完成
+2025-10-03 21:39:59,059 - __main__ - INFO - ✅ 主题系统集成 通过
+2025-10-03 21:39:59,059 - __main__ - INFO - 
+--- 状态管理器集成 ---
+2025-10-03 21:39:59,059 - __main__ - INFO - 测试状态管理器集成...
+2025-10-03 21:40:01,646 - __main__ - ERROR - ❌ 状态管理器集成测试失败: 状态设置和获取失败
+2025-10-03 21:40:01,646 - __main__ - ERROR - ❌ 状态管理器集成 失败
+2025-10-03 21:40:01,646 - __main__ - INFO - 
+--- 响应式布局集成 ---
+2025-10-03 21:40:01,647 - __main__ - INFO - 测试响应式布局集成...
+2025-10-03 21:40:01,648 - ui.layout.responsive_manager - INFO - 布局类型变更: desktop -> mobile
+2025-10-03 21:40:01,648 - __main__ - INFO - ✅ 500px -> mobile 布局判断正确
+2025-10-03 21:40:01,648 - ui.layout.responsive_manager - INFO - 布局类型变更: mobile -> tablet
+2025-10-03 21:40:01,648 - __main__ - INFO - ✅ 800px -> tablet 布局判断正确
+2025-10-03 21:40:01,648 - ui.layout.responsive_manager - INFO - 布局类型变更: tablet -> desktop
+2025-10-03 21:40:01,648 - __main__ - INFO - ✅ 1200px -> desktop 布局判断正确
+2025-10-03 21:40:01,648 - ui.layout.responsive_manager - INFO - 布局类型变更: desktop -> large
+2025-10-03 21:40:01,648 - __main__ - INFO - ✅ 1800px -> large 布局判断正确
+2025-10-03 21:40:01,648 - __main__ - INFO - ✅ 响应式布局集成测试完成
+2025-10-03 21:40:01,648 - __main__ - INFO - ✅ 响应式布局集成 通过
+2025-10-03 21:40:01,649 - __main__ - INFO - 
+--- ModernMainWindow主测试 ---
+2025-10-03 21:40:01,649 - __main__ - INFO - 开始测试 ModernMainWindow...
+2025-10-03 21:40:01,895 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-03 21:40:01,905 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-03 21:40:01,905 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-03 21:40:01,905 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-03 21:40:01,906 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-03 21:40:01,908 - theme_system.theme_manager - INFO - 主题切换成功: neutral -> dark
+2025-10-03 21:40:01,910 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-03 21:40:01,910 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-03 21:40:01,910 - __main__ - INFO - ✅ ModernMainWindow 创建成功
+2025-10-03 21:40:01,910 - __main__ - INFO - ✅ 窗口初始化验证通过
+2025-10-03 21:40:01,911 - __main__ - INFO - ✅ 管理器验证通过
+2025-10-03 21:40:01,911 - ui.modern_main_window - ERROR - 获取窗口信息失败: '<' not supported between instances of 'int' and 'NoneType'
+2025-10-03 21:40:01,911 - __main__ - INFO - ✅ 窗口信息验证通过
+2025-10-03 21:40:01,911 - __main__ - INFO - 当前布局类型: desktop
+2025-10-03 21:40:01,911 - __main__ - INFO - 窗口尺寸: {'width': 1200, 'height': 800}
+2025-10-03 21:40:01,911 - __main__ - INFO - ✅ 响应式布局验证通过
+2025-10-03 21:40:01,911 - __main__ - INFO - 当前主题: dark
+2025-10-03 21:40:01,911 - __main__ - INFO - ✅ 主题系统验证通过
+2025-10-03 21:40:01,911 - __main__ - INFO - 应用主题状态: dark
+2025-10-03 21:40:01,911 - __main__ - INFO - ✅ 状态管理验证通过
+2025-10-03 21:40:01,911 - __main__ - INFO - 显示测试窗口，请手动验证功能...
+2025-10-03 21:40:01,911 - __main__ - INFO - 测试项目:
+2025-10-03 21:40:01,911 - __main__ - INFO - 1. 窗口是否正常显示
+2025-10-03 21:40:01,911 - __main__ - INFO - 2. 主题是否正确应用
+2025-10-03 21:40:01,911 - __main__ - INFO - 3. 窗口大小调整是否正常
+2025-10-03 21:40:01,911 - __main__ - INFO - 4. 窗口关闭是否正常
+2025-10-03 21:40:01,911 - __main__ - INFO - 按 Ctrl+C 或关闭窗口退出测试
+2025-10-03 21:40:01,921 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,314 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,323 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,330 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,335 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,343 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,348 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,369 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,377 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,385 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,392 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,397 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,404 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,412 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,423 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,439 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,467 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,544 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,569 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,583 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,588 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,598 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,603 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,614 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,625 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,627 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,639 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,644 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,654 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,664 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,670 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,678 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,684 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,695 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,704 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,707 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,721 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,724 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,734 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,744 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,749 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,760 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,763 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,774 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,785 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,791 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,800 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,804 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,815 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,827 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,831 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,844 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,849 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,856 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:07,870 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:08,175 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:08,178 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:08,189 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:08,195 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:08,205 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:08,208 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:08,218 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:08,228 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:08,237 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:08,244 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:08,248 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:08,258 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:08,268 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:08,274 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:08,285 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:08,290 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:08,300 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:08,309 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:08,675 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:11,870 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost
+2025-10-03 21:40:11,871 - ui.layout.responsive_manager - INFO - 布局类型变更: desktop -> large
+2025-10-03 21:40:11,871 - ui.modern_main_window - INFO - 布局变更为: large
+2025-10-03 21:40:11,871 - ui.modern_main_window - INFO - 布局类型变更为: large
+2025-10-03 21:40:11,871 - ui.modern_main_window - ERROR - 保存窗口状态失败: bad attribute "-zoomed": must be -alpha, -transparentcolor, -disabled, -fullscreen, -toolwindow, or -topmost

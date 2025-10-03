@@ -1,0 +1,73 @@
+2025-10-03 21:42:47,690 - __main__ - INFO - ============================================================
+2025-10-03 21:42:47,690 - __main__ - INFO - STORY-002 BUILD阶段Day1 任务1.2 测试
+2025-10-03 21:42:47,690 - __main__ - INFO - ============================================================
+2025-10-03 21:42:47,690 - __main__ - INFO - 
+--- StyledComponent基类 ---
+2025-10-03 21:42:47,690 - __main__ - INFO - 开始测试 StyledComponent...
+2025-10-03 21:42:47,923 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-03 21:42:47,923 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-03 21:42:47,923 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-03 21:42:47,924 - __main__ - ERROR - ❌ StyledComponent 测试失败: 'TestStyledButton' object has no attribute '_text_label'
+2025-10-03 21:42:47,925 - __main__ - ERROR - 错误详情:
+Traceback (most recent call last):
+  File "D:\AI_NovelGenerator\test_base_components.py", line 84, in test_styled_component
+    test_button = TestStyledButton(
+                  ^^^^^^^^^^^^^^^^^
+  File "D:\AI_NovelGenerator\test_base_components.py", line 41, in __init__
+    StyledComponent.__init__(self, parent, theme_manager, state_manager)
+  File "D:\AI_NovelGenerator\ui\components\base_components.py", line 70, in __init__
+    self._initialize_component()
+  File "D:\AI_NovelGenerator\test_base_components.py", line 46, in _initialize_component
+    self.configure(
+  File "D:\AI_NovelGenerator\.venv\Lib\site-packages\customtkinter\windows\widgets\ctk_button.py", line 394, in configure
+    if self._text_label is None:
+       ^^^^^^^^^^^^^^^^
+AttributeError: 'TestStyledButton' object has no attribute '_text_label'
+
+2025-10-03 21:42:47,925 - __main__ - ERROR - ❌ StyledComponent基类 失败
+2025-10-03 21:42:47,925 - __main__ - INFO - 
+--- ComponentFactory工厂 ---
+2025-10-03 21:42:47,925 - __main__ - INFO - 开始测试 ComponentFactory...
+2025-10-03 21:42:47,926 - ui.components.base_components - INFO - 注册组件类型: test_button -> TestStyledButton
+2025-10-03 21:42:47,926 - __main__ - INFO - ✅ 组件注册验证通过
+2025-10-03 21:42:47,926 - __main__ - INFO - ✅ 注册类型验证通过
+2025-10-03 21:42:47,984 - __main__ - ERROR - ❌ ComponentFactory 测试失败: name 'ThemeManager' is not defined
+2025-10-03 21:42:47,984 - __main__ - ERROR - 错误详情:
+Traceback (most recent call last):
+  File "D:\AI_NovelGenerator\test_base_components.py", line 168, in test_component_factory
+    theme_manager = ThemeManager()
+                    ^^^^^^^^^^^^
+NameError: name 'ThemeManager' is not defined
+
+2025-10-03 21:42:47,984 - __main__ - ERROR - ❌ ComponentFactory工厂 失败
+2025-10-03 21:42:47,984 - __main__ - INFO - 
+--- 便捷函数 ---
+2025-10-03 21:42:47,984 - __main__ - INFO - 开始测试便捷函数...
+2025-10-03 21:42:47,984 - ui.components.base_components - INFO - 注册组件类型: test_button2 -> TestStyledButton
+2025-10-03 21:42:47,984 - __main__ - INFO - ✅ 便捷函数注册验证通过
+2025-10-03 21:42:48,029 - __main__ - ERROR - ❌ 便捷函数测试失败: name 'ThemeManager' is not defined
+2025-10-03 21:42:48,029 - __main__ - ERROR - 错误详情:
+Traceback (most recent call last):
+  File "D:\AI_NovelGenerator\test_base_components.py", line 229, in test_convenience_functions
+    theme_manager = ThemeManager()
+                    ^^^^^^^^^^^^
+NameError: name 'ThemeManager' is not defined
+
+2025-10-03 21:42:48,029 - __main__ - ERROR - ❌ 便捷函数 失败
+2025-10-03 21:42:48,029 - __main__ - INFO - 
+--- 组件生命周期 ---
+2025-10-03 21:42:48,029 - __main__ - INFO - 开始测试组件生命周期...
+2025-10-03 21:42:48,069 - __main__ - ERROR - ❌ 组件生命周期测试失败: name 'ThemeManager' is not defined
+2025-10-03 21:42:48,070 - __main__ - ERROR - 错误详情:
+Traceback (most recent call last):
+  File "D:\AI_NovelGenerator\test_base_components.py", line 269, in test_component_lifecycle
+    theme_manager = ThemeManager()
+                    ^^^^^^^^^^^^
+NameError: name 'ThemeManager' is not defined
+
+2025-10-03 21:42:48,070 - __main__ - ERROR - ❌ 组件生命周期 失败
+2025-10-03 21:42:48,070 - __main__ - INFO - 
+============================================================
+2025-10-03 21:42:48,070 - __main__ - INFO - 测试结果: 0/4 通过
+2025-10-03 21:42:48,070 - __main__ - INFO - ============================================================
+2025-10-03 21:42:48,070 - __main__ - ERROR - 💥 有 4 个测试失败

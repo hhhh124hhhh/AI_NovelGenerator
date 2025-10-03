@@ -17,7 +17,8 @@ logging.basicConfig(
     filemode='a',            # 追加模式（'w' 会覆盖）
     level=logging.INFO,      # 记录 INFO 及以上级别的日志
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
+    datefmt='%Y-%m-%d %H:%M:%S',
+    encoding='utf-8'         # 确保UTF-8编码
 )
 
 

@@ -71,8 +71,14 @@ class ThemeToggleButton(StyledButton):
         if current_theme == 'dark':
             self.configure(text="☀️")  # 太阳图标，切换到浅色
             self._tooltip_text = "切换到浅色主题"
-        else:
-            self.configure(text="🌙")  # 月亮图标，切换到深色
+        elif current_theme == 'light':
+            self.configure(text="🌓")  # 半月图标，切换到柔和浅色
+            self._tooltip_text = "切换到柔和浅色主题"
+        elif current_theme == 'soft_light':
+            self.configure(text="🌙")  # 月亮图标，切换到中性
+            self._tooltip_text = "切换到中性主题"
+        else:  # neutral theme
+            self.configure(text="☀️")  # 太阳图标，切换到深色
             self._tooltip_text = "切换到深色主题"
 
         # 设置提示文本

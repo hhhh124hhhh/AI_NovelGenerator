@@ -14,10 +14,16 @@ import os
 
 
 def create_label_with_help(self, parent, label_text, tooltip_key, row, column,
-                           font=None, sticky="e", padx=5, pady=5):
+                           font=None, sticky="e", padx=None, pady=None):
     """
     封装一个带"?"按钮的Label，用于展示提示信息。
     """
+    # 如果未提供 padx 和 pady，则使用主题系统中的间距设置
+    if padx is None:
+        padx = self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5
+    if pady is None:
+        pady = self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5
+    
     frame = ctk.CTkFrame(parent)
     frame.grid(row=row, column=column, padx=padx, pady=pady, sticky=sticky)
     frame.columnconfigure(0, weight=0)
@@ -271,11 +277,17 @@ def build_ai_config_tab(self):
         command=on_config_selected,
         font=("Microsoft YaHei", 12)
     )
-    interface_config_dropdown.grid(row=0, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
+    interface_config_dropdown.grid(row=0, column=1, columnspan=2, 
+                                  padx=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                                  pady=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                                  sticky="nsew")
 
     # 配置管理按钮组
     btn_frame = ctk.CTkFrame(self.ai_config_tab)
-    btn_frame.grid(row=1, column=0, columnspan=3, padx=5, pady=5, sticky="ew")
+    btn_frame.grid(row=1, column=0, columnspan=3, 
+                   padx=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                   pady=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                   sticky="ew")
     btn_frame.columnconfigure(0, weight=1)
     btn_frame.columnconfigure(1, weight=1)
     btn_frame.columnconfigure(2, weight=1)
@@ -289,7 +301,10 @@ def build_ai_config_tab(self):
         fg_color="#2E8B57",
         width=80
     )
-    add_btn.grid(row=0, column=0, padx=2, pady=2, sticky="ew")
+    add_btn.grid(row=0, column=0, 
+                 padx=self.get_theme_spacing('xs') if hasattr(self, 'get_theme_spacing') else 2, 
+                 pady=self.get_theme_spacing('xs') if hasattr(self, 'get_theme_spacing') else 2, 
+                 sticky="ew")
 
     rename_btn = ctk.CTkButton(
         btn_frame, 
@@ -299,7 +314,10 @@ def build_ai_config_tab(self):
         fg_color="#DAA520",
         width=80
     )
-    rename_btn.grid(row=0, column=1, padx=2, pady=2, sticky="ew")
+    rename_btn.grid(row=0, column=1, 
+                    padx=self.get_theme_spacing('xs') if hasattr(self, 'get_theme_spacing') else 2, 
+                    pady=self.get_theme_spacing('xs') if hasattr(self, 'get_theme_spacing') else 2, 
+                    sticky="ew")
 
     del_btn = ctk.CTkButton(
         btn_frame, 
@@ -309,7 +327,10 @@ def build_ai_config_tab(self):
         fg_color="#8B0000",
         width=80
     )
-    del_btn.grid(row=0, column=2, padx=2, pady=2, sticky="ew")
+    del_btn.grid(row=0, column=2, 
+                 padx=self.get_theme_spacing('xs') if hasattr(self, 'get_theme_spacing') else 2, 
+                 pady=self.get_theme_spacing('xs') if hasattr(self, 'get_theme_spacing') else 2, 
+                 sticky="ew")
 
     save_btn = ctk.CTkButton(
         btn_frame, 
@@ -319,7 +340,10 @@ def build_ai_config_tab(self):
         fg_color="#1E90FF",
         width=80
     )
-    save_btn.grid(row=0, column=3, padx=2, pady=2, sticky="ew")
+    save_btn.grid(row=0, column=3, 
+                  padx=self.get_theme_spacing('xs') if hasattr(self, 'get_theme_spacing') else 2, 
+                  pady=self.get_theme_spacing('xs') if hasattr(self, 'get_theme_spacing') else 2, 
+                  sticky="ew")
 
     # 配置参数控件
     row_start = 2
@@ -332,7 +356,10 @@ def build_ai_config_tab(self):
         font=("Microsoft YaHei", 12),
         show="*"
     )
-    api_key_entry.grid(row=row_start, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
+    api_key_entry.grid(row=row_start, column=1, columnspan=2, 
+                       padx=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                       pady=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                       sticky="nsew")
     
     # 2) Base URL
     create_label_with_help(self, self.ai_config_tab, chinese_labels["base_url"] + ":", "base_url", row_start+1, 0)
@@ -342,7 +369,10 @@ def build_ai_config_tab(self):
         textvariable=self.base_url_var,
         font=("Microsoft YaHei", 12)
     )
-    base_url_entry.grid(row=row_start+1, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
+    base_url_entry.grid(row=row_start+1, column=1, columnspan=2, 
+                        padx=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                        pady=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                        sticky="nsew")
     
     # 3) 接口格式
     create_label_with_help(self, self.ai_config_tab, chinese_labels["interface_format"] + ":", "interface_format", row_start+2, 0)
@@ -383,7 +413,10 @@ def build_ai_config_tab(self):
         command=on_interface_format_changed,
         font=("Microsoft YaHei", 12)
     )
-    interface_dropdown.grid(row=row_start+2, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
+    interface_dropdown.grid(row=row_start+2, column=1, columnspan=2, 
+                            padx=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                            pady=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                            sticky="nsew")
     
     # 4) Model Name
     create_label_with_help(self, self.ai_config_tab, chinese_labels["model_name"] + ":", "model_name", row_start+3, 0)
@@ -393,7 +426,10 @@ def build_ai_config_tab(self):
         textvariable=self.model_name_var,
         font=("Microsoft YaHei", 12)
     )
-    model_name_entry.grid(row=row_start+3, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
+    model_name_entry.grid(row=row_start+3, column=1, columnspan=2, 
+                          padx=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                          pady=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                          sticky="nsew")
     
     # 5) Temperature
     create_label_with_help(self, self.ai_config_tab, chinese_labels["temperature"] + ":", "temperature", row_start+4, 0)
@@ -408,13 +444,19 @@ def build_ai_config_tab(self):
         command=update_temp_label,
         variable=self.temperature_var
     )
-    temp_scale.grid(row=row_start+4, column=1, padx=5, pady=5, sticky="we")
+    temp_scale.grid(row=row_start+4, column=1, 
+                    padx=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                    pady=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                    sticky="we")
     self.temp_value_label = ctk.CTkLabel(
         self.ai_config_tab, 
         text=f"{self.temperature_var.get():.2f}",
         font=("Microsoft YaHei", 12)
     )
-    self.temp_value_label.grid(row=row_start+4, column=2, padx=5, pady=5, sticky="w")
+    self.temp_value_label.grid(row=row_start+4, column=2, 
+                               padx=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                               pady=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                               sticky="w")
     
     # 6) Max Tokens
     create_label_with_help(self, self.ai_config_tab, chinese_labels["max_tokens"] + ":", "max_tokens", row_start+5, 0)
@@ -429,13 +471,19 @@ def build_ai_config_tab(self):
         command=update_max_tokens_label,
         variable=self.max_tokens_var
     )
-    max_tokens_slider.grid(row=row_start+5, column=1, padx=5, pady=5, sticky="we")
+    max_tokens_slider.grid(row=row_start+5, column=1, 
+                           padx=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                           pady=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                           sticky="we")
     self.max_tokens_value_label = ctk.CTkLabel(
         self.ai_config_tab, 
         text=str(self.max_tokens_var.get()),
         font=("Microsoft YaHei", 12)
     )
-    self.max_tokens_value_label.grid(row=row_start+5, column=2, padx=5, pady=5, sticky="w")
+    self.max_tokens_value_label.grid(row=row_start+5, column=2, 
+                                     padx=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                                     pady=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                                     sticky="w")
     
     # 7) Timeout
     create_label_with_help(self, self.ai_config_tab, chinese_labels["timeout"] + ":", "timeout", row_start+6, 0)
@@ -450,13 +498,19 @@ def build_ai_config_tab(self):
         command=update_timeout_label,
         variable=self.timeout_var
     )
-    timeout_slider.grid(row=row_start+6, column=1, padx=5, pady=5, sticky="we")
+    timeout_slider.grid(row=row_start+6, column=1, 
+                        padx=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                        pady=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                        sticky="we")
     self.timeout_value_label = ctk.CTkLabel(
         self.ai_config_tab, 
         text=str(self.timeout_var.get()),
         font=("Microsoft YaHei", 12)
     )
-    self.timeout_value_label.grid(row=row_start+6, column=2, padx=5, pady=5, sticky="w")
+    self.timeout_value_label.grid(row=row_start+6, column=2, 
+                                  padx=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                                  pady=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                                  sticky="w")
     
     # 测试按钮
     test_btn = ctk.CTkButton(
@@ -465,7 +519,10 @@ def build_ai_config_tab(self):
         command=self.test_llm_config,
         font=("Microsoft YaHei", 12)
     )
-    test_btn.grid(row=row_start+7, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
+    test_btn.grid(row=row_start+7, column=0, columnspan=2, 
+                  padx=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                  pady=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                  sticky="ew")
 
     # 获取模型列表按钮（仅对智谱接口有效）
     def get_model_list():
@@ -492,7 +549,10 @@ def build_ai_config_tab(self):
         font=("Microsoft YaHei", 12),
         fg_color="#9370DB"
     )
-    get_models_btn.grid(row=row_start+7, column=2, padx=5, pady=5, sticky="ew")
+    get_models_btn.grid(row=row_start+7, column=2, 
+                        padx=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                        pady=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                        sticky="ew")
 
     # 初始化当前配置
     on_config_selected(config_names[0])
@@ -524,6 +584,8 @@ def build_ai_config_tab(self):
         }
         config_names = ["默认配置"]
     
+    self.interface_config_var = ctk.StringVar(value=config_names[0])
+
     interface_config_dropdown = ctk.CTkOptionMenu(
         self.ai_config_tab, 
         values=config_names,
@@ -531,7 +593,10 @@ def build_ai_config_tab(self):
         command=on_config_selected,
         font=("Microsoft YaHei", 12)
     )
-    interface_config_dropdown.grid(row=0, column=1, columnspan=2, padx=5, pady=5, sticky="nsew")
+    interface_config_dropdown.grid(row=0, column=1, columnspan=2, 
+                                  padx=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                                  pady=self.get_theme_spacing('sm') if hasattr(self, 'get_theme_spacing') else 5, 
+                                  sticky="nsew")
 
 def build_embeddings_config_tab(self):
     def on_embedding_interface_changed(new_value):
