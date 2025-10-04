@@ -8,6 +8,7 @@ import threading
 from typing import Dict, Any, Optional, Callable
 import customtkinter as ctk
 from tkinter import messagebox, filedialog
+import os
 from config_manager import load_config
 
 logger = logging.getLogger(__name__)
@@ -43,7 +44,15 @@ class MainWorkspace(ctk.CTkFrame):
         self.state_manager = state_manager
 
         # 配置数据
-        self.config = load_config("config.json")
+        try:
+            self.app_config: Dict[str, Any] = load_config("config.json")
+        except:
+            self.app_config = {}
+            
+        # 确保config是字典类型
+        if not isinstance(self.app_config, dict):
+            self.app_config = {}
+            
         self.novel_params = {}
         self.generation_state = {
             'current_step': 0,
@@ -351,8 +360,8 @@ class MainWorkspace(ctk.CTkFrame):
         """初始化参数"""
         try:
             # 从配置中加载默认值
-            if self.config and "other_params" in self.config:
-                params = self.config["other_params"]
+            if isinstance(self.app_config, dict) and "other_params" in self.app_config:
+                params = self.app_config["other_params"]
 
                 if hasattr(self, 'topic_text') and params.get("topic"):
                     self.topic_text.insert("0.0", params["topic"])
@@ -380,9 +389,10 @@ class MainWorkspace(ctk.CTkFrame):
     def _update_word_count(self, event=None):
         """更新字数统计"""
         try:
-            text = self.chapter_editor.get("0.0", "end")
-            count = len(text) - 1  # 减去最后一个换行符
-            self.chapter_label.configure(text=f"📝 章节内容 (字数: {count})")
+            if self.chapter_editor is not None:
+                text = self.chapter_editor.get("0.0", "end")
+                count = len(text) - 1  # 减去最后一个换行符
+                self.chapter_label.configure(text=f"📝 章节内容 (字数: {count})")
         except Exception as e:
             logger.error(f"更新字数统计失败: {e}")
 
@@ -616,98 +626,228 @@ class MainWorkspace(ctk.CTkFrame):
             if generation_type == "architecture":
                 # 生成小说架构
                 self._log("🔄 正在连接AI服务...")
-                # 这里将调用实际的novel_generator模块
-                # 暂时使用模拟数据
-                import time
-                time.sleep(2)  # 模拟处理时间
-
-                architecture = f"""
-# {params.get('topic', '未命名小说')} - 世界观设定
-
-## 故事背景
-{params.get('topic', '故事主题待定')}，发生在{params.get('genre', '未知类型')}的世界中。
-
-## 主要设定
-- 世界观：{params.get('genre', '未知类型')}风格
-- 章节数量：{params.get('num_chapters', 10)}章
-- 目标字数：每章约{params.get('word_number', 3000)}字
-
-## 核心冲突
-基于主题"{params.get('topic', '')}"展开的故事冲突。
-
-## 角色设定
-主要角色将在后续章节中逐步展开。
-"""
-
-                # 保存架构到文件
-                self._save_novel_architecture(architecture)
-                self._log("✅ 小说架构生成完成！")
-                self._log(f"📄 已保存到 Novel_setting.txt")
+                
+                # 导入小说生成器模块
+                try:
+                    from novel_generator.architecture import Novel_architecture_generate
+                    from config_manager import load_config
+                    
+                    # 获取配置
+                    config = load_config("config.json")
+                    llm_config = config.get('llm', {})
+                    other_params = config.get('other_params', {})
+                    
+                    # 调用真正的生成函数
+                    Novel_architecture_generate(
+                        interface_format=llm_config.get('provider', 'DeepSeek'),
+                        api_key=llm_config.get('api_key', ''),
+                        base_url=llm_config.get('base_url', 'https://api.deepseek.com'),
+                        llm_model=llm_config.get('model', 'deepseek-chat'),
+                        topic=params.get('topic', ''),
+                        genre=params.get('genre', ''),
+                        number_of_chapters=int(params.get('num_chapters', 10)),
+                        word_number=int(params.get('word_number', 3000)),
+                        filepath=params.get('filepath', '.'),
+                        user_guidance=params.get('guidance', ''),
+                        temperature=llm_config.get('temperature', 0.7),
+                        max_tokens=llm_config.get('max_tokens', 2048),
+                        timeout=llm_config.get('timeout', 600)
+                    )
+                    
+                    # 读取生成的架构文件
+                    import os
+                    architecture_file = os.path.join(params.get('filepath', '.'), "Novel_architecture.txt")
+                    if os.path.exists(architecture_file):
+                        with open(architecture_file, 'r', encoding='utf-8') as f:
+                            architecture_content = f.read()
+                        self._save_novel_architecture(architecture_content)
+                        self._log("✅ 小说架构生成完成！")
+                        self._log(f"📄 已保存到 Novel_architecture.txt")
+                    else:
+                        self._log("❌ 未找到生成的小说架构文件")
+                        
+                except Exception as e:
+                    logger.error(f"生成小说架构失败: {e}")
+                    self._log(f"❌ 生成小说架构失败: {str(e)}")
+                    import traceback
+                    logger.error(traceback.format_exc())
 
             elif generation_type == "blueprint":
                 # 生成章节目录
                 self._log("🔄 正在生成章节目录...")
-                import time
-                time.sleep(3)  # 模拟处理时间
-
-                num_chapters = params.get('num_chapters', 10)
-                blueprint = f"# {params.get('topic', '未命名小说')} - 章节目录\n\n"
-
-                for i in range(1, num_chapters + 1):
-                    blueprint += f"## 第{i}章：待定标题\n"
-                    blueprint += f"本章主要内容概述...\n\n"
-
-                # 保存目录到文件
-                self._save_chapter_blueprint(blueprint)
-                self._log("✅ 章节目录生成完成！")
-                self._log(f"📄 已保存到 Novel_directory.txt")
+                
+                # 导入章节目录生成器
+                try:
+                    from novel_generator.blueprint import Chapter_blueprint_generate
+                    from config_manager import load_config
+                    
+                    # 获取配置
+                    config = load_config("config.json")
+                    llm_config = config.get('llm', {})
+                    other_params = config.get('other_params', {})
+                    
+                    # 调用真正的生成函数
+                    Chapter_blueprint_generate(
+                        interface_format=llm_config.get('provider', 'DeepSeek'),
+                        api_key=llm_config.get('api_key', ''),
+                        base_url=llm_config.get('base_url', 'https://api.deepseek.com'),
+                        llm_model=llm_config.get('model', 'deepseek-chat'),
+                        number_of_chapters=int(params.get('num_chapters', 10)),
+                        filepath=params.get('filepath', '.'),
+                        user_guidance=params.get('guidance', ''),
+                        temperature=llm_config.get('temperature', 0.7),
+                        max_tokens=llm_config.get('max_tokens', 4096),
+                        timeout=llm_config.get('timeout', 600)
+                    )
+                    
+                    # 读取生成的目录文件
+                    blueprint_file = os.path.join(params.get('filepath', '.'), "Novel_directory.txt")
+                    if os.path.exists(blueprint_file):
+                        with open(blueprint_file, 'r', encoding='utf-8') as f:
+                            blueprint_content = f.read()
+                        self._save_chapter_blueprint(blueprint_content)
+                        self._log("✅ 章节目录生成完成！")
+                        self._log(f"📄 已保存到 Novel_directory.txt")
+                    else:
+                        self._log("❌ 未找到生成的章节目录文件")
+                        
+                except Exception as e:
+                    logger.error(f"生成章节目录失败: {e}")
+                    self._log(f"❌ 生成章节目录失败: {str(e)}")
+                    import traceback
+                    logger.error(traceback.format_exc())
 
             elif generation_type == "chapter":
                 # 生成章节内容
-                chapter_num = params.get('chapter_num', 1)
+                chapter_num = int(params.get('chapter_num', 1))
                 self._log(f"🔄 正在生成第{chapter_num}章内容...")
-                import time
-                time.sleep(4)  # 模拟处理时间
-
-                chapter_content = f"""
-# 第{chapter_num}章
-
-{params.get('topic', '故事主题')}
-
-{params.get('guidance', '根据指导内容生成具体章节')}
-
-{params.get('characters', '相关角色在章节中的表现')}
-
-【本章字数：{params.get('word_number', 3000)}字】
-"""
-
-                # 设置章节内容到编辑器
-                self.set_chapter_content(chapter_content)
-                self._log(f"✅ 第{chapter_num}章内容生成完成！")
-                self._log(f"📝 字数：{len(chapter_content)}字")
+                
+                # 导入章节生成器
+                try:
+                    from novel_generator.chapter import generate_chapter_draft, build_chapter_prompt
+                    from config_manager import load_config
+                    
+                    # 获取配置
+                    config = load_config("config.json")
+                    llm_config = config.get('llm', {})
+                    embedding_config = config.get('embedding_configs', {}).get('OpenAI', {})
+                    other_params = config.get('other_params', {})
+                    
+                    # 确保必要的文件存在
+                    import os
+                    architecture_file = os.path.join(params.get('filepath', '.'), "Novel_architecture.txt")
+                    blueprint_file = os.path.join(params.get('filepath', '.'), "Novel_directory.txt")
+                    
+                    if not os.path.exists(architecture_file):
+                        self._log("❌ 请先生成小说架构")
+                        return
+                        
+                    if not os.path.exists(blueprint_file):
+                        self._log("❌ 请先生成章节目录")
+                        return
+                    
+                    # 调用真正的生成函数
+                    result = generate_chapter_draft(
+                        api_key=llm_config.get('api_key', ''),
+                        base_url=llm_config.get('base_url', 'https://api.deepseek.com'),
+                        model_name=llm_config.get('model', 'deepseek-chat'),
+                        filepath=params.get('filepath', '.'),
+                        novel_number=chapter_num,
+                        word_number=int(params.get('word_number', 3000)),
+                        temperature=llm_config.get('temperature', 0.7),
+                        user_guidance=params.get('guidance', ''),
+                        characters_involved=params.get('characters', ''),
+                        key_items="",
+                        scene_location="",
+                        time_constraint="",
+                        embedding_api_key=embedding_config.get('api_key', ''),
+                        embedding_url=embedding_config.get('base_url', 'https://api.siliconflow.cn/v1'),
+                        embedding_interface_format=embedding_config.get('interface_format', 'SiliconFlow'),
+                        embedding_model_name=embedding_config.get('model_name', 'BAAI/bge-m3'),
+                        embedding_retrieval_k=embedding_config.get('retrieval_k', 4),
+                        interface_format=llm_config.get('provider', 'DeepSeek'),
+                        max_tokens=llm_config.get('max_tokens', 2048),
+                        timeout=llm_config.get('timeout', 600)
+                    )
+                    
+                    if result:
+                        # 设置章节内容到编辑器
+                        self.set_chapter_content(result)
+                        self._log(f"✅ 第{chapter_num}章内容生成完成！")
+                        self._log(f"📝 字数：{len(result)}字")
+                    else:
+                        self._log("❌ 章节内容生成失败")
+                        
+                except Exception as e:
+                    logger.error(f"生成章节内容失败: {e}")
+                    self._log(f"❌ 生成章节内容失败: {str(e)}")
+                    import traceback
+                    logger.error(traceback.format_exc())
 
             elif generation_type == "finalize":
                 # 完善章节内容
                 self._log("🔄 正在完善章节内容...")
-                import time
-                time.sleep(3)  # 模拟处理时间
-
-                current_content = self.get_chapter_content()
-                if current_content:
-                    # 简单的内容完善（实际中会调用AI进行润色）
-                    improved_content = current_content.replace("待定标题", f"精彩标题")
-                    improved_content = improved_content.replace("主要内容概述", "详细的故事情节")
-                    improved_content += "\n\n【本章已完善，可以继续下一章的创作】"
-
-                    self.set_chapter_content(improved_content)
-                    self._log("✅ 章节内容完善完成！")
+                
+                # 导入完善器
+                try:
+                    from novel_generator.finalization import finalize_chapter
+                    from config_manager import load_config
+                    
+                    # 获取配置
+                    config = load_config("config.json")
+                    llm_config = config.get('llm', {})
+                    embedding_config = config.get('embedding_configs', {}).get('OpenAI', {})
+                    
+                    # 获取当前章节内容
+                    current_content = self.get_chapter_content()
+                    if not current_content.strip():
+                        self._log("❌ 请先生成章节草稿")
+                        return
+                    
+                    # 获取当前章节号
+                    chapter_num = int(params.get('chapter_num', 1))
+                    
+                    # 调用完善函数
+                    finalize_chapter(
+                        novel_number=chapter_num,
+                        word_number=int(params.get('word_number', 3000)),
+                        api_key=llm_config.get('api_key', ''),
+                        base_url=llm_config.get('base_url', 'https://api.deepseek.com'),
+                        model_name=llm_config.get('model', 'deepseek-chat'),
+                        temperature=llm_config.get('temperature', 0.7),
+                        filepath=params.get('filepath', '.'),
+                        embedding_api_key=embedding_config.get('api_key', ''),
+                        embedding_url=embedding_config.get('base_url', 'https://api.siliconflow.cn/v1'),
+                        embedding_interface_format=embedding_config.get('interface_format', 'SiliconFlow'),
+                        embedding_model_name=embedding_config.get('model_name', 'BAAI/bge-m3'),
+                        interface_format=llm_config.get('provider', 'DeepSeek'),
+                        max_tokens=llm_config.get('max_tokens', 2048),
+                        timeout=llm_config.get('timeout', 600)
+                    )
+                    
+                    # 读取完善后的章节内容
+                    import os
+                    chapters_dir = os.path.join(params.get('filepath', '.'), "chapters")
+                    chapter_file = os.path.join(chapters_dir, f"chapter_{chapter_num}.txt")
+                    
+                    if os.path.exists(chapter_file):
+                        with open(chapter_file, 'r', encoding='utf-8') as f:
+                            refined_content = f.read()
+                        self.set_chapter_content(refined_content)
+                        self._log("✅ 章节内容完善完成！")
+                    else:
+                        self._log("❌ 章节内容完善失败")
+                        
+                except Exception as e:
+                    logger.error(f"完善章节内容失败: {e}")
+                    self._log(f"❌ 完善章节内容失败: {str(e)}")
+                    import traceback
+                    logger.error(traceback.format_exc())
 
             elif generation_type == "consistency":
                 # 一致性检测
                 self._log("🔄 正在进行一致性检测...")
-                import time
-                time.sleep(4)  # 模拟处理时间
-
+                
                 try:
                     # 调用一致性检查器
                     consistency_result = self._perform_consistency_check()
@@ -723,13 +863,21 @@ class MainWorkspace(ctk.CTkFrame):
 
                 # 依次执行各个步骤
                 self._log("1️⃣ 生成小说架构...")
-                time.sleep(2)
-
+                self._execute_generation("architecture")
+                
                 self._log("2️⃣ 生成章节目录...")
-                time.sleep(3)
-
+                self._execute_generation("blueprint")
+                
                 self._log("3️⃣ 生成第一章内容...")
-                time.sleep(4)
+                # 保存当前章节号
+                original_chapter_num = params.get('chapter_num', '1')
+                # 设置为第一章
+                if hasattr(self, 'chapter_num_var'):
+                    self.chapter_num_var.set('1')
+                self._execute_generation("chapter")
+                # 恢复原章节号
+                if hasattr(self, 'chapter_num_var'):
+                    self.chapter_num_var.set(original_chapter_num)
 
                 self._log("✅ 批量生成完成！")
                 self._log("💡 您可以继续生成后续章节或开始完善内容")
@@ -755,7 +903,7 @@ class MainWorkspace(ctk.CTkFrame):
             # 完成生成流程
             self._finish_generation()
 
-    def _finish_generation(self, error: str = None):
+    def _finish_generation(self, error: str = ""):
         """完成生成流程"""
         try:
             # 重置生成状态
@@ -789,9 +937,9 @@ class MainWorkspace(ctk.CTkFrame):
             import os
             filepath = self.filepath_var.get() if hasattr(self, 'filepath_var') else ""
             if filepath:
-                filename = os.path.join(filepath, "Novel_setting.txt")
+                filename = os.path.join(filepath, "Novel_architecture.txt")
             else:
-                filename = "Novel_setting.txt"
+                filename = "Novel_architecture.txt"
 
             with open(filename, 'w', encoding='utf-8') as f:
                 f.write(content)
@@ -820,11 +968,18 @@ class MainWorkspace(ctk.CTkFrame):
             from consistency_checker import check_consistency
 
             # 获取LLM配置
-            llm_config = self.config.get('llm', {})
+            llm_config = {}
+            if isinstance(self.config, dict):
+                llm_config = self.config.get('llm', {})
+                
+            # 获取其他参数
+            other_params = {}
+            if isinstance(self.config, dict):
+                other_params = self.config.get('other_params', {})
 
             # 获取各种内容
             current_chapter = self.get_chapter_content()
-            novel_setting = self._load_file_content("Novel_setting.txt")
+            novel_setting = self._load_file_content("Novel_architecture.txt")
             character_state = self._load_file_content("character_state.txt")
             global_summary = self._load_file_content("global_summary.txt")
 
@@ -853,7 +1008,11 @@ class MainWorkspace(ctk.CTkFrame):
         """加载文件内容"""
         try:
             import os
-            filepath = self.config.get('other_params', {}).get('filepath', '')
+            filepath = ""
+            if isinstance(self.app_config, dict):
+                other_params = self.app_config.get('other_params', {})
+                if isinstance(other_params, dict):
+                    filepath = other_params.get('filepath', '')
             if filepath:
                 full_path = os.path.join(filepath, filename)
             else:

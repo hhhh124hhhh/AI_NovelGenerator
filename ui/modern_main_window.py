@@ -2951,7 +2951,7 @@ A: 使用"导出"功能可以将项目保存为文件。
             if not last_project_path:
                 current_dir = os.getcwd()
                 potential_files = [
-                    os.path.join(current_dir, "Novel_setting.txt"),
+                    os.path.join(current_dir, "Novel_architecture.txt"),
                     os.path.join(current_dir, "Novel_directory.txt"),
                     os.path.join(current_dir, "global_summary.txt")
                 ]
@@ -3014,13 +3014,15 @@ A: 使用"导出"功能可以将项目保存为文件。
             )
 
             if folder_path:
-                # 检查文件夹是否包含项目文件
-                project_files = [
-                    "Novel_setting.txt",
+                # 检查项目文件并记录
+                project_files = []
+                expected_files = [
+                    "Novel_architecture.txt",
                     "Novel_directory.txt",
                     "global_summary.txt",
                     "character_state.txt"
                 ]
+
 
                 found_files = []
                 for file in project_files:
@@ -3112,8 +3114,8 @@ A: 使用"导出"功能可以将项目保存为文件。
 
             logger.info(f"开始从文件夹读取项目参数: {folder_path}")
 
-            # 尝试从Novel_setting.txt中读取参数
-            novel_setting_path = os.path.join(folder_path, "Novel_setting.txt")
+            # 尝试从Novel_architecture.txt中读取参数
+            novel_setting_path = os.path.join(folder_path, "Novel_architecture.txt")
             if os.path.exists(novel_setting_path):
                 with open(novel_setting_path, 'r', encoding='utf-8') as f:
                     content = f.read()

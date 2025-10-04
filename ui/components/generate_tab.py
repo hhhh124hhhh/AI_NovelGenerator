@@ -560,7 +560,7 @@ class GenerateTab(ctk.CTkFrame):
                     llm_model = llm_config.get('model', 'gpt-3.5-turbo')
                     number_of_chapters = 20  # 默认值
                     word_number = 3000  # 默认值
-                    filepath = "Novel_setting.txt"  # 默认文件路径
+                    filepath = "Novel_architecture.txt"  # 默认文件路径
                     user_guidance = f"世界观背景: {world}\n主要角色: {characters}" if world or characters else ""
                     temperature = 0.7
                     max_tokens = 2048
