@@ -51,6 +51,10 @@ class StyledComponent(ABC):
         self.theme_manager = theme_manager
         self.state_manager = state_manager
 
+        # 添加tk和_w属性，以支持CustomTkinter的某些功能
+        self.tk = parent.tk if hasattr(parent, 'tk') else None
+        self._w = str(id(self))  # 添加widget ID
+
         # 组件状态
         self._state = ComponentState.INITIALIZING
         self._component_id = f"{self.__class__.__name__}_{id(self)}"

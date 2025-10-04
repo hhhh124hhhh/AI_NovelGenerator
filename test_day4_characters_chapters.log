@@ -1,0 +1,209 @@
+2025-10-04 13:24:27,063 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 13:24:27,064 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-04 13:24:27,064 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 13:24:30,163 - ui.modern_main_window - INFO - 窗口图标设置成功: icon.ico
+2025-10-04 13:24:30,164 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 13:24:31,543 - ui.components.main_content - INFO - 添加标签页: config (配置)
+2025-10-04 13:24:31,550 - ui.components.main_content - INFO - 添加标签页: generate (生成)
+2025-10-04 13:24:31,554 - ui.components.main_content - INFO - 添加标签页: characters (角色)
+2025-10-04 13:24:31,562 - ui.components.main_content - INFO - 添加标签页: chapters (章节)
+2025-10-04 13:24:31,568 - ui.components.main_content - INFO - 添加标签页: summary (摘要)
+2025-10-04 13:24:31,576 - ui.components.main_content - INFO - 添加标签页: directory (目录)
+2025-10-04 13:24:31,796 - main - INFO - 加载配置文件: config.json
+2025-10-04 13:24:31,799 - ui.components.config_tab - INFO - 配置加载成功
+2025-10-04 13:24:31,799 - ui.modern_main_window - INFO - 配置标签页初始化完成
+2025-10-04 13:24:32,187 - main - INFO - 加载配置文件: config.json
+2025-10-04 13:24:32,188 - ui.components.generate_tab - INFO - 配置加载成功
+2025-10-04 13:24:32,188 - ui.modern_main_window - INFO - 生成标签页初始化完成
+2025-10-04 13:24:32,386 - ui.modern_main_window - INFO - 角色管理标签页初始化完成
+2025-10-04 13:24:32,592 - ui.modern_main_window - INFO - 章节管理标签页初始化完成
+2025-10-04 13:24:32,593 - ui.modern_main_window - INFO - 标签页切换到: config
+2025-10-04 13:24:32,593 - ui.components.main_content - INFO - 切换到标签页: config
+2025-10-04 13:24:32,593 - ui.modern_main_window - INFO - 默认标签页设置完成，共6个标签页
+2025-10-04 13:24:32,802 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-04 13:24:32,802 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 13:24:32,802 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 13:24:32,805 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 13:24:33,075 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 13:24:33,157 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 13:24:33,157 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 13:24:33,158 - ui.modern_main_window - INFO - 标签页切换到: characters
+2025-10-04 13:24:33,158 - ui.components.main_content - INFO - 切换到标签页: characters
+2025-10-04 13:24:33,159 - ui.modern_main_window - INFO - 标签页切换到: chapters
+2025-10-04 13:24:33,159 - ui.components.main_content - INFO - 切换到标签页: chapters
+2025-10-04 13:24:35,742 - ui.modern_main_window - INFO - 窗口图标设置成功: icon.ico
+2025-10-04 13:24:35,742 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 13:24:35,953 - ui.components.main_content - INFO - 添加标签页: config (配置)
+2025-10-04 13:24:35,962 - ui.components.main_content - INFO - 添加标签页: generate (生成)
+2025-10-04 13:24:35,968 - ui.components.main_content - INFO - 添加标签页: characters (角色)
+2025-10-04 13:24:35,977 - ui.components.main_content - INFO - 添加标签页: chapters (章节)
+2025-10-04 13:24:35,985 - ui.components.main_content - INFO - 添加标签页: summary (摘要)
+2025-10-04 13:24:35,992 - ui.components.main_content - INFO - 添加标签页: directory (目录)
+2025-10-04 13:24:36,159 - main - INFO - 加载配置文件: config.json
+2025-10-04 13:24:36,166 - ui.components.config_tab - INFO - 配置加载成功
+2025-10-04 13:24:36,166 - ui.modern_main_window - INFO - 配置标签页初始化完成
+2025-10-04 13:24:36,423 - main - INFO - 加载配置文件: config.json
+2025-10-04 13:24:36,423 - ui.components.generate_tab - INFO - 配置加载成功
+2025-10-04 13:24:36,423 - ui.modern_main_window - INFO - 生成标签页初始化完成
+2025-10-04 13:24:36,485 - ui.modern_main_window - INFO - 角色管理标签页初始化完成
+2025-10-04 13:24:36,587 - ui.modern_main_window - INFO - 章节管理标签页初始化完成
+2025-10-04 13:24:36,588 - ui.modern_main_window - INFO - 标签页切换到: config
+2025-10-04 13:24:36,588 - ui.components.main_content - INFO - 切换到标签页: config
+2025-10-04 13:24:36,588 - ui.modern_main_window - INFO - 默认标签页设置完成，共6个标签页
+2025-10-04 13:24:36,593 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-04 13:24:36,594 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 13:24:36,594 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 13:24:36,594 - ui.modern_main_window - ERROR - 处理主题变化失败: can't invoke "winfo" command: application has been destroyed
+2025-10-04 13:24:36,595 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 13:24:36,741 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 13:24:36,803 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 13:24:36,803 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 13:24:36,810 - ui.modern_main_window - INFO - 角色切换到: 主角
+2025-10-04 13:24:36,811 - ui.modern_main_window - INFO - 角色切换到: 测试角色
+2025-10-04 13:24:36,817 - ui.modern_main_window - INFO - 章节切换到: 序章：开始
+2025-10-04 13:24:36,818 - ui.modern_main_window - INFO - 章节切换到: 测试章节
+2025-10-04 13:24:36,846 - ui.modern_main_window - INFO - 导航到: characters (角色)
+2025-10-04 13:24:36,847 - ui.modern_main_window - INFO - 标签页切换到: characters
+2025-10-04 13:24:36,847 - ui.components.main_content - INFO - 切换到标签页: characters
+2025-10-04 13:24:36,855 - ui.modern_main_window - INFO - 导航到: chapters (章节)
+2025-10-04 13:24:36,856 - ui.modern_main_window - INFO - 标签页切换到: chapters
+2025-10-04 13:24:36,856 - ui.components.main_content - INFO - 切换到标签页: chapters
+2025-10-04 13:26:01,503 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 13:26:01,504 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-04 13:26:01,504 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 13:26:04,203 - ui.modern_main_window - INFO - 窗口图标设置成功: icon.ico
+2025-10-04 13:26:04,204 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 13:26:04,954 - ui.components.main_content - INFO - 添加标签页: config (配置)
+2025-10-04 13:26:04,958 - ui.components.main_content - INFO - 添加标签页: generate (生成)
+2025-10-04 13:26:04,962 - ui.components.main_content - INFO - 添加标签页: characters (角色)
+2025-10-04 13:26:04,965 - ui.components.main_content - INFO - 添加标签页: chapters (章节)
+2025-10-04 13:26:04,969 - ui.components.main_content - INFO - 添加标签页: summary (摘要)
+2025-10-04 13:26:04,974 - ui.components.main_content - INFO - 添加标签页: directory (目录)
+2025-10-04 13:26:05,092 - main - INFO - 加载配置文件: config.json
+2025-10-04 13:26:05,094 - ui.components.config_tab - INFO - 配置加载成功
+2025-10-04 13:26:05,094 - ui.modern_main_window - INFO - 配置标签页初始化完成
+2025-10-04 13:26:05,289 - main - INFO - 加载配置文件: config.json
+2025-10-04 13:26:05,290 - ui.components.generate_tab - INFO - 配置加载成功
+2025-10-04 13:26:05,290 - ui.modern_main_window - INFO - 生成标签页初始化完成
+2025-10-04 13:26:05,412 - ui.modern_main_window - INFO - 角色管理标签页初始化完成
+2025-10-04 13:26:05,513 - ui.modern_main_window - INFO - 章节管理标签页初始化完成
+2025-10-04 13:26:05,514 - ui.modern_main_window - INFO - 标签页切换到: config
+2025-10-04 13:26:05,514 - ui.components.main_content - INFO - 切换到标签页: config
+2025-10-04 13:26:05,514 - ui.modern_main_window - INFO - 默认标签页设置完成，共6个标签页
+2025-10-04 13:26:05,623 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-04 13:26:05,624 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 13:26:05,624 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 13:26:05,624 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 13:26:05,778 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 13:26:05,840 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 13:26:05,840 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 13:26:05,843 - ui.modern_main_window - INFO - 标签页切换到: characters
+2025-10-04 13:26:05,843 - ui.components.main_content - INFO - 切换到标签页: characters
+2025-10-04 13:26:05,844 - ui.modern_main_window - INFO - 标签页切换到: chapters
+2025-10-04 13:26:05,844 - ui.components.main_content - INFO - 切换到标签页: chapters
+2025-10-04 13:26:07,861 - ui.modern_main_window - INFO - 窗口图标设置成功: icon.ico
+2025-10-04 13:26:07,861 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 13:26:07,957 - ui.components.main_content - INFO - 添加标签页: config (配置)
+2025-10-04 13:26:07,960 - ui.components.main_content - INFO - 添加标签页: generate (生成)
+2025-10-04 13:26:07,964 - ui.components.main_content - INFO - 添加标签页: characters (角色)
+2025-10-04 13:26:07,968 - ui.components.main_content - INFO - 添加标签页: chapters (章节)
+2025-10-04 13:26:07,972 - ui.components.main_content - INFO - 添加标签页: summary (摘要)
+2025-10-04 13:26:07,976 - ui.components.main_content - INFO - 添加标签页: directory (目录)
+2025-10-04 13:26:08,048 - main - INFO - 加载配置文件: config.json
+2025-10-04 13:26:08,050 - ui.components.config_tab - INFO - 配置加载成功
+2025-10-04 13:26:08,050 - ui.modern_main_window - INFO - 配置标签页初始化完成
+2025-10-04 13:26:08,208 - main - INFO - 加载配置文件: config.json
+2025-10-04 13:26:08,209 - ui.components.generate_tab - INFO - 配置加载成功
+2025-10-04 13:26:08,209 - ui.modern_main_window - INFO - 生成标签页初始化完成
+2025-10-04 13:26:08,274 - ui.modern_main_window - INFO - 角色管理标签页初始化完成
+2025-10-04 13:26:08,376 - ui.modern_main_window - INFO - 章节管理标签页初始化完成
+2025-10-04 13:26:08,377 - ui.modern_main_window - INFO - 标签页切换到: config
+2025-10-04 13:26:08,377 - ui.components.main_content - INFO - 切换到标签页: config
+2025-10-04 13:26:08,377 - ui.modern_main_window - INFO - 默认标签页设置完成，共6个标签页
+2025-10-04 13:26:08,383 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-04 13:26:08,384 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 13:26:08,384 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 13:26:08,385 - ui.modern_main_window - ERROR - 处理主题变化失败: can't invoke "winfo" command: application has been destroyed
+2025-10-04 13:26:08,386 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 13:26:08,544 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 13:26:08,605 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 13:26:08,606 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 13:26:08,615 - ui.modern_main_window - INFO - 角色切换到: 主角
+2025-10-04 13:26:08,616 - ui.modern_main_window - INFO - 角色切换到: 测试角色
+2025-10-04 13:26:08,621 - ui.modern_main_window - INFO - 章节切换到: 序章：开始
+2025-10-04 13:26:08,624 - ui.modern_main_window - INFO - 章节切换到: 测试章节
+2025-10-04 13:26:08,662 - ui.modern_main_window - INFO - 导航到: characters (角色)
+2025-10-04 13:26:08,663 - ui.modern_main_window - INFO - 标签页切换到: characters
+2025-10-04 13:26:08,663 - ui.components.main_content - INFO - 切换到标签页: characters
+2025-10-04 13:26:08,673 - ui.modern_main_window - INFO - 导航到: chapters (章节)
+2025-10-04 13:26:08,674 - ui.modern_main_window - INFO - 标签页切换到: chapters
+2025-10-04 13:26:08,675 - ui.components.main_content - INFO - 切换到标签页: chapters
+2025-10-04 13:28:46,287 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 13:28:46,288 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-04 13:28:46,288 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 13:28:48,965 - ui.modern_main_window - INFO - 窗口图标设置成功: icon.ico
+2025-10-04 13:28:48,966 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 13:28:49,757 - ui.components.main_content - INFO - 添加标签页: config (配置)
+2025-10-04 13:28:49,761 - ui.components.main_content - INFO - 添加标签页: generate (生成)
+2025-10-04 13:28:49,765 - ui.components.main_content - INFO - 添加标签页: characters (角色)
+2025-10-04 13:28:49,769 - ui.components.main_content - INFO - 添加标签页: chapters (章节)
+2025-10-04 13:28:49,773 - ui.components.main_content - INFO - 添加标签页: summary (摘要)
+2025-10-04 13:28:49,778 - ui.components.main_content - INFO - 添加标签页: directory (目录)
+2025-10-04 13:28:49,902 - main - INFO - 加载配置文件: config.json
+2025-10-04 13:28:49,905 - ui.components.config_tab - INFO - 配置加载成功
+2025-10-04 13:28:49,905 - ui.modern_main_window - INFO - 配置标签页初始化完成
+2025-10-04 13:28:50,113 - main - INFO - 加载配置文件: config.json
+2025-10-04 13:28:50,113 - ui.components.generate_tab - INFO - 配置加载成功
+2025-10-04 13:28:50,113 - ui.modern_main_window - INFO - 生成标签页初始化完成
+2025-10-04 13:28:50,247 - ui.modern_main_window - INFO - 角色管理标签页初始化完成
+2025-10-04 13:28:50,353 - ui.modern_main_window - INFO - 章节管理标签页初始化完成
+2025-10-04 13:28:50,354 - ui.modern_main_window - INFO - 标签页切换到: config
+2025-10-04 13:28:50,354 - ui.components.main_content - INFO - 切换到标签页: config
+2025-10-04 13:28:50,354 - ui.modern_main_window - INFO - 默认标签页设置完成，共6个标签页
+2025-10-04 13:28:50,460 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-04 13:28:50,460 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 13:28:50,460 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 13:28:50,461 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 13:28:50,620 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 13:28:50,683 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 13:28:50,683 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 13:28:50,685 - ui.modern_main_window - INFO - 标签页切换到: characters
+2025-10-04 13:28:50,686 - ui.components.main_content - INFO - 切换到标签页: characters
+2025-10-04 13:28:50,686 - ui.modern_main_window - INFO - 标签页切换到: chapters
+2025-10-04 13:28:50,686 - ui.components.main_content - INFO - 切换到标签页: chapters
+2025-10-04 13:28:52,822 - ui.modern_main_window - INFO - 窗口图标设置成功: icon.ico
+2025-10-04 13:28:52,822 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 13:28:52,913 - ui.components.main_content - INFO - 添加标签页: config (配置)
+2025-10-04 13:28:52,917 - ui.components.main_content - INFO - 添加标签页: generate (生成)
+2025-10-04 13:28:52,921 - ui.components.main_content - INFO - 添加标签页: characters (角色)
+2025-10-04 13:28:52,925 - ui.components.main_content - INFO - 添加标签页: chapters (章节)
+2025-10-04 13:28:52,929 - ui.components.main_content - INFO - 添加标签页: summary (摘要)
+2025-10-04 13:28:52,936 - ui.components.main_content - INFO - 添加标签页: directory (目录)
+2025-10-04 13:28:53,017 - main - INFO - 加载配置文件: config.json
+2025-10-04 13:28:53,019 - ui.components.config_tab - INFO - 配置加载成功
+2025-10-04 13:28:53,020 - ui.modern_main_window - INFO - 配置标签页初始化完成
+2025-10-04 13:28:53,181 - main - INFO - 加载配置文件: config.json
+2025-10-04 13:28:53,182 - ui.components.generate_tab - INFO - 配置加载成功
+2025-10-04 13:28:53,183 - ui.modern_main_window - INFO - 生成标签页初始化完成
+2025-10-04 13:28:53,251 - ui.modern_main_window - INFO - 角色管理标签页初始化完成
+2025-10-04 13:28:53,369 - ui.modern_main_window - INFO - 章节管理标签页初始化完成
+2025-10-04 13:28:53,369 - ui.modern_main_window - INFO - 标签页切换到: config
+2025-10-04 13:28:53,369 - ui.components.main_content - INFO - 切换到标签页: config
+2025-10-04 13:28:53,370 - ui.modern_main_window - INFO - 默认标签页设置完成，共6个标签页
+2025-10-04 13:28:53,375 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-04 13:28:53,376 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 13:28:53,376 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 13:28:53,377 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 13:28:53,532 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 13:28:53,598 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 13:28:53,599 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 13:28:53,608 - ui.modern_main_window - INFO - 角色切换到: 主角
+2025-10-04 13:28:53,610 - ui.modern_main_window - INFO - 角色切换到: 测试角色
+2025-10-04 13:28:53,616 - ui.modern_main_window - INFO - 章节切换到: 序章：开始
+2025-10-04 13:28:53,618 - ui.modern_main_window - INFO - 章节切换到: 测试章节
+2025-10-04 13:28:53,654 - ui.modern_main_window - INFO - 导航到: characters (角色)
+2025-10-04 13:28:53,655 - ui.modern_main_window - INFO - 标签页切换到: characters
+2025-10-04 13:28:53,655 - ui.components.main_content - INFO - 切换到标签页: characters
+2025-10-04 13:28:53,665 - ui.modern_main_window - INFO - 导航到: chapters (章节)
+2025-10-04 13:28:53,665 - ui.modern_main_window - INFO - 标签页切换到: chapters
+2025-10-04 13:28:53,666 - ui.components.main_content - INFO - 切换到标签页: chapters

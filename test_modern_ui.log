@@ -1,0 +1,88 @@
+2025-10-04 12:00:27,087 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 12:00:27,088 - theme_system.theme_manager - INFO - 应用默认主题: neutral
+2025-10-04 12:00:27,088 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 12:00:27,088 - theme_system.theme_manager - INFO - 主题切换成功: neutral -> light
+2025-10-04 12:00:27,088 - theme_system.theme_manager - INFO - 主题切换成功: light -> dark
+2025-10-04 12:00:27,088 - ui.layout.responsive_manager - INFO - 布局类型变更: desktop -> tablet
+2025-10-04 12:00:27,089 - ui.layout.responsive_manager - INFO - 布局类型变更: tablet -> desktop
+2025-10-04 12:00:27,089 - ui.layout.responsive_manager - INFO - 布局类型变更: desktop -> large
+2025-10-04 12:00:27,089 - ui.components.base_components - INFO - 注册组件类型: test_button -> TestButton
+2025-10-04 12:00:27,554 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 12:00:27,671 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-04 12:00:27,671 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 12:00:27,671 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 12:00:27,672 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 12:00:27,674 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 12:00:27,675 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 12:00:27,675 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 12:00:27,676 - ui.modern_main_window - ERROR - 获取窗口信息失败: '<' not supported between instances of 'int' and 'NoneType'
+2025-10-04 12:00:27,676 - ui.layout.responsive_manager - INFO - 布局类型变更: desktop -> tablet
+2025-10-04 12:00:27,676 - ui.modern_main_window - INFO - 布局变更为: tablet
+2025-10-04 12:00:27,676 - ui.layout.responsive_manager - INFO - 布局类型变更: tablet -> desktop
+2025-10-04 12:00:27,676 - ui.modern_main_window - INFO - 布局变更为: desktop
+2025-10-04 12:02:11,104 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 12:02:11,104 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-04 12:02:11,104 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 12:02:11,105 - theme_system.theme_manager - INFO - 主题切换成功: dark -> light
+2025-10-04 12:02:11,105 - theme_system.theme_manager - INFO - 主题切换成功: light -> dark
+2025-10-04 12:02:11,107 - ui.layout.responsive_manager - INFO - 布局类型变更: desktop -> tablet
+2025-10-04 12:02:11,107 - ui.layout.responsive_manager - INFO - 布局类型变更: tablet -> desktop
+2025-10-04 12:02:11,108 - ui.layout.responsive_manager - INFO - 布局类型变更: desktop -> large
+2025-10-04 12:02:11,109 - ui.components.base_components - INFO - 注册组件类型: test_button -> TestButton
+2025-10-04 12:02:11,310 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 12:02:11,319 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-04 12:02:11,319 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 12:02:11,319 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 12:02:11,320 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 12:02:11,323 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 12:02:11,324 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 12:02:11,325 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 12:02:11,325 - ui.modern_main_window - ERROR - 获取窗口信息失败: '<' not supported between instances of 'int' and 'NoneType'
+2025-10-04 12:02:11,326 - ui.layout.responsive_manager - INFO - 布局类型变更: desktop -> tablet
+2025-10-04 12:02:11,326 - ui.modern_main_window - INFO - 布局变更为: tablet
+2025-10-04 12:02:11,326 - ui.layout.responsive_manager - INFO - 布局类型变更: tablet -> desktop
+2025-10-04 12:02:11,326 - ui.modern_main_window - INFO - 布局变更为: desktop
+2025-10-04 12:03:48,136 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 12:03:48,136 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-04 12:03:48,137 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 12:03:48,137 - theme_system.theme_manager - INFO - 主题切换成功: dark -> light
+2025-10-04 12:03:48,138 - theme_system.theme_manager - INFO - 主题切换成功: light -> dark
+2025-10-04 12:03:48,140 - ui.layout.responsive_manager - INFO - 布局类型变更: desktop -> tablet
+2025-10-04 12:03:48,141 - ui.layout.responsive_manager - INFO - 布局类型变更: tablet -> desktop
+2025-10-04 12:03:48,141 - ui.layout.responsive_manager - INFO - 布局类型变更: desktop -> large
+2025-10-04 12:03:48,142 - ui.components.base_components - INFO - 注册组件类型: test_button -> TestButton
+2025-10-04 12:03:48,199 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 12:03:48,214 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-04 12:03:48,214 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 12:03:48,215 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 12:03:48,215 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 12:03:48,219 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 12:03:48,221 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 12:03:48,222 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 12:03:48,222 - ui.modern_main_window - ERROR - 获取窗口信息失败: '<' not supported between instances of 'int' and 'NoneType'
+2025-10-04 12:03:48,223 - ui.layout.responsive_manager - INFO - 布局类型变更: desktop -> tablet
+2025-10-04 12:03:48,223 - ui.modern_main_window - INFO - 布局变更为: tablet
+2025-10-04 12:03:48,223 - ui.layout.responsive_manager - INFO - 布局类型变更: tablet -> desktop
+2025-10-04 12:03:48,223 - ui.modern_main_window - INFO - 布局变更为: desktop
+2025-10-04 12:03:57,443 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 12:03:57,444 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-04 12:03:57,444 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 12:03:57,445 - theme_system.theme_manager - INFO - 主题切换成功: dark -> light
+2025-10-04 12:03:57,446 - theme_system.theme_manager - INFO - 主题切换成功: light -> dark
+2025-10-04 12:03:57,447 - ui.layout.responsive_manager - INFO - 布局类型变更: desktop -> tablet
+2025-10-04 12:03:57,447 - ui.layout.responsive_manager - INFO - 布局类型变更: tablet -> desktop
+2025-10-04 12:03:57,447 - ui.layout.responsive_manager - INFO - 布局类型变更: desktop -> large
+2025-10-04 12:03:57,448 - ui.components.base_components - INFO - 注册组件类型: test_button -> TestButton
+2025-10-04 12:03:57,633 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 12:03:57,642 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-04 12:03:57,642 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 12:03:57,643 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 12:03:57,643 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 12:03:57,645 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 12:03:57,647 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 12:03:57,647 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 12:03:57,648 - ui.modern_main_window - ERROR - 获取窗口信息失败: '<' not supported between instances of 'int' and 'NoneType'
+2025-10-04 12:03:57,648 - ui.layout.responsive_manager - INFO - 布局类型变更: desktop -> tablet
+2025-10-04 12:03:57,648 - ui.modern_main_window - INFO - 布局变更为: tablet
+2025-10-04 12:03:57,649 - ui.layout.responsive_manager - INFO - 布局类型变更: tablet -> desktop
+2025-10-04 12:03:57,649 - ui.modern_main_window - INFO - 布局变更为: desktop

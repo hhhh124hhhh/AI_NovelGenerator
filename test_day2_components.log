@@ -1,0 +1,230 @@
+2025-10-04 12:05:54,312 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 12:05:54,312 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-04 12:05:54,313 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 12:05:54,424 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 12:05:54,425 - ui.modern_main_window - ERROR - 创建窗口组件失败: 'TitleBar' object has no attribute 'tk'
+2025-10-04 12:05:54,460 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 12:05:54,460 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 12:05:54,460 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 12:05:54,461 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 12:05:54,461 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 12:05:54,461 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 12:05:54,462 - ui.modern_main_window - ERROR - 获取窗口信息失败: '<' not supported between instances of 'int' and 'NoneType'
+2025-10-04 12:06:06,692 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 12:06:06,693 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-04 12:06:06,693 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 12:06:06,795 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 12:06:06,795 - ui.modern_main_window - ERROR - 创建窗口组件失败: 'TitleBar' object has no attribute '_w'
+2025-10-04 12:06:06,804 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 12:06:06,804 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 12:06:06,805 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 12:06:06,806 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 12:06:06,806 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 12:06:06,806 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 12:06:06,806 - ui.modern_main_window - ERROR - 获取窗口信息失败: '<' not supported between instances of 'int' and 'NoneType'
+2025-10-04 12:06:14,549 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 12:06:14,550 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-04 12:06:14,550 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 12:06:14,642 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 12:06:14,642 - ui.modern_main_window - ERROR - 创建窗口组件失败: bad window path name "2896738175952"
+2025-10-04 12:06:14,650 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 12:06:14,650 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 12:06:14,650 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 12:06:14,652 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 12:06:14,653 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 12:06:14,653 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 12:06:14,653 - ui.modern_main_window - ERROR - 获取窗口信息失败: '<' not supported between instances of 'int' and 'NoneType'
+2025-10-04 12:07:03,043 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 12:07:03,044 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-04 12:07:03,044 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 12:07:03,795 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 12:07:03,844 - ui.modern_main_window - ERROR - 创建窗口组件失败: ['command'] are not supported arguments. Look at the documentation for supported arguments.
+2025-10-04 12:07:03,860 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 12:07:03,861 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 12:07:03,862 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 12:07:03,914 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 12:07:03,922 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 12:07:03,922 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 12:07:03,922 - ui.modern_main_window - ERROR - 获取窗口信息失败: '<' not supported between instances of 'int' and 'NoneType'
+2025-10-04 12:07:37,178 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 12:07:37,178 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-04 12:07:37,178 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 12:07:38,073 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 12:07:38,280 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-04 12:07:38,280 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 12:07:38,280 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 12:07:38,281 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 12:07:38,392 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 12:07:38,398 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 12:07:38,399 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 12:07:38,399 - ui.modern_main_window - ERROR - 获取窗口信息失败: '<' not supported between instances of 'int' and 'NoneType'
+2025-10-04 12:07:38,404 - ui.modern_main_window - INFO - 导航到: config (配置)
+2025-10-04 12:08:38,330 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 12:08:38,331 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-04 12:08:38,331 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 12:08:39,237 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 12:08:39,424 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-04 12:08:39,425 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 12:08:39,425 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 12:08:39,425 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 12:08:39,530 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 12:08:39,536 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 12:08:39,537 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 12:08:39,537 - ui.modern_main_window - ERROR - 获取窗口信息失败: '<' not supported between instances of 'int' and 'NoneType'
+2025-10-04 12:08:39,544 - ui.modern_main_window - INFO - 导航到: config (配置)
+2025-10-04 12:09:52,408 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 12:09:52,408 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-04 12:09:52,408 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 12:09:53,266 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 12:09:53,464 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-04 12:09:53,465 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 12:09:53,465 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 12:09:53,465 - ui.components.sidebar - ERROR - 更新侧边栏主题失败: invalid command name ".!sidebar.!ctkbutton"
+2025-10-04 12:09:53,466 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 12:09:53,555 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 12:09:53,561 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 12:09:53,561 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 12:09:53,561 - ui.modern_main_window - ERROR - 获取窗口信息失败: '<' not supported between instances of 'int' and 'NoneType'
+2025-10-04 12:09:53,567 - ui.modern_main_window - INFO - 导航到: config (配置)
+2025-10-04 12:10:46,529 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 12:10:46,529 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-04 12:10:46,529 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 12:10:47,455 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 12:10:47,634 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-04 12:10:47,634 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 12:10:47,635 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 12:10:47,635 - ui.components.sidebar - ERROR - 更新侧边栏主题失败: invalid command name ".!sidebar.!ctkbutton"
+2025-10-04 12:10:47,636 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 12:10:47,724 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 12:10:47,730 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 12:10:47,731 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 12:10:47,731 - ui.modern_main_window - ERROR - 获取窗口信息失败: '<' not supported between instances of 'int' and 'NoneType'
+2025-10-04 12:10:47,738 - ui.modern_main_window - INFO - 导航到: config (配置)
+2025-10-04 12:16:03,130 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 12:16:03,130 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-04 12:16:03,131 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 12:16:04,024 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 12:16:04,218 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-04 12:16:04,218 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 12:16:04,219 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 12:16:04,221 - ui.components.sidebar - ERROR - 更新侧边栏主题失败: invalid command name ".!sidebar.!ctkbutton"
+2025-10-04 12:16:04,221 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 12:16:04,306 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 12:16:04,313 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 12:16:04,314 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 12:16:04,314 - ui.modern_main_window - ERROR - 获取窗口信息失败: '<' not supported between instances of 'int' and 'NoneType'
+2025-10-04 12:16:04,321 - ui.modern_main_window - INFO - 导航到: config (配置)
+2025-10-04 12:21:07,621 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 12:21:07,622 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-04 12:21:07,622 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 12:21:08,520 - ui.modern_main_window - INFO - 窗口图标设置成功: icon.ico
+2025-10-04 12:21:08,521 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 12:21:08,703 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-04 12:21:08,703 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 12:21:08,704 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 12:21:08,704 - ui.components.sidebar - ERROR - 更新侧边栏主题失败: invalid command name ".!sidebar.!ctkbutton"
+2025-10-04 12:21:08,705 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 12:21:08,790 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 12:21:08,798 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 12:21:08,798 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 12:21:08,798 - ui.modern_main_window - ERROR - 获取窗口信息失败: '<' not supported between instances of 'int' and 'NoneType'
+2025-10-04 12:21:08,805 - ui.modern_main_window - INFO - 导航到: config (配置)
+2025-10-04 12:21:38,921 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 12:21:38,921 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-04 12:21:38,921 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 12:21:40,065 - ui.modern_main_window - INFO - 窗口图标设置成功: icon.ico
+2025-10-04 12:21:40,066 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 12:21:40,238 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-04 12:21:40,239 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 12:21:40,239 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 12:21:40,240 - ui.components.sidebar - ERROR - 更新侧边栏主题失败: invalid command name ".!sidebar.!ctkbutton"
+2025-10-04 12:21:40,241 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 12:21:40,332 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 12:21:40,339 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 12:21:40,340 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 12:21:40,340 - ui.modern_main_window - ERROR - 获取窗口信息失败: '<' not supported between instances of 'int' and 'NoneType'
+2025-10-04 12:21:40,347 - ui.modern_main_window - INFO - 导航到: config (配置)
+2025-10-04 12:24:58,454 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 12:24:58,454 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-04 12:24:58,454 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 12:24:59,366 - ui.modern_main_window - INFO - 窗口图标设置成功: icon.ico
+2025-10-04 12:24:59,366 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 12:24:59,533 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-04 12:24:59,533 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 12:24:59,534 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 12:24:59,535 - ui.components.sidebar - WARNING - 更新折叠按钮样式失败: invalid command name ".!sidebar.!ctkbutton"
+2025-10-04 12:24:59,536 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 12:24:59,620 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 12:24:59,628 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 12:24:59,628 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 12:24:59,635 - ui.modern_main_window - INFO - 导航到: config (配置)
+2025-10-04 12:27:10,686 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 12:27:10,686 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-04 12:27:10,686 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 12:27:11,659 - ui.modern_main_window - INFO - 窗口图标设置成功: icon.ico
+2025-10-04 12:27:11,659 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 12:27:11,863 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-04 12:27:11,864 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 12:27:11,864 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 12:27:11,865 - ui.components.sidebar - WARNING - 更新折叠按钮样式失败: can't invoke "winfo" command: application has been destroyed
+2025-10-04 12:27:11,866 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 12:27:11,972 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 12:27:11,980 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 12:27:11,980 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 12:27:11,987 - ui.modern_main_window - INFO - 导航到: config (配置)
+2025-10-04 12:27:41,069 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 12:27:41,069 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-04 12:27:41,070 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 12:27:42,005 - ui.modern_main_window - INFO - 窗口图标设置成功: icon.ico
+2025-10-04 12:27:42,005 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 12:27:42,201 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-04 12:27:42,202 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 12:27:42,202 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 12:27:42,203 - ui.components.sidebar - WARNING - 更新折叠按钮样式失败: can't invoke "winfo" command: application has been destroyed
+2025-10-04 12:27:42,204 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 12:27:42,293 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 12:27:42,300 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 12:27:42,301 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 12:27:42,308 - ui.modern_main_window - INFO - 导航到: config (配置)
+2025-10-04 12:29:45,025 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 12:29:45,025 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-04 12:29:45,025 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 12:29:46,216 - ui.modern_main_window - INFO - 窗口图标设置成功: icon.ico
+2025-10-04 12:29:46,216 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 12:29:46,420 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-04 12:29:46,421 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 12:29:46,421 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 12:29:46,422 - ui.components.sidebar - WARNING - 更新折叠按钮样式失败: can't invoke "winfo" command: application has been destroyed
+2025-10-04 12:29:46,423 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 12:29:46,520 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 12:29:46,528 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 12:29:46,529 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 12:29:46,536 - ui.modern_main_window - INFO - 导航到: config (配置)
+2025-10-04 12:31:21,804 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 12:31:21,804 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-04 12:31:21,804 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 12:31:22,697 - ui.modern_main_window - INFO - 窗口图标设置成功: icon.ico
+2025-10-04 12:31:22,697 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 12:31:22,882 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-04 12:31:22,882 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 12:31:22,883 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 12:31:22,883 - ui.components.sidebar - ERROR - 更新侧边栏主题失败: can't invoke "winfo" command: application has been destroyed
+2025-10-04 12:31:22,884 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 12:31:22,975 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 12:31:22,983 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 12:31:22,984 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 12:31:22,990 - ui.modern_main_window - INFO - 导航到: config (配置)
+2025-10-04 12:32:03,555 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 12:32:03,555 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-04 12:32:03,555 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 12:32:04,467 - ui.modern_main_window - INFO - 窗口图标设置成功: icon.ico
+2025-10-04 12:32:04,468 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 12:32:04,659 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-04 12:32:04,661 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 12:32:04,662 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 12:32:04,663 - ui.components.sidebar - ERROR - 更新侧边栏主题失败: can't invoke "winfo" command: application has been destroyed
+2025-10-04 12:32:04,664 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 12:32:04,752 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 12:32:04,759 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 12:32:04,760 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 12:32:04,766 - ui.modern_main_window - INFO - 导航到: config (配置)

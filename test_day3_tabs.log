@@ -1,0 +1,99 @@
+2025-10-04 12:35:30,459 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 12:35:30,459 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-04 12:35:30,459 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 12:35:30,483 - ui.components.main_content - INFO - 添加标签页: test1 (测试标签1)
+2025-10-04 12:35:30,486 - ui.components.main_content - INFO - 添加标签页: test2 (测试标签2)
+2025-10-04 12:35:30,501 - ui.components.main_content - INFO - 切换到标签页: test2
+2025-10-04 12:35:30,501 - ui.components.main_content - ERROR - 应用宽屏布局失败: ['padx', 'pady'] are not supported arguments. Look at the documentation for supported arguments.
+2025-10-04 12:35:30,502 - ui.components.main_content - ERROR - 应用紧凑布局失败: ['padx', 'pady'] are not supported arguments. Look at the documentation for supported arguments.
+2025-10-04 12:35:30,506 - ui.components.main_content - INFO - 移除标签页: test1
+2025-10-04 12:35:31,668 - ui.components.main_content - INFO - 添加标签页: callback_test (回调测试)
+2025-10-04 12:35:31,673 - ui.components.main_content - INFO - 添加标签页: normal_test (普通测试)
+2025-10-04 12:35:31,673 - ui.components.main_content - INFO - 切换到标签页: callback_test
+2025-10-04 12:35:32,830 - ui.components.main_content - INFO - 添加标签页: responsive1 (响应式测试1)
+2025-10-04 12:35:32,832 - ui.components.main_content - INFO - 添加标签页: responsive2 (响应式测试2)
+2025-10-04 12:35:32,936 - ui.components.main_content - ERROR - 应用紧凑布局失败: ['padx', 'pady'] are not supported arguments. Look at the documentation for supported arguments.
+2025-10-04 12:35:32,937 - ui.components.main_content - ERROR - 应用标准布局失败: ['padx', 'pady'] are not supported arguments. Look at the documentation for supported arguments.
+2025-10-04 12:35:32,937 - ui.components.main_content - ERROR - 应用宽屏布局失败: ['padx', 'pady'] are not supported arguments. Look at the documentation for supported arguments.
+2025-10-04 12:37:48,072 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 12:37:48,072 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-04 12:37:48,072 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 12:37:48,087 - ui.components.main_content - INFO - 添加标签页: test1 (测试标签1)
+2025-10-04 12:37:48,091 - ui.components.main_content - INFO - 添加标签页: test2 (测试标签2)
+2025-10-04 12:37:48,093 - ui.components.main_content - INFO - 切换到标签页: test2
+2025-10-04 12:37:48,097 - ui.components.main_content - INFO - 移除标签页: test1
+2025-10-04 12:37:49,263 - ui.components.main_content - INFO - 添加标签页: callback_test (回调测试)
+2025-10-04 12:37:49,266 - ui.components.main_content - INFO - 添加标签页: normal_test (普通测试)
+2025-10-04 12:37:49,266 - ui.components.main_content - INFO - 切换到标签页: callback_test
+2025-10-04 12:37:50,438 - ui.components.main_content - INFO - 添加标签页: responsive1 (响应式测试1)
+2025-10-04 12:37:50,442 - ui.components.main_content - INFO - 添加标签页: responsive2 (响应式测试2)
+2025-10-04 12:38:21,626 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 12:38:21,626 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-04 12:38:21,626 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 12:38:21,644 - ui.components.main_content - INFO - 添加标签页: test1 (测试标签1)
+2025-10-04 12:38:21,647 - ui.components.main_content - INFO - 添加标签页: test2 (测试标签2)
+2025-10-04 12:38:21,650 - ui.components.main_content - INFO - 切换到标签页: test2
+2025-10-04 12:38:21,654 - ui.components.main_content - INFO - 移除标签页: test1
+2025-10-04 12:38:22,824 - ui.modern_main_window - INFO - 窗口图标设置成功: icon.ico
+2025-10-04 12:38:22,824 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 12:38:24,048 - ui.components.main_content - INFO - 添加标签页: config (配置)
+2025-10-04 12:38:24,059 - ui.components.main_content - INFO - 添加标签页: generate (生成)
+2025-10-04 12:38:24,068 - ui.components.main_content - INFO - 添加标签页: characters (角色)
+2025-10-04 12:38:24,076 - ui.components.main_content - INFO - 添加标签页: chapters (章节)
+2025-10-04 12:38:24,088 - ui.components.main_content - INFO - 添加标签页: summary (摘要)
+2025-10-04 12:38:24,126 - ui.components.main_content - INFO - 添加标签页: directory (目录)
+2025-10-04 12:38:24,127 - ui.modern_main_window - INFO - 标签页切换到: config
+2025-10-04 12:38:24,128 - ui.components.main_content - INFO - 切换到标签页: config
+2025-10-04 12:38:24,128 - ui.modern_main_window - INFO - 默认标签页设置完成，共6个标签页
+2025-10-04 12:38:24,430 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-04 12:38:24,431 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 12:38:24,432 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 12:38:24,436 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 12:38:24,656 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 12:38:24,693 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 12:38:24,693 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 12:38:24,694 - ui.modern_main_window - INFO - 标签页切换到: generate
+2025-10-04 12:38:24,722 - ui.components.main_content - INFO - 切换到标签页: generate
+2025-10-04 12:38:24,772 - ui.modern_main_window - INFO - 导航到: characters (角色)
+2025-10-04 12:38:24,774 - ui.modern_main_window - INFO - 标签页切换到: characters
+2025-10-04 12:38:24,792 - ui.components.main_content - INFO - 切换到标签页: characters
+2025-10-04 12:38:26,568 - ui.components.main_content - INFO - 添加标签页: callback_test (回调测试)
+2025-10-04 12:38:26,578 - ui.components.main_content - INFO - 添加标签页: normal_test (普通测试)
+2025-10-04 12:38:26,579 - ui.components.main_content - INFO - 切换到标签页: callback_test
+2025-10-04 12:38:27,792 - ui.components.main_content - INFO - 添加标签页: responsive1 (响应式测试1)
+2025-10-04 12:38:27,800 - ui.components.main_content - INFO - 添加标签页: responsive2 (响应式测试2)
+2025-10-04 13:01:10,720 - theme_system.theme_manager - INFO - 已加载 4 个主题
+2025-10-04 13:01:10,721 - theme_system.theme_manager - INFO - 应用默认主题: dark
+2025-10-04 13:01:10,721 - theme_system.theme_manager - INFO - 主题管理器初始化完成
+2025-10-04 13:01:10,748 - ui.components.main_content - INFO - 添加标签页: test1 (测试标签1)
+2025-10-04 13:01:10,752 - ui.components.main_content - INFO - 添加标签页: test2 (测试标签2)
+2025-10-04 13:01:10,771 - ui.components.main_content - INFO - 切换到标签页: test2
+2025-10-04 13:01:10,778 - ui.components.main_content - INFO - 移除标签页: test1
+2025-10-04 13:01:11,913 - ui.modern_main_window - INFO - 窗口图标设置成功: icon.ico
+2025-10-04 13:01:11,914 - ui.modern_main_window - INFO - 窗口基本属性设置完成
+2025-10-04 13:01:12,738 - ui.components.main_content - INFO - 添加标签页: config (配置)
+2025-10-04 13:01:12,743 - ui.components.main_content - INFO - 添加标签页: generate (生成)
+2025-10-04 13:01:12,748 - ui.components.main_content - INFO - 添加标签页: characters (角色)
+2025-10-04 13:01:12,753 - ui.components.main_content - INFO - 添加标签页: chapters (章节)
+2025-10-04 13:01:12,759 - ui.components.main_content - INFO - 添加标签页: summary (摘要)
+2025-10-04 13:01:12,764 - ui.components.main_content - INFO - 添加标签页: directory (目录)
+2025-10-04 13:01:12,765 - ui.modern_main_window - INFO - 标签页切换到: config
+2025-10-04 13:01:12,766 - ui.components.main_content - INFO - 切换到标签页: config
+2025-10-04 13:01:12,766 - ui.modern_main_window - INFO - 默认标签页设置完成，共6个标签页
+2025-10-04 13:01:12,953 - ui.modern_main_window - INFO - 窗口组件创建完成
+2025-10-04 13:01:12,953 - ui.modern_main_window - INFO - 窗口布局设置完成
+2025-10-04 13:01:12,954 - ui.modern_main_window - INFO - 事件绑定完成
+2025-10-04 13:01:12,955 - ui.modern_main_window - INFO - 主题变更为: dark
+2025-10-04 13:01:13,066 - theme_system.theme_manager - INFO - 主题切换成功: dark -> dark
+2025-10-04 13:01:13,082 - ui.modern_main_window - INFO - 应用初始主题: dark
+2025-10-04 13:01:13,082 - ui.modern_main_window - INFO - ModernMainWindow 初始化完成
+2025-10-04 13:01:13,083 - ui.modern_main_window - INFO - 标签页切换到: generate
+2025-10-04 13:01:13,122 - ui.components.main_content - INFO - 切换到标签页: generate
+2025-10-04 13:01:13,166 - ui.modern_main_window - INFO - 导航到: characters (角色)
+2025-10-04 13:01:13,167 - ui.modern_main_window - INFO - 标签页切换到: characters
+2025-10-04 13:01:13,179 - ui.components.main_content - INFO - 切换到标签页: characters
+2025-10-04 13:01:14,910 - ui.components.main_content - INFO - 添加标签页: callback_test (回调测试)
+2025-10-04 13:01:14,917 - ui.components.main_content - INFO - 添加标签页: normal_test (普通测试)
+2025-10-04 13:01:14,918 - ui.components.main_content - INFO - 切换到标签页: callback_test
+2025-10-04 13:01:16,094 - ui.components.main_content - INFO - 添加标签页: responsive1 (响应式测试1)
+2025-10-04 13:01:16,099 - ui.components.main_content - INFO - 添加标签页: responsive2 (响应式测试2)
