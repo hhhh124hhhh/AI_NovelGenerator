@@ -594,7 +594,7 @@ class MainWorkspace(ctk.CTkFrame):
 
             # 调用生成开始回调
             if self.generation_started_callback:
-                self.generation_started_callback()
+                self.generation_started_callback(generation_type)
 
             # 在新线程中执行生成
             self.generation_state['generation_thread'] = threading.Thread(

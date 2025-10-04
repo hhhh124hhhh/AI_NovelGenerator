@@ -217,14 +217,8 @@ class Sidebar(ctk.CTkFrame):
 
     def _add_sample_projects(self):
         """添加示例项目"""
-        sample_projects = [
-            {"name": "科幻小说：星际旅行", "modified": "2025-10-03", "status": "进行中"},
-            {"name": "历史小说：大唐风云", "modified": "2025-10-02", "status": "草稿"},
-            {"name": "奇幻小说：魔法学院", "modified": "2025-09-30", "status": "已完成"}
-        ]
-
-        for project in sample_projects:
-            self.add_project(project["name"], project["modified"], project["status"])
+        # 不再添加示例项目，避免混淆用户
+        pass
 
     def add_quick_action(self, name: str, icon: str, action: str):
         """添加快速操作按钮"""
@@ -294,7 +288,7 @@ class Sidebar(ctk.CTkFrame):
         # 清空项目列表
         self.projects.clear()
 
-    def add_project(self, name: str, modified: str, status: str, project_path: str = None):
+    def add_project(self, name: str, modified: str, status: str, project_path: Optional[str] = None):
         """添加项目"""
         # 项目框架
         project_frame = ctk.CTkFrame(
@@ -472,18 +466,20 @@ class Sidebar(ctk.CTkFrame):
         if self.state_manager:
             self.state_manager.set_state('app.active_tab', target)
 
-    def _on_project_select(self, project_name: str, project_path: str = None):
+    def _on_project_select(self, project_name: str, project_path: Optional[str] = None):
         """项目选择事件处理"""
-        if project_path and self.main_window:
-            # 直接加载项目
-            try:
-                self.main_window._load_project_from_path(project_path)
-            except Exception as e:
-                logger.error(f"加载项目失败: {e}")
-        elif self.project_select_callback:
-            self.project_select_callback(project_name)
-        else:
-            logger.debug(f"选择项目: {project_name}")
+        # 只有当确实存在项目时才处理
+        if project_name and project_name != "未选择项目":
+            if project_path and self.main_window:
+                # 直接加载项目
+                try:
+                    self.main_window._load_project_from_path(project_path)
+                except Exception as e:
+                    logger.error(f"加载项目失败: {e}")
+            elif self.project_select_callback:
+                self.project_select_callback(project_name)
+            else:
+                logger.debug(f"选择项目: {project_name}")
 
     def _on_theme_changed(self, theme_name: str, theme_data: Dict[str, Any]):
         """主题变化回调"""
@@ -559,25 +555,6 @@ class Sidebar(ctk.CTkFrame):
 
         except Exception as e:
             logger.error(f"更新侧边栏布局失败: {e}")
-
-    def clear_projects(self):
-        """清空项目列表"""
-        # 销毁所有项目框架
-        for project in self.projects:
-            if project["frame"]:
-                project["frame"].destroy()
-
-        self.projects.clear()
-
-    def update_projects(self, projects: List[Dict[str, str]]):
-        """更新项目列表"""
-        self.clear_projects()
-        for project in projects:
-            self.add_project(
-                project.get("name", ""),
-                project.get("modified", ""),
-                project.get("status", "")
-            )
 
     def get_sidebar_info(self) -> Dict[str, Any]:
         """获取侧边栏信息"""

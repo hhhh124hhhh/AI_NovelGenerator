@@ -287,16 +287,30 @@ class ModernMainWindow(ctk.CTk):
             # 状态栏 (简单版本)
             try:
                 main_logger.info("创建状态栏")
-                self.status_bar = ctk.CTkFrame(self, height=30, corner_radius=0)
-                self.status_bar.pack(fill="x", side="bottom", padx=5, pady=(0, 5))
+                # 创建通知系统替代原有的简单状态栏
+                try:
+                    from ui.components.notification_system import NotificationSystem
+                    self.notification_system = NotificationSystem(self, self.theme_manager, self.state_manager)
+                    self.notification_system.pack(fill="x", side="bottom", padx=0, pady=0)
+                    
+                    # 显示初始状态
+                    self.notification_system.update_status("应用已启动 | 主题: 深色模式 | 布局: 桌面版")
+                    main_logger.info("通知系统创建成功")
+                except Exception as e:
+                    main_logger.warning(f"创建通知系统失败，使用传统状态栏: {e}")
+                    # 回退到简单状态栏
+                    self.status_bar = ctk.CTkFrame(self, height=30, corner_radius=0)
+                    self.status_bar.pack(fill="x", side="bottom", padx=5, pady=(0, 5))
 
-                self.status_label = ctk.CTkLabel(
-                    self.status_bar,
-                    text="就绪 | 主题: 深色模式 | 布局: 桌面版",
-                    font=ctk.CTkFont(size=11),
-                    anchor="w"
-                )
-                self.status_label.pack(side="left", padx=10, pady=5)
+                    self.status_label = ctk.CTkLabel(
+                        self.status_bar,
+                        text="就绪 | 主题: 深色模式 | 布局: 桌面版",
+                        font=ctk.CTkFont(size=11),
+                        anchor="w"
+                    )
+                    self.status_label.pack(side="left", padx=10, pady=5)
+                    main_logger.info("传统状态栏创建成功")
+
                 main_logger.info("状态栏创建成功")
             except Exception as e:
                 main_logger.warning(f"创建状态栏失败: {e}")
@@ -1527,22 +1541,24 @@ A: 查看项目目录下的logs文件夹
         # 创建设置窗口
         settings_window = ctk.CTkToplevel(self)
         settings_window.title("应用设置")
-        settings_window.geometry("600x500")
+        settings_window.geometry("650x550")  # 增加窗口大小以适应中文界面
+        settings_window.resizable(True, True)  # 允许调整大小
         settings_window.transient(self)
         settings_window.grab_set()
 
         # 设置窗口在父窗口中央显示
         settings_window.update_idletasks()
-        x = (settings_window.winfo_screenwidth() // 2) - (600 // 2)
-        y = (settings_window.winfo_screenheight() // 2) - (500 // 2)
-        settings_window.geometry(f"600x500+{x}+{y}")
+        x = (settings_window.winfo_screenwidth() // 2) - (650 // 2)
+        y = (settings_window.winfo_screenheight() // 2) - (550 // 2)
+        settings_window.geometry(f"650x550+{x}+{y}")
 
         # 创建设置选项卡
         settings_tabview = ctk.CTkTabview(
             settings_window,
             segmented_button_fg_color="#2A2A2A",
             segmented_button_selected_color="#404040",
-            segmented_button_unselected_color="#1E1E1E"
+            segmented_button_unselected_color="#1E1E1E",
+            height=400  # 设置固定高度
         )
         settings_tabview.pack(fill="both", expand=True, padx=20, pady=20)
 
@@ -1556,23 +1572,30 @@ A: 查看项目目录下的logs文件夹
         self._build_theme_settings(theme_tab, settings_window)
         self._build_advanced_settings(advanced_tab, settings_window)
 
-        # 底部按钮
-        button_frame = ctk.CTkFrame(settings_window)
+        # 底部按钮区域
+        button_frame = ctk.CTkFrame(settings_window, fg_color="transparent")
         button_frame.pack(fill="x", padx=20, pady=(0, 20))
 
         # 保存按钮
         save_btn = ctk.CTkButton(
             button_frame,
-            text="保存设置",
-            command=lambda: self._save_settings(settings_window)
+            text="💾 保存设置",
+            command=lambda: self._save_settings(settings_window),
+            width=120,
+            height=35
         )
         save_btn.pack(side="right", padx=(10, 0))
 
         # 取消按钮
         cancel_btn = ctk.CTkButton(
             button_frame,
-            text="取消",
-            command=settings_window.destroy
+            text="❌ 取消",
+            command=settings_window.destroy,
+            width=120,
+            height=35,
+            fg_color="transparent",
+            border_color="#404040",
+            border_width=2
         )
         cancel_btn.pack(side="right")
 
@@ -1676,9 +1699,43 @@ A: 查看项目目录下的logs文件夹
         )
         theme_combo.pack(side="left", fill="x", expand=True)
 
+        # 字体设置区域
+        font_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
+        font_frame.pack(fill="x", padx=20, pady=10)
+
+        font_title = ctk.CTkLabel(
+            font_frame,
+            text="字体设置",
+            font=ctk.CTkFont(size=16, weight="bold"),
+            anchor="w"
+        )
+        font_title.pack(fill="x", pady=(0, 10))
+
+        # 字体族设置
+        font_family_frame = ctk.CTkFrame(font_frame, fg_color="transparent")
+        font_family_frame.pack(fill="x", pady=5)
+
+        font_family_label = ctk.CTkLabel(
+            font_family_frame,
+            text="字体族:",
+            width=120,
+            anchor="w"
+        )
+        font_family_label.pack(side="left", padx=(0, 10))
+
+        # 获取系统可用字体
+        available_fonts = ["Microsoft YaHei UI", "Arial", "Helvetica", "Times New Roman", "Courier New", "Verdana", "Tahoma"]
+        font_family_var = ctk.StringVar(value="Microsoft YaHei UI")
+        font_family_combo = ctk.CTkComboBox(
+            font_family_frame,
+            variable=font_family_var,
+            values=available_fonts
+        )
+        font_family_combo.pack(side="left", fill="x", expand=True)
+
         # 字体大小设置
-        fontsize_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
-        fontsize_frame.pack(fill="x", padx=20, pady=10)
+        fontsize_frame = ctk.CTkFrame(font_frame, fg_color="transparent")
+        fontsize_frame.pack(fill="x", pady=5)
 
         fontsize_label = ctk.CTkLabel(
             fontsize_frame,
@@ -1696,6 +1753,64 @@ A: 查看项目目录下的logs文件夹
         )
         fontsize_combo.pack(side="left", fill="x", expand=True)
 
+        # 字体样式设置
+        font_style_frame = ctk.CTkFrame(font_frame, fg_color="transparent")
+        font_style_frame.pack(fill="x", pady=5)
+
+        font_style_label = ctk.CTkLabel(
+            font_style_frame,
+            text="字体样式:",
+            width=120,
+            anchor="w"
+        )
+        font_style_label.pack(side="left", padx=(0, 10))
+
+        font_style_var = ctk.StringVar(value="正常")
+        font_style_combo = ctk.CTkComboBox(
+            font_style_frame,
+            variable=font_style_var,
+            values=["正常", "粗体", "斜体", "粗斜体"]
+        )
+        font_style_combo.pack(side="left", fill="x", expand=True)
+
+        # 字体预览区域
+        preview_frame = ctk.CTkFrame(font_frame, fg_color="transparent")
+        preview_frame.pack(fill="x", pady=(10, 5))
+
+        preview_label = ctk.CTkLabel(
+            preview_frame,
+            text="预览:",
+            anchor="w"
+        )
+        preview_label.pack(anchor="w")
+
+        preview_text = ctk.CTkLabel(
+            preview_frame,
+            text="The quick brown fox jumps over the lazy dog\n快速的棕色狐狸跳过懒狗",
+            fg_color="#404040",
+            corner_radius=6,
+            padx=10,
+            pady=10
+        )
+        preview_text.pack(fill="x", pady=(5, 0))
+
+        # 绑定预览更新事件
+        def update_preview(*args):
+            family = font_family_var.get()
+            size_map = {"小": 10, "正常": 12, "大": 14, "特大": 16}
+            size = size_map.get(fontsize_var.get(), 12)
+            style_map = {"正常": "normal", "粗体": "bold", "斜体": "normal", "粗斜体": "bold"}
+            style_value = style_map.get(font_style_var.get(), "normal")
+            
+            # 确保weight参数是合法值
+            weight = "bold" if style_value == "bold" else "normal"
+            preview_font = ctk.CTkFont(family=family, size=size, weight=weight)
+            preview_text.configure(font=preview_font)
+
+        font_family_var.trace("w", update_preview)
+        fontsize_var.trace("w", update_preview)
+        font_style_var.trace("w", update_preview)
+
         # 动画效果
         animation_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
         animation_frame.pack(fill="x", padx=20, pady=10)
@@ -1710,7 +1825,9 @@ A: 查看项目目录下的logs文件夹
 
         # 保存设置变量到窗口
         window.theme_var = theme_var
+        window.font_family_var = font_family_var
         window.fontsize_var = fontsize_var
+        window.font_style_var = font_style_var
         window.animation_var = animation_var
 
     def _build_advanced_settings(self, parent, window):
@@ -1816,6 +1933,8 @@ A: 查看项目目录下的logs文件夹
                 'autosave': window.autosave_var.get() if hasattr(window, 'autosave_var') else True,
                 'restore_last_project': window.restore_var.get() if hasattr(window, 'restore_var') else False,
                 'fontsize': window.fontsize_var.get() if hasattr(window, 'fontsize_var') else "正常",
+                'font_family': window.font_family_var.get() if hasattr(window, 'font_family_var') else "Microsoft YaHei UI",
+                'font_style': window.font_style_var.get() if hasattr(window, 'font_style_var') else "正常",
                 'animation': window.animation_var.get() if hasattr(window, 'animation_var') else False,
                 'log_level': window.log_var.get() if hasattr(window, 'log_var') else "INFO",
                 'performance_monitoring': window.perf_var.get() if hasattr(window, 'perf_var') else False,
@@ -1827,6 +1946,7 @@ A: 查看项目目录下的logs文件夹
 
             # 应用字体设置
             self._apply_font_size_setting(settings.get('fontsize', '正常'))
+            self._apply_font_family_setting(settings.get('font_family', 'Microsoft YaHei UI'))
 
             self._update_status("✅ 设置已保存！")
             window.destroy()
@@ -1866,6 +1986,15 @@ A: 查看项目目录下的logs文件夹
 
         except Exception as e:
             logger.error(f"应用字体设置失败: {e}")
+
+    def _apply_font_family_setting(self, font_family: str):
+        """应用字体族设置"""
+        try:
+            logger.info(f"应用字体族设置: {font_family}")
+            # 这里可以扩展更多字体应用逻辑
+            # 目前我们只记录日志，实际应用需要在各组件中实现
+        except Exception as e:
+            logger.error(f"应用字体族设置失败: {e}")
 
     def _on_user_menu(self):
         """用户菜单回调"""
@@ -2517,12 +2646,27 @@ A: 使用"导出"功能可以将项目保存为文件。
     def _on_project_select(self, project_name: str):
         """项目选择回调"""
         logger.info(f"选择项目: {project_name}")
-        self._update_status(f"当前项目: {project_name}")
+        # 只有当确实存在项目时才更新状态
+        if project_name and project_name != "未选择项目":
+            self._update_status(f"当前项目: {project_name}")
 
     def _update_status(self, message: str):
         """更新状态栏"""
         try:
-            if hasattr(self, 'status_label'):
+            # 优先使用通知系统
+            if hasattr(self, 'notification_system') and self.notification_system:
+                # 根据消息内容判断通知类型
+                if "✅" in message or "成功" in message:
+                    self.notification_system.show_success(message, duration=3000)
+                elif "❌" in message or "失败" in message or "错误" in message:
+                    self.notification_system.show_error(message, duration=5000)
+                elif "⚠️" in message or "警告" in message:
+                    self.notification_system.show_warning(message, duration=4000)
+                else:
+                    # 持续显示状态信息
+                    self.notification_system.show_status(message)
+            elif hasattr(self, 'status_label'):
+                # 回退到传统状态栏
                 current_theme = self.state_manager.get_state('app.theme', 'dark')
                 layout_type = self.layout_manager.get_current_layout_type().value
                 self.status_label.configure(
