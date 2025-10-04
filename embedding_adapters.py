@@ -290,7 +290,16 @@ class SiliconFlowEmbeddingAdapter(BaseEmbeddingAdapter):
         # 自动为 base_url 添加 scheme（如果缺失）
         if not base_url.startswith("http://") and not base_url.startswith("https://"):
             base_url = "https://" + base_url
-        self.url = base_url if base_url else "https://api.siliconflow.cn/v1/embeddings"
+
+        # 确保base_url以/v1结尾，然后添加/embeddings路径
+        if base_url:
+            base_url = base_url.rstrip('/')
+            if not base_url.endswith('/v1'):
+                if '/v1' not in base_url:
+                    base_url = base_url + '/v1'
+            self.url = base_url + '/embeddings'
+        else:
+            self.url = "https://api.siliconflow.cn/v1/embeddings"
 
         self.payload = {
             "model": model_name,
@@ -302,13 +311,19 @@ class SiliconFlowEmbeddingAdapter(BaseEmbeddingAdapter):
             "Content-Type": "application/json"
         }
 
+        # 记录URL用于调试
+        embedding_logger.info(f"SiliconFlow适配器初始化 - URL: {self.url}, 模型: {model_name}")
+
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
         embedding_logger.info(f"调用SiliconFlow Embedding模型: {self.payload['model']}")
         embeddings = []
         for text in texts:
             try:
                 self.payload["input"] = text
-                response = requests.post(self.url, json=self.payload, headers=self.headers)
+                # 创建一个不使用系统代理的会话
+                session = requests.Session()
+                session.trust_env = False
+                response = session.post(self.url, json=self.payload, headers=self.headers)
                 response.raise_for_status()
                 result = response.json()
                 if not result or "data" not in result or not result["data"]:
@@ -330,13 +345,25 @@ class SiliconFlowEmbeddingAdapter(BaseEmbeddingAdapter):
         log_embedding_request(query, self.payload['model'], "SiliconFlow")
         try:
             self.payload["input"] = query
-            response = requests.post(self.url, json=self.payload, headers=self.headers)
+            # 创建一个不使用系统代理的会话
+            session = requests.Session()
+            session.trust_env = False
+            response = session.post(self.url, json=self.payload, headers=self.headers)
             response.raise_for_status()
             result = response.json()
+
+            # 添加详细调试信息
+            embedding_logger.info(f"SiliconFlow API响应结构: {list(result.keys()) if isinstance(result, dict) else type(result)}")
+            if "data" in result:
+                embedding_logger.info(f"SiliconFlow data数组长度: {len(result['data'])}")
+                if result["data"] and len(result["data"]) > 0:
+                    embedding_logger.info(f"SiliconFlow 第一个data项键: {list(result['data'][0].keys()) if isinstance(result['data'][0], dict) else type(result['data'][0])}")
+
             if not result or "data" not in result or not result["data"]:
                 logging.error(f"Invalid response format from SiliconFlow API: {result}")
                 return []
             embedding = result["data"][0].get("embedding", [])
+            embedding_logger.info(f"SiliconFlow 提取到的embedding长度: {len(embedding) if embedding else 0}")
             log_embedding_response(embedding, self.payload['model'], "SiliconFlow")
             return embedding
         except requests.exceptions.RequestException as e:

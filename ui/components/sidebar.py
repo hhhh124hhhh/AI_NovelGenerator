@@ -23,7 +23,7 @@ class Sidebar(ctk.CTkFrame):
     - 拖拽调整宽度
     """
 
-    def __init__(self, parent: ctk.CTkFrame, theme_manager, state_manager=None, **kwargs):
+    def __init__(self, parent: ctk.CTkFrame, theme_manager, state_manager=None, main_window=None, **kwargs):
         """
         初始化侧边栏
 
@@ -31,6 +31,7 @@ class Sidebar(ctk.CTkFrame):
             parent: 父组件
             theme_manager: 主题管理器
             state_manager: 状态管理器
+            main_window: 主窗口引用
             **kwargs: 其他参数
         """
         # 初始化CustomTkinter Frame
@@ -39,6 +40,7 @@ class Sidebar(ctk.CTkFrame):
         # 存储管理器引用
         self.theme_manager = theme_manager
         self.state_manager = state_manager
+        self.main_window = main_window
 
         # 回调函数
         self.navigation_callback = None
@@ -74,24 +76,35 @@ class Sidebar(ctk.CTkFrame):
 
     def _create_sidebar_layout(self):
         """创建侧边栏布局"""
-        # 配置主框架
+        # 配置主框架 - 修复min_width参数错误
         self.configure(
             width=self.current_width,
-            corner_radius=0,
-            fg_color="transparent"
+            corner_radius=8,
+            fg_color=("#f0f0f0", "#1a1a1a")  # 可见的背景色
         )
 
-        # 创建滚动框架
+        # 创建滚动框架 - 修复显示问题
         self.scroll_frame = ctk.CTkScrollableFrame(
             self,
             width=self.current_width - 20,
-            corner_radius=0,
-            fg_color="transparent"
+            corner_radius=6,
+            fg_color=("#f8f8f8", "#2a2a2a"),  # 可见的背景色
+            scrollbar_button_color=("#c0c0c0", "#404040")
         )
-        self.scroll_frame.pack(fill="both", expand=True, padx=(10, 0), pady=10)
+        self.scroll_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
         # 配置滚动框架布局
         self.scroll_frame.grid_columnconfigure(0, weight=1)
+
+        # 设置最小宽度的备用方案
+        self.bind("<Configure>", self._on_sidebar_configure)
+
+    def _on_sidebar_configure(self, event):
+        """处理侧边栏配置事件，确保最小宽度"""
+        if event.width < self.min_width:
+            # 如果宽度小于最小宽度，重新设置
+            self.configure(width=self.min_width)
+            logger.debug(f"侧边栏宽度重置为最小值: {self.min_width}")
 
     def _create_collapse_button(self):
         """创建折叠按钮"""
@@ -177,6 +190,7 @@ class Sidebar(ctk.CTkFrame):
         """添加默认快速操作"""
         default_actions = [
             {"name": "新建小说", "icon": "📝", "action": "new_novel"},
+            {"name": "快速加载", "icon": "⚡", "action": "quick_load"},
             {"name": "打开项目", "icon": "📁", "action": "open_project"},
             {"name": "保存", "icon": "💾", "action": "save"},
             {"name": "导出", "icon": "📤", "action": "export"}
@@ -188,7 +202,9 @@ class Sidebar(ctk.CTkFrame):
     def _add_default_navigation_items(self):
         """添加默认导航项目"""
         default_nav_items = [
-            {"name": "配置", "icon": "⚙", "target": "config", "active": True},
+            {"name": "主页", "icon": "🏠", "target": "main", "active": True},
+            {"name": "配置", "icon": "⚙", "target": "config", "active": False},
+            {"name": "设定", "icon": "🛠", "target": "setting", "active": False},
             {"name": "生成", "icon": "🚀", "target": "generate", "active": False},
             {"name": "角色", "icon": "👥", "target": "characters", "active": False},
             {"name": "章节", "icon": "📖", "target": "chapters", "active": False},
@@ -268,7 +284,17 @@ class Sidebar(ctk.CTkFrame):
             "label": nav_label
         })
 
-    def add_project(self, name: str, modified: str, status: str):
+    def clear_projects(self):
+        """清空项目列表"""
+        # 销毁所有项目框架
+        for project in self.projects:
+            if "frame" in project and project["frame"]:
+                project["frame"].destroy()
+
+        # 清空项目列表
+        self.projects.clear()
+
+    def add_project(self, name: str, modified: str, status: str, project_path: str = None):
         """添加项目"""
         # 项目框架
         project_frame = ctk.CTkFrame(
@@ -299,7 +325,7 @@ class Sidebar(ctk.CTkFrame):
 
         # 绑定点击事件
         def on_project_frame_click(event=None):
-            self._on_project_select(name)
+            self._on_project_select(name, project_path)
 
         project_frame.bind("<Button-1>", on_project_frame_click)
         name_label.bind("<Button-1>", on_project_frame_click)
@@ -309,8 +335,58 @@ class Sidebar(ctk.CTkFrame):
             "name": name,
             "modified": modified,
             "status": status,
+            "path": project_path,
             "frame": project_frame
         })
+
+    def update_recent_projects(self, project_path: str):
+        """更新最近项目列表"""
+        import os
+        from datetime import datetime
+
+        # 获取项目名称
+        project_name = os.path.basename(project_path)
+        if os.path.isdir(project_path):
+            # 文件夹项目
+            project_name = f"📁 {project_name}"
+        else:
+            # JSON文件项目
+            project_name = f"📄 {project_name}"
+
+        # 获取修改时间
+        modified_time = datetime.fromtimestamp(os.path.getmtime(project_path))
+        modified_str = modified_time.strftime("%Y-%m-%d %H:%M")
+
+        # 清空现有项目列表
+        self.clear_projects()
+
+        # 添加新的项目到列表顶部
+        self.add_project(project_name, modified_str, "最近打开", project_path)
+
+        # 如果主窗口有状态管理器，保存到状态中
+        if hasattr(self, 'main_window') and self.main_window and hasattr(self.main_window, 'state_manager'):
+            recent_projects = self.main_window.state_manager.get_state('app.recent_projects', [])
+
+            # 更新最近项目列表
+            if project_path not in recent_projects:
+                recent_projects.insert(0, project_path)
+                # 只保留最近10个项目
+                recent_projects = recent_projects[:10]
+                self.main_window.state_manager.set_state('app.recent_projects', recent_projects)
+
+            # 添加其他最近项目（最多显示5个）
+            for i, recent_path in enumerate(recent_projects[1:6]):
+                if os.path.exists(recent_path) and recent_path != project_path:
+                    recent_name = os.path.basename(recent_path)
+                    if os.path.isdir(recent_path):
+                        recent_name = f"📁 {recent_name}"
+                    else:
+                        recent_name = f"📄 {recent_name}"
+
+                    recent_modified = datetime.fromtimestamp(os.path.getmtime(recent_path))
+                    recent_modified_str = recent_modified.strftime("%Y-%m-%d %H:%M")
+
+                    self.add_project(recent_name, recent_modified_str, "历史项目", recent_path)
 
     def _bind_custom_events(self):
         """绑定自定义事件"""
@@ -396,9 +472,15 @@ class Sidebar(ctk.CTkFrame):
         if self.state_manager:
             self.state_manager.set_state('app.active_tab', target)
 
-    def _on_project_select(self, project_name: str):
+    def _on_project_select(self, project_name: str, project_path: str = None):
         """项目选择事件处理"""
-        if self.project_select_callback:
+        if project_path and self.main_window:
+            # 直接加载项目
+            try:
+                self.main_window._load_project_from_path(project_path)
+            except Exception as e:
+                logger.error(f"加载项目失败: {e}")
+        elif self.project_select_callback:
             self.project_select_callback(project_name)
         else:
             logger.debug(f"选择项目: {project_name}")

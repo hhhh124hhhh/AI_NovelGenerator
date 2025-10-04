@@ -7,7 +7,9 @@
       "Bash(source:*)",
       "Bash(./python.exe:*)",
       "Bash(tree:*)",
-      "Bash(timeout:*)"
+      "Bash(timeout:*)",
+      "Bash(python3:*)",
+      "Bash(uv:*)"
     ],
     "deny": [],
     "ask": []

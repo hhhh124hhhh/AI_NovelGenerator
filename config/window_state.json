@@ -1,0 +1,46 @@
+{
+  "state": {
+    "app": {
+      "window_state": {
+        "width": 1200,
+        "height": 800,
+        "maximized": false,
+        "position": {
+          "x": 100,
+          "y": 100
+        }
+      },
+      "active_tab": "config",
+      "theme": "dark",
+      "layout": "desktop"
+    },
+    "user": {
+      "preferences": {
+        "auto_save": true,
+        "show_tips": true,
+        "language": "zh_CN"
+      },
+      "recent_files": [],
+      "current_project": null
+    },
+    "ui": {
+      "sidebar_visible": true,
+      "sidebar_width": 250,
+      "status_bar_visible": true,
+      "toolbar_visible": true
+    },
+    "app.active_tab": "config",
+    "app.window_state": {
+      "width": 1500,
+      "height": 1000,
+      "maximized": false,
+      "position": {
+        "x": 100,
+        "y": 100
+      }
+    },
+    "app.theme": "light"
+  },
+  "timestamp": "2025-10-04T16:10:05.226190",
+  "version": "1.0"
+}

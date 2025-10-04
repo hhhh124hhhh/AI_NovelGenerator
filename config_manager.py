@@ -203,69 +203,221 @@ def test_llm_config(interface_format, api_key, base_url, model_name, temperature
     """测试当前的LLM配置是否可用"""
     def task():
         try:
-            log_func("开始测试LLM配置...")
-            main_logger.info(f"测试LLM配置 - 接口格式: {interface_format}, 模型: {model_name}")
-            
-            llm_adapter = create_llm_adapter(
-                interface_format=interface_format,
-                base_url=base_url,
-                model_name=model_name,
-                api_key=api_key,
-                temperature=temperature,
-                max_tokens=max_tokens,
-                timeout=timeout
-            )
+            # 临时清除代理环境变量以避免连接问题
+            import os
+            old_http_proxy = os.environ.pop('HTTP_PROXY', None)
+            old_https_proxy = os.environ.pop('HTTPS_PROXY', None)
+            old_http_proxy_lower = os.environ.pop('http_proxy', None)
+            old_https_proxy_lower = os.environ.pop('https_proxy', None)
 
-            test_prompt = "Please reply 'OK'"
-            log_llm_request(test_prompt, model_name, interface_format)
-            
-            response = llm_adapter.invoke(test_prompt)
-            log_llm_response(response, model_name, interface_format)
-            
-            if response:
-                log_func("✅ LLM配置测试成功！")
-                log_func(f"测试回复: {response}")
-            else:
-                log_func("❌ LLM配置测试失败：未获取到响应")
+            try:
+                log_func("开始测试LLM配置...")
+                main_logger.info(f"测试LLM配置 - 接口格式: {interface_format}, 模型: {model_name}")
+
+                llm_adapter = create_llm_adapter(
+                    interface_format=interface_format,
+                    base_url=base_url,
+                    model_name=model_name,
+                    api_key=api_key,
+                    temperature=temperature,
+                    max_tokens=max_tokens,
+                    timeout=timeout
+                )
+
+                test_prompt = "Please reply 'OK'"
+                log_llm_request(test_prompt, model_name, interface_format)
+
+                response = llm_adapter.invoke(test_prompt)
+                log_llm_response(response, model_name, interface_format)
+
+                if response:
+                    log_func("✅ LLM配置测试成功！")
+                    log_func(f"测试回复: {response}")
+                else:
+                    log_func("❌ LLM配置测试失败：未获取到响应")
+
+            finally:
+                # 恢复代理环境变量
+                if old_http_proxy:
+                    os.environ['HTTP_PROXY'] = old_http_proxy
+                if old_https_proxy:
+                    os.environ['HTTPS_PROXY'] = old_https_proxy
+                if old_http_proxy_lower:
+                    os.environ['http_proxy'] = old_http_proxy_lower
+                if old_https_proxy_lower:
+                    os.environ['https_proxy'] = old_https_proxy_lower
+
         except Exception as e:
+            # 确保在异常情况下也恢复代理设置
+            if old_http_proxy:
+                os.environ['HTTP_PROXY'] = old_http_proxy
+            if old_https_proxy:
+                os.environ['HTTPS_PROXY'] = old_https_proxy
+            if old_http_proxy_lower:
+                os.environ['http_proxy'] = old_http_proxy_lower
+            if old_https_proxy_lower:
+                os.environ['https_proxy'] = old_https_proxy_lower
+
             log_func(f"❌ LLM配置测试出错: {str(e)}")
             handle_exception_func("测试LLM配置时出错")
 
     threading.Thread(target=task, daemon=True).start()
 
+
+def test_llm_config_with_dict(config_dict, log_func, handle_exception_func):
+    """使用配置字典测试LLM配置"""
+    try:
+        # 从配置字典中提取参数，提供默认值
+        interface_format = config_dict.get('provider', 'OpenAI')
+        api_key = config_dict.get('api_key', '')
+        base_url = config_dict.get('base_url', 'https://api.openai.com/v1')
+        model_name = config_dict.get('model', 'gpt-3.5-turbo')
+        temperature = config_dict.get('temperature', 0.7)
+        max_tokens = config_dict.get('max_tokens', 8192)
+        timeout = config_dict.get('timeout', 300)
+        
+        # 调用原始测试函数
+        test_llm_config(
+            interface_format=interface_format,
+            api_key=api_key,
+            base_url=base_url,
+            model_name=model_name,
+            temperature=temperature,
+            max_tokens=max_tokens,
+            timeout=timeout,
+            log_func=log_func,
+            handle_exception_func=handle_exception_func
+        )
+        return True, "测试已启动"
+    except Exception as e:
+        error_msg = f"配置参数错误: {str(e)}"
+        log_func(f"❌ {error_msg}")
+        return False, error_msg
+
 def test_embedding_config(api_key, base_url, interface_format, model_name, log_func, handle_exception_func):
     """测试当前的Embedding配置是否可用"""
     def task():
         try:
-            log_func("开始测试Embedding配置...")
-            main_logger.info(f"测试Embedding配置 - 接口格式: {interface_format}, 模型: {model_name}")
-            
-            # 在测试前打印配置信息用于调试
-            log_func(f"测试配置: interface_format={interface_format}, base_url={base_url}, model_name={model_name}")
-            
-            embedding_adapter = create_embedding_adapter(
-                interface_format=interface_format,
-                api_key=api_key,
-                base_url=base_url,
-                model_name=model_name
-            )
+            # 临时清除代理环境变量以避免连接问题
+            import os
+            old_http_proxy = os.environ.pop('HTTP_PROXY', None)
+            old_https_proxy = os.environ.pop('HTTPS_PROXY', None)
+            old_http_proxy_lower = os.environ.pop('http_proxy', None)
+            old_https_proxy_lower = os.environ.pop('https_proxy', None)
 
-            test_text = "测试文本"
-            log_embedding_request(test_text, model_name, interface_format)
-            
-            embeddings = embedding_adapter.embed_query(test_text)
-            log_embedding_response(embeddings, model_name, interface_format)
-            
-            if embeddings and len(embeddings) > 0:
-                log_func("✅ Embedding配置测试成功！")
-                log_func(f"生成的向量维度: {len(embeddings)}")
-            else:
-                log_func("❌ Embedding配置测试失败：未获取到向量")
+            try:
+                log_func("开始测试Embedding配置...")
+                main_logger.info(f"测试Embedding配置 - 接口格式: {interface_format}, 模型: {model_name}")
+
+                # 在测试前打印配置信息用于调试
+                log_func(f"测试配置: interface_format={interface_format}, base_url={base_url}, model_name={model_name}")
+
+                embedding_adapter = create_embedding_adapter(
+                    interface_format=interface_format,
+                    api_key=api_key,
+                    base_url=base_url,
+                    model_name=model_name
+                )
+
+                test_text = "测试文本"
+                log_embedding_request(test_text, model_name, interface_format)
+
+                embeddings = embedding_adapter.embed_query(test_text)
+                log_embedding_response(embeddings, model_name, interface_format)
+
+                # 更详细的向量检查
+                if embeddings is None:
+                    log_func("❌ Embedding配置测试失败：返回值为None")
+                    main_logger.error("嵌入测试失败 - embed_query返回None")
+                elif isinstance(embeddings, list):
+                    if len(embeddings) > 0:
+                        # 检查向量内容是否有效
+                        valid_count = sum(1 for x in embeddings if isinstance(x, (int, float)) and not str(x).lower() == 'nan')
+                        if valid_count == len(embeddings):
+                            log_func("✅ Embedding配置测试成功！")
+                            log_func(f"生成的向量维度: {len(embeddings)}")
+                            main_logger.info(f"嵌入测试成功 - 向量维度: {len(embeddings)}")
+                        else:
+                            log_func(f"❌ Embedding配置测试失败：向量包含无效数据 ({valid_count}/{len(embeddings)} 有效)")
+                            main_logger.error(f"嵌入测试失败 - 向量数据无效: {embeddings[:5]}...")
+                    else:
+                        log_func("❌ Embedding配置测试失败：返回空向量")
+                        main_logger.error("嵌入测试失败 - 返回空向量列表")
+                else:
+                    log_func(f"❌ Embedding配置测试失败：返回值类型错误 ({type(embeddings)})")
+                    main_logger.error(f"嵌入测试失败 - 返回值类型错误: {type(embeddings)}, 值: {str(embeddings)[:200]}")
+
+                # 如果embeddings有问题，打印调试信息
+                if not embeddings or (isinstance(embeddings, list) and len(embeddings) == 0):
+                    log_func("🔍 调试信息：检查API响应格式...")
+                    # 尝试直接调用API获取原始响应来调试
+                    try:
+                        import requests
+                        headers = {"Authorization": f"Bearer {api_key}"}
+                        debug_url = f"{base_url}/embeddings"
+                        debug_payload = {"input": test_text, "model": model_name}
+                        debug_response = requests.post(debug_url, json=debug_payload, headers=headers, timeout=10)
+                        if debug_response.status_code == 200:
+                            log_func(f"🔍 API调用成功，响应长度: {len(debug_response.text)} 字符")
+                            # 只显示前200个字符避免日志过长
+                            response_preview = debug_response.text[:200] + "..." if len(debug_response.text) > 200 else debug_response.text
+                            log_func(f"🔍 响应预览: {response_preview}")
+                        else:
+                            log_func(f"🔍 API调用失败，状态码: {debug_response.status_code}")
+                    except Exception as debug_e:
+                        log_func(f"🔍 调试API调用失败: {str(debug_e)}")
+
+            finally:
+                # 恢复代理环境变量
+                if old_http_proxy:
+                    os.environ['HTTP_PROXY'] = old_http_proxy
+                if old_https_proxy:
+                    os.environ['HTTPS_PROXY'] = old_https_proxy
+                if old_http_proxy_lower:
+                    os.environ['http_proxy'] = old_http_proxy_lower
+                if old_https_proxy_lower:
+                    os.environ['https_proxy'] = old_https_proxy_lower
+
         except Exception as e:
+            # 确保在异常情况下也恢复代理设置
+            if old_http_proxy:
+                os.environ['HTTP_PROXY'] = old_http_proxy
+            if old_https_proxy:
+                os.environ['HTTPS_PROXY'] = old_https_proxy
+            if old_http_proxy_lower:
+                os.environ['http_proxy'] = old_http_proxy_lower
+            if old_https_proxy_lower:
+                os.environ['https_proxy'] = old_https_proxy_lower
+
             log_func(f"❌ Embedding配置测试出错: {str(e)}")
             handle_exception_func("测试Embedding配置时出错")
 
     threading.Thread(target=task, daemon=True).start()
+
+
+def test_embedding_config_with_dict(config_dict, log_func, handle_exception_func):
+    """使用配置字典测试Embedding配置"""
+    try:
+        # 从配置字典中提取参数，提供默认值
+        interface_format = config_dict.get('provider', 'OpenAI')
+        api_key = config_dict.get('api_key', '')
+        base_url = config_dict.get('base_url', 'https://api.openai.com/v1')
+        model_name = config_dict.get('model', 'text-embedding-ada-002')
+        
+        # 调用原始测试函数
+        test_embedding_config(
+            api_key=api_key,
+            base_url=base_url,
+            interface_format=interface_format,
+            model_name=model_name,
+            log_func=log_func,
+            handle_exception_func=handle_exception_func
+        )
+        return True, "测试已启动"
+    except Exception as e:
+        error_msg = f"配置参数错误: {str(e)}"
+        log_func(f"❌ {error_msg}")
+        return False, error_msg
 
 
 def get_zhipu_model_list(api_key, base_url, log_func):
