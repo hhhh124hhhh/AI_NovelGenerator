@@ -1,0 +1,19 @@
+{
+  "timestamp": [
+    1.5,
+    2.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "results": {
+    "api_connection": true,
+    "langchain_connection": true,
+    "novel_generation": true
+  },
+  "summary": {
+    "total_tests": 3,
+    "passed_tests": 3,
+    "success_rate": 100.0
+  }
+}

@@ -1,7 +1,8 @@
 # llm_adapters.py
 # -*- coding: utf-8 -*-
 import logging
-from typing import Optional
+import time
+from typing import Optional, Dict, Any
 from langchain_openai import ChatOpenAI, AzureChatOpenAI
 import google.generativeai as genai
 from google.generativeai.types import GenerationConfig
@@ -12,7 +13,20 @@ from openai import OpenAI
 import requests
 
 # 导入高级日志系统
-from advanced_logger import llm_logger, log_llm_request, log_llm_response
+try:
+    from advanced_logger import llm_logger, log_llm_request, log_llm_response
+    ADVANCED_LOGGING = True
+except ImportError:
+    ADVANCED_LOGGING = False
+    llm_logger = logging.getLogger("llm_adapters")
+
+# 导入BMAD网络管理器
+try:
+    from network_manager import get_connection_manager, NetworkError
+    NETWORK_MANAGER_AVAILABLE = True
+except ImportError:
+    NETWORK_MANAGER_AVAILABLE = False
+    NetworkError = Exception
 
 def check_base_url(url: str) -> str:
     """
@@ -42,39 +56,105 @@ class BaseLLMAdapter:
 
 class DeepSeekAdapter(BaseLLMAdapter):
     """
-    适配官方/OpenAI兼容接口（使用 langchain.ChatOpenAI）
+    增强的DeepSeek适配器 - 使用增强的LLM适配器确保连接稳定
     """
     def __init__(self, api_key: str, base_url: str, model_name: str, max_tokens: int, temperature: float = 0.7, timeout: Optional[int] = 600):
-        self.base_url = check_base_url(base_url)
-        self.api_key = api_key
-        self.model_name = model_name
-        self.max_tokens = max_tokens
-        self.temperature = temperature
-        self.timeout = timeout
+        try:
+            # 尝试导入增强适配器
+            from enhanced_llm_adapter import create_enhanced_llm_adapter
 
-        self._client = ChatOpenAI(
-            model=self.model_name,
-            api_key=self.api_key,  # type: ignore
-            base_url=self.base_url,
-            temperature=self.temperature,
-            timeout=self.timeout
-        )
+            self.enhanced_adapter = create_enhanced_llm_adapter(
+                interface_format="DeepSeek",
+                api_key=api_key,
+                base_url=base_url,
+                model_name=model_name,
+                temperature=temperature,
+                max_tokens=max_tokens,
+                timeout=timeout or 60
+            )
+            self.use_enhanced = True
+
+            if ADVANCED_LOGGING:
+                llm_logger.info("使用增强的DeepSeek适配器")
+
+        except ImportError:
+            # 回退到原始适配器
+            self.use_enhanced = False
+            self.base_url = check_base_url(base_url)
+            self.api_key = api_key
+            self.model_name = model_name
+            self.max_tokens = max_tokens
+            self.temperature = temperature
+            self.timeout = timeout
+
+            # 初始化BMAD网络管理器
+            if NETWORK_MANAGER_AVAILABLE:
+                self.network_manager = get_connection_manager({
+                    'timeout': timeout,
+                    'max_retries': 3,
+                    'retry_delay': 2
+                })
+                # 动态调整超时时间
+                self.timeout = self.network_manager.get_best_timeout(self.base_url)
+            else:
+                self.network_manager = None
+
+            self._client = ChatOpenAI(
+                model=self.model_name,
+                api_key=self.api_key,  # type: ignore
+                base_url=self.base_url,
+                temperature=self.temperature,
+                timeout=self.timeout
+            )
+
+            if ADVANCED_LOGGING:
+                llm_logger.info("使用原始DeepSeek适配器")
 
     def invoke(self, prompt: str) -> str:
-        llm_logger.info(f"调用DeepSeek模型: {self.model_name}")
-        log_llm_request(prompt, self.model_name, "DeepSeek")
-        response = self._client.invoke(prompt)
-        if not response:
-            logging.warning("No response from DeepSeekAdapter.")
-            return ""
-        content = response.content
-        result = content if isinstance(content, str) else str(content)
-        log_llm_response(result, self.model_name, "DeepSeek")
-        return result
+        if self.use_enhanced:
+            # 使用增强适配器
+            return self.enhanced_adapter.invoke(prompt)
+        else:
+            # 使用原始适配器逻辑
+            llm_logger.info(f"调用DeepSeek模型: {self.model_name}")
+            log_llm_request(prompt, self.model_name, "DeepSeek")
+
+            def _make_request():
+                """内部请求函数，用于重试机制"""
+                response = self._client.invoke(prompt)
+                if not response:
+                    raise ValueError("No response from DeepSeekAdapter")
+                content = response.content
+                result = content if isinstance(content, str) else str(content)
+                return result
+
+            try:
+                # 使用BMAD网络管理器执行请求
+                if self.network_manager:
+                    result = self.network_manager.make_request_with_retry(_make_request)
+                else:
+                    # 回退到原始方法
+                    result = _make_request()
+
+                log_llm_response(result, self.model_name, "DeepSeek")
+                return result
+
+            except NetworkError as e:
+                error_msg = f"网络连接失败: {str(e)}"
+                llm_logger.error(error_msg)
+                logging.error(error_msg)
+                return f"[网络错误] {error_msg}"
+
+            except Exception as e:
+                error_msg = f"DeepSeek API调用失败: {str(e)}"
+                llm_logger.error(error_msg)
+                logging.error(error_msg)
+                return f"[API错误] {error_msg}"
 
 class OpenAIAdapter(BaseLLMAdapter):
     """
     适配官方/OpenAI兼容接口（使用 langchain.ChatOpenAI）
+    集成BMAD网络管理器提供稳定的连接
     """
     def __init__(self, api_key: str, base_url: str, model_name: str, max_tokens: int, temperature: float = 0.7, timeout: Optional[int] = 600):
         self.base_url = check_base_url(base_url)
@@ -83,6 +163,18 @@ class OpenAIAdapter(BaseLLMAdapter):
         self.max_tokens = max_tokens
         self.temperature = temperature
         self.timeout = timeout
+
+        # 初始化BMAD网络管理器
+        if NETWORK_MANAGER_AVAILABLE:
+            self.network_manager = get_connection_manager({
+                'timeout': timeout,
+                'max_retries': 3,
+                'retry_delay': 2
+            })
+            # 动态调整超时时间
+            self.timeout = self.network_manager.get_best_timeout(self.base_url)
+        else:
+            self.network_manager = None
 
         self._client = ChatOpenAI(
             model=self.model_name,
@@ -95,14 +187,38 @@ class OpenAIAdapter(BaseLLMAdapter):
     def invoke(self, prompt: str) -> str:
         llm_logger.info(f"调用OpenAI模型: {self.model_name}")
         log_llm_request(prompt, self.model_name, "OpenAI")
-        response = self._client.invoke(prompt)
-        if not response:
-            logging.warning("No response from OpenAIAdapter.")
-            return ""
-        content = response.content
-        result = content if isinstance(content, str) else str(content)
-        log_llm_response(result, self.model_name, "OpenAI")
-        return result
+
+        def _make_request():
+            """内部请求函数，用于重试机制"""
+            response = self._client.invoke(prompt)
+            if not response:
+                raise ValueError("No response from OpenAIAdapter")
+            content = response.content
+            result = content if isinstance(content, str) else str(content)
+            return result
+
+        try:
+            # 使用BMAD网络管理器执行请求
+            if self.network_manager:
+                result = self.network_manager.make_request_with_retry(_make_request)
+            else:
+                # 回退到原始方法
+                result = _make_request()
+
+            log_llm_response(result, self.model_name, "OpenAI")
+            return result
+
+        except NetworkError as e:
+            error_msg = f"网络连接失败: {str(e)}"
+            llm_logger.error(error_msg)
+            logging.error(error_msg)
+            return f"[网络错误] {error_msg}"
+
+        except Exception as e:
+            error_msg = f"OpenAI API调用失败: {str(e)}"
+            llm_logger.error(error_msg)
+            logging.error(error_msg)
+            return f"[API错误] {error_msg}"
 
 class GeminiAdapter(BaseLLMAdapter):
     """

@@ -44,6 +44,8 @@ class RoleLibrary:
         self.window.grab_set()
         self.window.attributes('-topmost', 1)
         self.window.after(200, lambda: self.window.attributes('-topmost', 0))
+        # 默认显示"全部"分类
+        self.show_category("全部")
 
     def create_library_structure(self):
         """创建必要的目录结构"""
@@ -210,17 +212,18 @@ class RoleLibrary:
                     break
 
             if not actual_category:
-                msg = messagebox.showerror("错误", f"找不到角色 {self.current_role} 的实际存储位置", parent=self.window)
+                messagebox.showerror("错误", f"找不到角色 {self.current_role} 的实际存储位置", parent=self.window)
                 self.window.attributes('-topmost', 1)
-                msg.attributes('-topmost', 1)
-                self.window.after(200, lambda: [self.window.attributes('-topmost', 0), msg.attributes('-topmost', 0)])
+                self.window.after(200, lambda: self.window.attributes('-topmost', 0))
                 return
 
             old_path = os.path.join(
                 self.save_path, actual_category, f"{self.current_role}.txt")
         else:
+            # 确保selected_category不为None
+            selected_category = self.selected_category or "全部"
             old_path = os.path.join(
-                self.save_path, self.selected_category, f"{self.current_role}.txt")
+                self.save_path, selected_category, f"{self.current_role}.txt")
 
         # 如果目标分类是"全部"，则实际移动到"全部"分类
         if new_category == "全部":
@@ -232,10 +235,9 @@ class RoleLibrary:
 
         # 检查是否已经在目标分类
         if os.path.exists(new_path):
-            msg = messagebox.showinfo("提示", "角色已在目标分类中", parent=self.window)
+            messagebox.showinfo("提示", "角色已在目标分类中", parent=self.window)
             self.window.attributes('-topmost', 1)
-            msg.attributes('-topmost', 1)
-            self.window.after(200, lambda: [self.window.attributes('-topmost', 0), msg.attributes('-topmost', 0)])
+            self.window.after(200, lambda: self.window.attributes('-topmost', 0))
             return
 
         confirm = messagebox.askyesno(
@@ -262,14 +264,15 @@ class RoleLibrary:
                 
             except Exception as e:
                 # 失败时恢复原分类显示
-                self.category_combobox.set(self.selected_category)
+                if hasattr(self, 'selected_category') and self.selected_category:
+                    self.category_combobox.set(self.selected_category)
                 raise e
         except Exception as e:
-            msg = messagebox.showerror("错误", f"分类转移失败：{str(e)}", parent=self.window)
+            messagebox.showerror("错误", f"分类转移失败：{str(e)}", parent=self.window)
             self.window.attributes('-topmost', 1)
-            msg.attributes('-topmost', 1)
-            self.window.after(200, lambda: [self.window.attributes('-topmost', 0), msg.attributes('-topmost', 0)])
-            self.category_combobox.set(self.selected_category)
+            self.window.after(200, lambda: self.window.attributes('-topmost', 0))
+            if hasattr(self, 'selected_category') and self.selected_category:
+                self.category_combobox.set(self.selected_category)
 
     def import_roles(self):
         """导入角色窗口"""
@@ -763,7 +766,7 @@ class RoleLibrary:
             return
 
         role_path = os.path.join(
-            self.save_path, self.selected_category, f"{self.current_role}.txt")
+            self.save_path, self.selected_category or "全部", f"{self.current_role}.txt")
         try:
             os.remove(role_path)
             # 从"全部"分类也删除
@@ -773,10 +776,9 @@ class RoleLibrary:
                 os.remove(all_path)
             self.show_category(self.selected_category)
             self.preview_text.delete("1.0", "end")
-            msg = messagebox.showinfo("成功", "角色已删除", parent=self.window)
+            messagebox.showinfo("成功", "角色已删除", parent=self.window)
             self.window.attributes('-topmost', 1)
-            msg.attributes('-topmost', 1)
-            self.window.after(200, lambda: [self.window.attributes('-topmost', 0), msg.attributes('-topmost', 0)])
+            self.window.after(200, lambda: self.window.attributes('-topmost', 0))
         except Exception as e:
             msg = messagebox.showerror("错误", f"删除失败：{str(e)}", parent=self.window)
             self.window.attributes('-topmost', 1)
@@ -856,14 +858,14 @@ class RoleLibrary:
                 return
 
         content = self._build_role_content()
-        save_path = os.path.join(self.save_path, self.selected_category,
+        save_path = os.path.join(self.save_path, self.selected_category or "全部",
                                  f"{new_name}.txt")
 
         try:
             self._save_role_file(content, save_path)
             # 如果修改了角色名，更新文件名
             if new_name != self.current_role:
-                old_path = os.path.join(self.save_path, self.selected_category,
+                old_path = os.path.join(self.save_path, self.selected_category or "全部",
                                         f"{self.current_role}.txt")
                 os.rename(old_path, save_path)
 
@@ -930,7 +932,7 @@ class RoleLibrary:
 
             # 读取旧文件内容并更新角色名
             old_path = os.path.join(
-                self.save_path, actual_category, f"{old_name}.txt")
+                self.save_path, actual_category or "全部", f"{old_name}.txt")
             with open(old_path, 'r', encoding='utf-8') as f:
                 content = f.read()
 
@@ -947,7 +949,7 @@ class RoleLibrary:
 
             # 写入新文件
             new_path = os.path.join(
-                self.save_path, actual_category, f"{new_name}.txt")
+                self.save_path, actual_category or "全部", f"{new_name}.txt")
             with open(new_path, 'w', encoding='utf-8') as f:
                 f.write(content)
 
@@ -1291,11 +1293,12 @@ class RoleLibrary:
                         raise FileNotFoundError(f"找不到角色文件：{role_name}")
 
                 # 只更新分类选择框的显示值，不改变当前选中的分类
-                self.category_combobox.set(actual_category)
+                if actual_category:
+                    self.category_combobox.set(actual_category)
             else:
                 # 普通分类直接使用当前路径
                 file_path = os.path.join(
-                    self.save_path, self.selected_category, f"{role_name}.txt")
+                    self.save_path, self.selected_category or "全部", f"{role_name}.txt")
 
             content, _ = self._read_file_with_fallback_encoding(file_path)
 
@@ -1557,6 +1560,8 @@ class RoleLibrary:
                 dialog.destroy()
             except Exception as e:
                 messagebox.showerror("错误", f"重命名失败：{str(e)}", parent=self.window)
+                self.window.attributes('-topmost', 1)
+                self.window.after(200, lambda: self.window.attributes('-topmost', 0))
 
         ctk.CTkButton(button_frame, text="确认",
                       command=confirm_rename, font=DEFAULT_FONT).pack(side="left", padx=10)

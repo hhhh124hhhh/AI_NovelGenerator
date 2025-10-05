@@ -31,7 +31,7 @@ class DirectoryManager(ctk.CTkFrame):
     - 章节统计信息
     """
 
-    def __init__(self, parent: ctk.CTkFrame, theme_manager, state_manager=None, **kwargs):
+    def __init__(self, parent: ctk.CTkFrame, theme_manager, state_manager=None, project_manager=None, **kwargs):
         """
         初始化目录管理器
 
@@ -39,6 +39,7 @@ class DirectoryManager(ctk.CTkFrame):
             parent: 父组件
             theme_manager: 主题管理器
             state_manager: 状态管理器
+            project_manager: 项目管理器
             **kwargs: 其他参数
         """
         # 初始化CustomTkinter Frame
@@ -47,6 +48,7 @@ class DirectoryManager(ctk.CTkFrame):
         # 存储管理器引用
         self.theme_manager = theme_manager
         self.state_manager = state_manager
+        self.project_manager = project_manager
 
         # 配置数据
         self.config_data: Dict[str, Any] = load_config("config.json")
@@ -125,6 +127,7 @@ class DirectoryManager(ctk.CTkFrame):
         btn_frame.grid(row=0, column=3, padx=10, pady=10)
 
         buttons = [
+            ("🔄", self._refresh_chapters),
             ("📁 导入", self._import_chapters),
             ("📤 导出", self._export_chapters)
         ]
@@ -134,9 +137,11 @@ class DirectoryManager(ctk.CTkFrame):
                 btn_frame,
                 text=text,
                 command=command,
-                width=60,
+                width=35 if text == "🔄" else 60,
                 height=25,
-                font=ctk.CTkFont(size=10)
+                font=ctk.CTkFont(size=10),
+                fg_color="#2196F3" if text == "🔄" else None,
+                hover_color="#1976D2" if text == "🔄" else None
             )
             btn.pack(side="left", padx=2)
 
@@ -306,34 +311,107 @@ class DirectoryManager(ctk.CTkFrame):
         try:
             chapters = []
 
-            # 构建文件路径
+            # 优先使用传递的项目管理器
+            if self.project_manager:
+                # 使用智能文件读取
+                content = self.project_manager.read_file_smart("Novel_directory.txt")
+                if content:
+                    chapters = self._parse_chapter_content(content)
+                    logger.info(f"通过项目管理器成功加载目录，解析出 {len(chapters)} 个章节")
+
+                    # 更新章节列表
+                    self.chapters = chapters
+                    self._update_chapters_list(chapters)
+                    return
+
+            # 如果没有传递项目管理器，尝试获取全局项目管理器
+            try:
+                from .project_manager import get_project_manager
+                project_manager = get_project_manager()
+
+                # 使用智能文件读取
+                content = project_manager.read_file_smart("Novel_directory.txt")
+                if content:
+                    chapters = self._parse_chapter_content(content)
+                    logger.info(f"通过全局项目管理器成功加载目录，解析出 {len(chapters)} 个章节")
+
+                    # 更新章节列表
+                    self.chapters = chapters
+                    self._update_chapters_list(chapters)
+                    return
+
+            except ImportError:
+                logger.debug("项目管理器不可用，使用传统方式")
+            except Exception as e:
+                logger.debug(f"项目管理器加载失败: {e}")
+
+            # 传统方式：尝试从多个可能的路径加载目录文件
+            possible_paths = []
+
+            # 构建文件路径列表
             if self.save_path:
-                blueprint_path = os.path.join(self.save_path, "Novel_directory.txt")
-            else:
-                blueprint_path = "Novel_directory.txt"
+                possible_paths.append(os.path.join(self.save_path, "Novel_directory.txt"))
 
-            # 读取章节目录文件
-            if os.path.exists(blueprint_path):
-                with open(blueprint_path, 'r', encoding='utf-8') as f:
-                    content = f.read()
+            possible_paths.extend([
+                "Novel_directory.txt",
+                "./novel_output/Novel_directory.txt",
+                "./test_output/Novel_directory.txt"
+            ])
 
-                # 解析章节目录
+            # 如果有状态管理器，尝试获取配置的输出路径
+            if self.state_manager:
+                try:
+                    config = self.state_manager.get_state('config', {})
+                    if config and 'other_params' in config and 'filepath' in config['other_params']:
+                        output_path = config['other_params']['filepath']
+                        if output_path and output_path not in [p.replace('\\', '/') for p in possible_paths]:
+                            possible_paths.insert(0, f"{output_path}/Novel_directory.txt")
+                except Exception as e:
+                    logger.debug(f"获取输出路径配置失败: {e}")
+
+            # 尝试从每个路径读取文件
+            content = None
+            loaded_path = None
+            for path in possible_paths:
+                try:
+                    if os.path.exists(path):
+                        with open(path, 'r', encoding='utf-8') as f:
+                            content = f.read()
+                        loaded_path = path
+                        logger.info(f"成功从 {path} 加载目录文件")
+                        break
+                except Exception as e:
+                    logger.debug(f"从 {path} 读取目录文件失败: {e}")
+                    continue
+
+            # 如果成功读取到内容，解析章节目录
+            if content:
                 chapters = self._parse_chapter_content(content)
+                logger.info(f"从 {loaded_path} 解析出 {len(chapters)} 个章节")
 
             # 如果没有章节，创建默认章节
             if not chapters:
+                logger.info("未找到有效的目录文件，创建默认章节")
                 chapters = self._create_default_chapters()
 
             # 更新章节列表
+            self.chapters = chapters
             self._update_chapters_list(chapters)
 
-            logger.info(f"已加载{len(chapters)}个章节")
+            logger.info(f"已加载 {len(chapters)} 个章节")
 
         except Exception as e:
             logger.error(f"加载章节目录失败: {e}")
+            import traceback
+            logger.error(f"详细错误: {traceback.format_exc()}")
             # 创建默认章节
-            default_chapters = self._create_default_chapters()
-            self._update_chapters_list(default_chapters)
+            try:
+                chapters = self._create_default_chapters()
+                self.chapters = chapters
+                self._update_chapters_list(chapters)
+                logger.info(f"创建了 {len(chapters)} 个默认章节")
+            except Exception as default_error:
+                logger.error(f"创建默认章节也失败: {default_error}")
 
     def _parse_chapter_content(self, content: str) -> List[Dict[str, Any]]:
         """解析章节目录内容"""
@@ -344,12 +422,15 @@ class DirectoryManager(ctk.CTkFrame):
 
         for line in lines:
             line = line.strip()
-            if line.startswith('## 第'):
-                # 解析章节标题
-                if '章：' in line:
-                    parts = line.split('章：', 1)
-                    number_part = parts[0].replace('## 第', '').strip()
-                    title_part = parts[1].strip() if len(parts) > 1 else "未命名章节"
+            if line.startswith('第') and '章 - 【' in line:
+                # 解析章节标题，格式：第X章 - 【标题】
+                if '章 - 【' in line and '】' in line:
+                    # 提取章节编号
+                    number_part = line.split('章')[0].replace('第', '').strip()
+                    # 提取标题（在【和】之间）
+                    title_start = line.find('【') + 1
+                    title_end = line.find('】')
+                    title_part = line[title_start:title_end] if title_start > 0 and title_end > title_start else "未命名章节"
 
                     try:
                         chapter_num = int(number_part)
@@ -359,16 +440,34 @@ class DirectoryManager(ctk.CTkFrame):
                     current_chapter = {
                         'number': chapter_num,
                         'title': title_part,
-                        'preview': line
+                        'preview': line,
+                        'description': '',
+                        'metadata': {}
                     }
                     chapters.append(current_chapter)
 
             elif current_chapter and line and not line.startswith('#'):
-                # 添加章节描述
-                if 'preview' not in current_chapter:
-                    current_chapter['preview'] = line
-                else:
-                    current_chapter['preview'] += '\n' + line
+                # 解析章节元数据和描述
+                if '：' in line:
+                    key, value = line.split('：', 1)
+                    key = key.strip()
+                    value = value.strip()
+
+                    # 存储元数据
+                    current_chapter['metadata'][key] = value
+
+                    # 将重要信息添加到描述中
+                    if key in ['本章简述', '本章定位', '核心作用']:
+                        if current_chapter['description']:
+                            current_chapter['description'] += f"\n{key}: {value}"
+                        else:
+                            current_chapter['description'] = f"{key}: {value}"
+                elif line and current_chapter:
+                    # 继续添加描述文本
+                    if current_chapter['description']:
+                        current_chapter['description'] += f"\n{line}"
+                    else:
+                        current_chapter['description'] = line
 
         return chapters
 
@@ -632,6 +731,58 @@ class DirectoryManager(ctk.CTkFrame):
 
         except Exception as e:
             logger.error(f"保存章节目录失败: {e}")
+
+    def _refresh_chapters(self):
+        """刷新章节数据"""
+        try:
+            logger.info("🔄 开始刷新章节数据...")
+
+            # 重新初始化数据
+            self._initialize_data()
+
+            # 刷新章节显示
+            self._refresh_chapters_display()
+
+            # 更新统计信息
+            self._update_chapter_info()
+
+            logger.info("✅ 章节数据刷新完成")
+
+        except Exception as e:
+            logger.error(f"❌ 刷新章节数据失败: {e}")
+            import traceback
+            logger.error(f"详细错误: {traceback.format_exc()}")
+
+    def _refresh_chapters_display(self):
+        """刷新章节显示"""
+        try:
+            # 清空现有的章节树
+            for widget in self.chapters_tree.winfo_children():
+                widget.destroy()
+
+            # 重新创建章节项
+            self._create_chapter_items()
+
+        except Exception as e:
+            logger.error(f"刷新章节显示失败: {e}")
+
+    def _create_chapter_items(self):
+        """创建章节项"""
+        try:
+            # 使用现有的更新章节列表方法
+            self._update_chapters_list(self.chapters)
+        except Exception as e:
+            logger.error(f"创建章节项失败: {e}")
+
+    def _update_chapter_info(self):
+        """更新章节统计信息"""
+        try:
+            if hasattr(self, 'chapter_info_labels') and 'count' in self.chapter_info_labels:
+                count = len(self.chapters)
+                self.chapter_info_labels['count'].configure(text=f"章节数: {count}")
+
+        except Exception as e:
+            logger.error(f"更新章节统计失败: {e}")
 
     def _import_chapters(self):
         """导入章节"""

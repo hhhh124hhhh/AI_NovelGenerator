@@ -1,6 +1,7 @@
 """
 现代化角色管理标签页组件 - AI小说生成器的角色管理界面
 包含角色创建、编辑、状态跟踪等功能
+集成数据桥接器实现实时数据同步
 """
 
 import logging
@@ -9,6 +10,13 @@ from typing import Dict, Any, Optional, Callable, List
 import customtkinter as ctk
 from tkinter import messagebox
 from utils import read_file, save_string_to_txt
+
+# 导入数据桥接器
+try:
+    from ..data_bridge import get_data_bridge
+    DATA_BRIDGE_AVAILABLE = True
+except ImportError:
+    DATA_BRIDGE_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +33,7 @@ class CharactersTab(ctk.CTkFrame):
     - 角色导入导出
     """
 
-    def __init__(self, parent: ctk.CTkFrame, theme_manager, state_manager=None, **kwargs):
+    def __init__(self, parent: ctk.CTkFrame, theme_manager, state_manager=None, project_manager=None, **kwargs):
         """
         初始化角色管理标签页
 
@@ -33,6 +41,7 @@ class CharactersTab(ctk.CTkFrame):
             parent: 父组件
             theme_manager: 主题管理器
             state_manager: 状态管理器
+            project_manager: 项目管理器
             **kwargs: 其他参数
         """
         # 初始化CustomTkinter Frame
@@ -41,6 +50,14 @@ class CharactersTab(ctk.CTkFrame):
         # 存储管理器引用
         self.theme_manager = theme_manager
         self.state_manager = state_manager
+        self.project_manager = project_manager
+
+        # 数据桥接器
+        if DATA_BRIDGE_AVAILABLE:
+            self.data_bridge = get_data_bridge()
+            self.data_bridge.register_listener('characters', self._on_characters_updated)
+        else:
+            self.data_bridge = None
 
         # 角色数据
         self.characters = []
@@ -48,6 +65,8 @@ class CharactersTab(ctk.CTkFrame):
 
         # 组件引用
         self.characters_listbox = None
+        self.character_form = None
+        self.detail_frame = None
         self.character_info_text = None
         self.character_state_text = None
 
@@ -84,13 +103,30 @@ class CharactersTab(ctk.CTkFrame):
 
     def _build_character_list_panel(self):
         """构建角色列表面板"""
+        # 标题栏 - 包含标题和刷新按钮
+        title_frame = ctk.CTkFrame(self.left_panel, fg_color="transparent")
+        title_frame.pack(fill="x", padx=10, pady=(10, 15))
+
         # 标题
         title_label = ctk.CTkLabel(
-            self.left_panel,
+            title_frame,
             text="角色列表",
             font=ctk.CTkFont(size=16, weight="bold")
         )
-        title_label.pack(pady=(10, 15))
+        title_label.pack(side="left", padx=(0, 10))
+
+        # 刷新按钮
+        refresh_button = ctk.CTkButton(
+            title_frame,
+            text="🔄",
+            width=35,
+            height=35,
+            command=self._refresh_characters,
+            fg_color="#2196F3",
+            hover_color="#1976D2",
+            font=ctk.CTkFont(size=14)
+        )
+        refresh_button.pack(side="right", padx=(0, 5))
 
         # 搜索框
         search_frame = ctk.CTkFrame(self.left_panel, fg_color="transparent")
@@ -354,30 +390,200 @@ class CharactersTab(ctk.CTkFrame):
         )
         export_button.pack(side="left", fill="x", expand=True, padx=(5, 0))
 
+    def _on_characters_updated(self, characters: List[Dict[str, Any]]):
+        """角色数据更新回调"""
+        try:
+            self.characters = characters
+            self._refresh_characters_display()
+
+            # 如果有当前选中的角色，更新显示
+            if hasattr(self, 'current_character_index') and self.current_character_index < len(characters):
+                self._update_character_display(characters[self.current_character_index])
+
+            logger.info(f"角色数据更新完成，共 {len(characters)} 个角色")
+        except Exception as e:
+            logger.error(f"角色数据更新回调失败: {e}")
+
     def _load_characters_data(self):
         """加载角色数据"""
         try:
-            # 尝试从文件加载角色状态
-            content = read_file("character_state.txt")
+            # 优先使用传递的项目管理器
+            if self.project_manager:
+                # 使用智能文件读取
+                content = self.project_manager.read_file_smart("character_state.txt")
+                if content:
+                    logger.info(f"通过项目管理器成功加载角色数据")
+                    self._parse_character_data(content)
+                    return
+
+            # 如果没有传递项目管理器，尝试获取全局项目管理器
+            try:
+                from .project_manager import get_project_manager
+                project_manager = get_project_manager()
+
+                # 使用智能文件读取
+                content = project_manager.read_file_smart("character_state.txt")
+                if content:
+                    logger.info(f"通过全局项目管理器成功加载角色数据")
+                    self._parse_character_data(content)
+                    return
+
+            except ImportError:
+                logger.debug("项目管理器不可用，使用传统方式")
+            except Exception as e:
+                logger.debug(f"项目管理器加载失败: {e}")
+
+            # 传统方式：从多个可能的路径加载角色状态文件
+            possible_paths = [
+                "character_state.txt",
+                "./novel_output/character_state.txt",
+                "./test_output/character_state.txt"
+            ]
+
+            # 如果有状态管理器，尝试获取配置的输出路径
+            if self.state_manager:
+                try:
+                    config = self.state_manager.get_state('config', {})
+                    if config and 'other_params' in config and 'filepath' in config['other_params']:
+                        output_path = config['other_params']['filepath']
+                        possible_paths.insert(0, f"{output_path}/character_state.txt")
+                except Exception as e:
+                    logger.debug(f"获取输出路径配置失败: {e}")
+
+            content = None
+            for path in possible_paths:
+                try:
+                    content = read_file(path)
+                    if content:
+                        logger.info(f"成功从 {path} 加载角色数据")
+                        break
+                except FileNotFoundError:
+                    continue
+                except Exception as e:
+                    logger.debug(f"从 {path} 读取角色数据失败: {e}")
+                    continue
+
             if content:
-                # 解析角色数据（这里简化处理，实际应该解析JSON或其他格式）
+                # 解析角色数据
                 self._parse_character_data(content)
             else:
                 # 创建默认角色
+                logger.info("未找到角色状态文件，创建默认角色")
                 self._create_default_characters()
 
-        except FileNotFoundError:
-            logger.info("未找到角色状态文件，创建默认角色")
-            self._create_default_characters()
         except Exception as e:
             logger.error(f"加载角色数据失败: {e}")
             self._create_default_characters()
 
     def _parse_character_data(self, content: str):
         """解析角色数据"""
-        # 这里实现角色数据解析逻辑
-        # 暂时创建示例数据
-        self._create_sample_characters()
+        try:
+            characters = []
+            lines = content.split('\n')
+            current_character = None
+            current_section = None
+
+            for line in lines:
+                line = line.rstrip()
+                if not line:
+                    continue
+
+                # 检测角色名称行（以：结尾，不是以空格或├开头）
+                if line.endswith('：') and not line.startswith(' ') and not line.startswith('├'):
+                    # 保存前一个角色
+                    if current_character:
+                        characters.append(current_character)
+
+                    # 创建新角色
+                    name = line.rstrip('：')
+                    current_character = {
+                        'name': name,
+                        'type': self._determine_character_type(name),
+                        'description': '',
+                        'traits': '',
+                        'state': '',
+                        'relationships': [],
+                        'items': [],
+                        'abilities': []
+                    }
+                    current_section = None
+
+                # 检测章节标题
+                elif line.startswith('新出场角色：') or line.startswith('主要角色间关系网') or line.startswith('触发或加深的事件'):
+                    current_section = line.strip('：')
+                    if current_character:
+                        # 添加特殊信息到描述中
+                        if current_section not in current_character:
+                            current_character[current_section] = []
+
+                # 检测具体信息项
+                elif line.startswith('├──') or line.startswith('└──'):
+                    if current_character:
+                        item_info = line.lstrip('├── ').lstrip('└── ')
+                        if '：' in item_info:
+                            key, value = item_info.split('：', 1)
+                            key = key.strip()
+                            value = value.strip()
+
+                            # 根据键分类存储信息
+                            if '物品' in key or '道具' in key or '武器' in key or '饰品' in key or '遗物' in key:
+                                current_character['items'].append(f"{key}: {value}")
+                            elif '能力' in key:
+                                current_character['abilities'].append(f"{key}: {value}")
+                            elif '状态' in key:
+                                current_character['state'] = value
+                            elif '关系' in key:
+                                current_character['relationships'].append(value)
+                            else:
+                                # 通用信息添加到描述
+                                if current_character['description']:
+                                    current_character['description'] += f"\n{key}: {value}"
+                                else:
+                                    current_character['description'] = f"{key}: {value}"
+
+                # 处理段落信息（多行文本）
+                elif line.startswith('│  ') and current_character:
+                    info_text = line.lstrip('│  ')
+                    if current_section:
+                        if current_section not in current_character:
+                            current_character[current_section] = []
+                        current_character[current_section].append(info_text)
+                    else:
+                        # 添加到描述
+                        if current_character['description']:
+                            current_character['description'] += f"\n{info_text}"
+                        else:
+                            current_character['description'] = info_text
+
+            # 添加最后一个角色
+            if current_character:
+                characters.append(current_character)
+
+            # 如果解析成功，使用解析的数据
+            if characters:
+                self.characters = characters
+                logger.info(f"成功解析出 {len(characters)} 个角色")
+            else:
+                # 解析失败，使用示例数据
+                logger.warning("角色数据解析失败，使用示例数据")
+                self._create_sample_characters()
+
+        except Exception as e:
+            logger.error(f"解析角色数据时出错: {e}")
+            # 出错时使用示例数据
+            self._create_sample_characters()
+
+    def _determine_character_type(self, name: str) -> str:
+        """根据角色名称判断角色类型"""
+        name_lower = name.lower()
+        if '格洛克' in name_lower:
+            return '主角'
+        elif any(keyword in name_lower for keyword in ['莉亚', '石拳', '腐爪', '铁颚', '柯尔']):
+            return '主要角色'
+        elif '新出场' in name_lower:
+            return '新角色'
+        else:
+            return '配角'
 
     def _create_default_characters(self):
         """创建默认角色"""
@@ -500,11 +706,18 @@ class CharactersTab(ctk.CTkFrame):
     def _highlight_selected_character(self, selected_char: Dict[str, Any]):
         """高亮选中的角色项"""
         for char in self.characters:
-            if "frame" in char:
-                if char == selected_char:
-                    char["frame"].configure(fg_color="#404040")
-                else:
-                    char["frame"].configure(fg_color="#333333")
+            if "frame" in char and char["frame"]:
+                try:
+                    # 检查组件是否仍然存在
+                    if char["frame"].winfo_exists():
+                        if char == selected_char:
+                            char["frame"].configure(fg_color="#404040")
+                        else:
+                            char["frame"].configure(fg_color="#333333")
+                except Exception as e:
+                    logger.debug(f"高亮角色项失败，组件可能已销毁: {e}")
+                    # 如果组件已不存在，清理引用
+                    char["frame"] = None
 
     def _add_new_character(self):
         """添加新角色"""
@@ -562,11 +775,20 @@ class CharactersTab(ctk.CTkFrame):
         if messagebox.askyesno("确认", f"确定要删除角色 '{self.current_character['name']}' 吗？"):
             try:
                 # 从列表中移除
-                self.characters.remove(self.current_character)
+                if self.current_character in self.characters:
+                    self.characters.remove(self.current_character)
+                else:
+                    logger.warning("要删除的角色不在列表中")
+                    self._clear_character_form()
+                    return
 
-                # 销毁UI框架
-                if "frame" in self.current_character:
-                    self.current_character["frame"].destroy()
+                # 安全地销毁UI框架
+                if "frame" in self.current_character and self.current_character["frame"]:
+                    try:
+                        if self.current_character["frame"].winfo_exists():
+                            self.current_character["frame"].destroy()
+                    except Exception as e:
+                        logger.debug(f"销毁角色UI框架失败: {e}")
 
                 # 清空当前选择
                 self.current_character = None
@@ -580,6 +802,91 @@ class CharactersTab(ctk.CTkFrame):
             except Exception as e:
                 logger.error(f"删除角色失败: {e}")
                 messagebox.showerror("错误", f"删除角色失败: {e}")
+
+    def _refresh_characters(self):
+        """刷新角色数据"""
+        try:
+            self._log("🔄 开始刷新角色数据...")
+
+            # 重新加载角色数据
+            self._load_characters_data()
+
+            # 刷新角色列表显示
+            self._refresh_characters_display()
+
+            # 如果使用数据桥接器，通知数据更新
+            if self.data_bridge:
+                try:
+                    # 通知数据桥接器更新
+                    success = self.data_bridge.update_characters(self.characters)
+                    if success:
+                        self._log("✅ 角色数据刷新完成")
+                    else:
+                        self._log("⚠️ 数据桥接器更新失败")
+                except Exception as e:
+                    self._log(f"⚠️ 刷新角色数据时出现错误: {e}")
+                    logger.error(f"数据桥接器更新失败: {e}")
+            else:
+                # 传统刷新方式
+                self._log("✅ 角色显示刷新完成")
+
+        except Exception as e:
+            self._log(f"❌ 刷新角色数据失败: {e}")
+            logger.error(f"刷新角色数据失败: {e}")
+
+    def _refresh_characters_display(self):
+        """刷新角色显示"""
+        try:
+            # 清理角色的frame引用
+            for char in self.characters:
+                if "frame" in char:
+                    char["frame"] = None
+
+            # 清空现有的角色列表显示
+            for widget in self.characters_scroll.winfo_children():
+                widget.destroy()
+
+            # 重新创建角色列表项
+            for char_data in self.characters:
+                self._create_character_item(char_data)
+
+            logger.info(f"角色显示刷新完成，共 {len(self.characters)} 个角色")
+        except Exception as e:
+            logger.error(f"刷新角色显示失败: {e}")
+
+    def _log(self, message: str):
+        """记录日志信息到生成日志标签页"""
+        try:
+            # 尝试获取主窗口的生成日志标签页
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.info(message)
+        except Exception:
+            # 如果日志记录失败，静默处理
+            pass
+
+    def _create_character_display_item(self, character: Dict[str, Any], index: int):
+        """创建角色显示项"""
+        try:
+            if not hasattr(self, 'characters_display_frame'):
+                return
+
+            # 创建角色框架
+            char_frame = ctk.CTkFrame(self.characters_display_frame)
+            char_frame.pack(fill="x", padx=5, pady=2)
+
+            # 角色名称
+            name = character.get('name', f'角色{index+1}')
+            name_label = ctk.CTkLabel(char_frame, text=name, font=ctk.CTkFont(size=12, weight="bold"))
+            name_label.pack(side="left", padx=10, pady=5)
+
+            # 角色描述
+            description = character.get('description', '暂无描述')
+            desc_label = ctk.CTkLabel(char_frame, text=description, font=ctk.CTkFont(size=10))
+            desc_label.pack(side="left", padx=5, pady=5)
+
+        except Exception as e:
+            logger.error(f"创建角色显示项失败: {e}")
 
     def _update_character_display(self, char_data: Dict[str, Any]):
         """更新角色显示"""

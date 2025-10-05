@@ -38,23 +38,27 @@ def build_chapters_tab(self):
     # 按钮框架
     btn_frame = ctk.CTkFrame(self.chapters_tab)
     btn_frame.grid(row=4, column=0, padx=10, pady=5, sticky="ew")
-    btn_frame.columnconfigure((0, 1, 2, 3, 4), weight=1)
+    btn_frame.columnconfigure((0, 1, 2, 3, 4, 5), weight=1)  # 增加一列权重
 
     # 刷新列表按钮
     refresh_btn = ctk.CTkButton(btn_frame, text=chinese_labels["refresh_chapter_list"], command=self.refresh_chapters_list, font=("Microsoft YaHei", 12))
     refresh_btn.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
 
+    # 独立刷新按钮（重复添加以提高可见性）
+    refresh_btn2 = ctk.CTkButton(btn_frame, text="🔄 刷新", command=self.refresh_chapters_list, font=("Microsoft YaHei", 12))
+    refresh_btn2.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
+
     # 上一章按钮
     prev_btn = ctk.CTkButton(btn_frame, text=chinese_labels["prev_chapter"], command=self.prev_chapter, font=("Microsoft YaHei", 12))
-    prev_btn.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
+    prev_btn.grid(row=0, column=2, padx=5, pady=5, sticky="ew")
 
     # 下一章按钮
     next_btn = ctk.CTkButton(btn_frame, text=chinese_labels["next_chapter"], command=self.next_chapter, font=("Microsoft YaHei", 12))
-    next_btn.grid(row=0, column=2, padx=5, pady=5, sticky="ew")
+    next_btn.grid(row=0, column=3, padx=5, pady=5, sticky="ew")
 
     # 保存当前章节按钮
     save_btn = ctk.CTkButton(btn_frame, text=chinese_labels["save_current_chapter"], command=self.save_current_chapter, font=("Microsoft YaHei", 12))
-    save_btn.grid(row=0, column=3, padx=5, pady=5, sticky="ew")
+    save_btn.grid(row=0, column=4, padx=5, pady=5, sticky="ew")
 
 def refresh_chapters_list(self):
     """刷新章节列表"""

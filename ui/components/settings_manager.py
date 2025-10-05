@@ -1,5 +1,6 @@
 """
 现代化设置管理器组件 - AI小说生成器的系统设置界面
+集成响应式设置管理器，解决窗口大小和字体问题
 包含字体设置、主题设置、界面设置等功能
 """
 
@@ -9,6 +10,13 @@ from typing import Dict, Any, Optional, Callable, List
 import customtkinter as ctk
 from tkinter import messagebox, font as tk_font
 from datetime import datetime
+
+# 导入响应式设置管理器
+try:
+    from .responsive_settings import get_responsive_settings
+    RESPONSIVE_SETTINGS_AVAILABLE = True
+except ImportError:
+    RESPONSIVE_SETTINGS_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +31,7 @@ class SettingsManager(ctk.CTkFrame):
     - 界面设置（动画效果、布局选项）
     - 实时预览功能
     - 设置导入导出
+    - 响应式布局
     """
 
     def __init__(self, parent: ctk.CTkFrame, theme_manager, state_manager=None, main_window=None, **kwargs):
@@ -43,6 +52,12 @@ class SettingsManager(ctk.CTkFrame):
         self.theme_manager = theme_manager
         self.state_manager = state_manager
         self.main_window = main_window
+
+        # 响应式设置管理器
+        if RESPONSIVE_SETTINGS_AVAILABLE:
+            self.responsive_settings = get_responsive_settings()
+        else:
+            self.responsive_settings = None
 
         # 设置数据
         self.settings_data = {}

@@ -9,7 +9,9 @@
       "Bash(tree:*)",
       "Bash(timeout:*)",
       "Bash(python3:*)",
-      "Bash(uv:*)"
+      "Bash(uv:*)",
+      "Bash(find:*)",
+      "Bash(cp:*)"
     ],
     "deny": [],
     "ask": []

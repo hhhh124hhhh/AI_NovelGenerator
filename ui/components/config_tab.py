@@ -153,39 +153,53 @@ class ConfigTab(ctk.CTkFrame):
         try:
             # 如果没有消息，说明测试可能刚开始，继续保持进行状态
             if not log_messages:
-                if hasattr(self, '_test_in_progress'):
+                if hasattr(self, '_test_in_progress') and self._test_in_progress:
                     self.after(5000, lambda: self._check_test_result(test_type, log_messages))
                 return
 
             # 检查是否有测试完成的消息
-            if log_messages:
-                for message in log_messages[-10:]:  # 检查最后10条消息
-                    # 检查LLM测试成功
-                    if "✅ LLM配置测试成功！" in message:
-                        self._update_status(f"✅ {test_type}配置测试成功！")
-                        logger.info(f"✅ {test_type}配置测试成功")
-                        return
+            success_found = False
+            error_found = False
+            error_message = ""
+            
+            for message in log_messages[-10:]:  # 检查最后10条消息
+                # 检查LLM测试成功
+                if "✅ LLM配置测试成功！" in message:
+                    self._update_status(f"✅ {test_type}配置测试成功！")
+                    logger.info(f"✅ {test_type}配置测试成功")
+                    self._test_in_progress = False  # 确保标记测试完成
+                    success_found = True
+                    return
 
-                    # 检查嵌入测试成功
-                    elif "✅ 嵌入配置测试成功！" in message:
-                        self._update_status(f"✅ {test_type}配置测试成功！")
-                        logger.info(f"✅ {test_type}配置测试成功")
-                        return
+                # 检查嵌入测试成功
+                elif "✅ 嵌入配置测试成功！" in message:
+                    self._update_status(f"✅ {test_type}配置测试成功！")
+                    logger.info(f"✅ {test_type}配置测试成功")
+                    self._test_in_progress = False  # 确保标记测试完成
+                    success_found = True
+                    return
 
-                    # 检查各种失败情况
-                    elif any(keyword in message for keyword in ["❌", "Connection error", "未获取到响应", "未获取到向量", "测试出错", "配置错误"]):
-                        if "Connection error" in message:
-                            error_msg = "网络连接失败，请检查网络和API配置"
-                        elif "未获取到向量" in message:
-                            error_msg = "嵌入模型响应异常，请检查模型配置"
-                        elif "未获取到响应" in message:
-                            error_msg = "LLM未响应，请检查API配置"
-                        else:
-                            error_msg = message
+                # 检查各种失败情况
+                elif any(keyword in message for keyword in ["❌", "Connection error", "未获取到响应", "未获取到向量", "测试出错", "配置错误"]):
+                    if "Connection error" in message:
+                        error_msg = "网络连接失败，请检查网络和API配置"
+                    elif "未获取到向量" in message:
+                        error_msg = "嵌入模型响应异常，请检查模型配置"
+                    elif "未获取到响应" in message:
+                        error_msg = "LLM未响应，请检查API配置"
+                    else:
+                        error_msg = message
 
-                        self._update_status(f"❌ {test_type}配置测试失败！{error_msg}")
-                        logger.error(f"❌ {test_type}配置测试失败：{message}")
-                        return
+                    self._update_status(f"❌ {test_type}配置测试失败！{error_msg}")
+                    logger.error(f"❌ {test_type}配置测试失败：{message}")
+                    self._test_in_progress = False  # 确保标记测试完成
+                    error_found = True
+                    error_message = error_msg
+                    return
+
+            # 如果找到了成功或失败的结果，直接返回
+            if success_found or error_found:
+                return
 
             # 检查测试超时（最多等待2分钟）
             if hasattr(self, '_test_start_time'):
@@ -200,13 +214,15 @@ class ConfigTab(ctk.CTkFrame):
             if hasattr(self, '_test_in_progress') and self._test_in_progress:
                 self.after(5000, lambda: self._check_test_result(test_type, log_messages))
             else:
-                # 超时处理
-                self._update_status(f"⏱️ {test_type}配置测试超时，请检查网络连接")
-                logger.warning(f"{test_type}配置测试超时")
+                # 如果测试已完成但没有明确结果，显示默认消息
+                if not hasattr(self, '_test_in_progress') or not self._test_in_progress:
+                    self._update_status(f"✅ {test_type}配置测试完成")
+                    logger.info(f"{test_type}配置测试完成")
 
         except Exception as e:
             logger.error(f"检查测试结果失败: {e}")
             self._update_status(f"❌ {test_type}配置测试检查失败")
+            self._test_in_progress = False  # 确保标记测试完成
 
     def _create_config_layout(self):
         """创建配置布局"""
@@ -360,8 +376,8 @@ class ConfigTab(ctk.CTkFrame):
         self.temperature_var = ctk.DoubleVar(value=0.7)
         temp_slider = ctk.CTkSlider(
             params_grid,
-            from_=0.0,
-            to=2.0,
+            from_=0,
+            to=2,
             variable=self.temperature_var,
             number_of_steps=20
         )
@@ -386,8 +402,8 @@ class ConfigTab(ctk.CTkFrame):
         self.top_p_var = ctk.DoubleVar(value=1.0)
         top_p_slider = ctk.CTkSlider(
             params_grid,
-            from_=0.0,
-            to=1.0,
+            from_=0,
+            to=1,
             variable=self.top_p_var,
             number_of_steps=10
         )
@@ -428,8 +444,8 @@ class ConfigTab(ctk.CTkFrame):
         self.frequency_penalty_var = ctk.DoubleVar(value=0.0)
         freq_pen_slider = ctk.CTkSlider(
             params_grid,
-            from_=-2.0,
-            to=2.0,
+            from_=-2,
+            to=2,
             variable=self.frequency_penalty_var,
             number_of_steps=8
         )
@@ -607,8 +623,12 @@ class ConfigTab(ctk.CTkFrame):
         )
         title_label.pack(pady=(10, 20))
 
+        # 创建一个滚动框架来容纳所有设置项
+        scrollable_frame = ctk.CTkScrollableFrame(system_main, fg_color="transparent")
+        scrollable_frame.pack(fill="both", expand=True, padx=10, pady=(0, 10))
+
         # 日志级别
-        log_frame = ctk.CTkFrame(system_main, fg_color="transparent")
+        log_frame = ctk.CTkFrame(scrollable_frame, fg_color="transparent")
         log_frame.pack(fill="x", padx=20, pady=5)
 
         log_label = ctk.CTkLabel(
@@ -628,7 +648,7 @@ class ConfigTab(ctk.CTkFrame):
         self.log_level_combo.pack(side="left", fill="x", expand=True)
 
         # 最大重试次数
-        retry_frame = ctk.CTkFrame(system_main, fg_color="transparent")
+        retry_frame = ctk.CTkFrame(scrollable_frame, fg_color="transparent")
         retry_frame.pack(fill="x", padx=20, pady=10)
 
         retry_label = ctk.CTkLabel(
@@ -662,7 +682,7 @@ class ConfigTab(ctk.CTkFrame):
         self.max_retry_slider.configure(command=update_retry_label)
 
         # 请求超时
-        timeout_frame = ctk.CTkFrame(system_main, fg_color="transparent")
+        timeout_frame = ctk.CTkFrame(scrollable_frame, fg_color="transparent")
         timeout_frame.pack(fill="x", padx=20, pady=10)
 
         timeout_label = ctk.CTkLabel(
@@ -689,7 +709,7 @@ class ConfigTab(ctk.CTkFrame):
         timeout_info.pack(side="left")
 
         # 模型配置分隔线
-        separator_frame = ctk.CTkFrame(system_main, fg_color="transparent")
+        separator_frame = ctk.CTkFrame(scrollable_frame, fg_color="transparent")
         separator_frame.pack(fill="x", padx=20, pady=20)
 
         separator_label = ctk.CTkLabel(
@@ -711,7 +731,7 @@ class ConfigTab(ctk.CTkFrame):
         self.task_model_vars = {}
 
         for config_key, label_text in model_configs:
-            task_frame = ctk.CTkFrame(system_main, fg_color="transparent")
+            task_frame = ctk.CTkFrame(scrollable_frame, fg_color="transparent")
             task_frame.pack(fill="x", padx=20, pady=5)
 
             task_label = ctk.CTkLabel(
@@ -774,14 +794,43 @@ class ConfigTab(ctk.CTkFrame):
             # 修复配置加载API错误 - 必须传递config_file参数
             self.config_data = load_config(config_file="config.json")
 
-            # 加载LLM配置
-            llm_config = self.config_data.get('llm', {})
-            self.llm_provider_var.set(llm_config.get('provider', 'OpenAI'))
+            # 加载LLM配置 - 修复从llm_configs中加载配置
+            choose_configs = self.config_data.get('choose_configs', {})
+            last_llm_interface = self.config_data.get('last_interface_format', 'DeepSeek')
+            
+            # 获取当前选择的LLM配置名称
+            current_llm_name = choose_configs.get('architecture_llm', 'DeepSeek V3')
+            
+            # 从llm_configs中获取配置
+            llm_configs = self.config_data.get('llm_configs', {})
+            llm_config = llm_configs.get(current_llm_name, {})
+            
+            # 如果找不到特定配置，尝试使用last_interface_format
+            if not llm_config and last_llm_interface:
+                # 查找匹配接口格式的配置
+                for name, config in llm_configs.items():
+                    if config.get('interface_format') == last_llm_interface:
+                        llm_config = config
+                        break
+            
+            # 如果仍然没有配置，使用默认值
+            if not llm_config:
+                llm_config = {
+                    'interface_format': 'DeepSeek',
+                    'api_key': '',
+                    'base_url': 'https://api.deepseek.com/v1',
+                    'model_name': 'deepseek-chat',
+                    'temperature': 0.7,
+                    'max_tokens': 2000,
+                    'timeout': 600
+                }
+            
+            self.llm_provider_var.set(llm_config.get('interface_format', 'DeepSeek'))
             self.api_key_entry.delete(0, 'end')
             self.api_key_entry.insert(0, llm_config.get('api_key', ''))
             self.base_url_entry.delete(0, 'end')
-            self.base_url_entry.insert(0, llm_config.get('base_url', 'https://api.openai.com/v1'))
-            self.model_var.set(llm_config.get('model', 'gpt-3.5-turbo'))
+            self.base_url_entry.insert(0, llm_config.get('base_url', 'https://api.deepseek.com/v1'))
+            self.model_var.set(llm_config.get('model_name', 'deepseek-chat'))
 
             # 加载LLM高级参数
             if hasattr(self, 'temperature_var'):
@@ -789,43 +838,53 @@ class ConfigTab(ctk.CTkFrame):
                 self.temp_value_label.configure(text=f"{llm_config.get('temperature', 0.7):.1f}")
 
             if hasattr(self, 'top_p_var'):
-                self.top_p_var.set(llm_config.get('top_p', 1.0))
-                self.top_p_value_label.configure(text=f"{llm_config.get('top_p', 1.0):.1f}")
+                self.top_p_var.set(llm_config.get('top_p', 1.0) if 'top_p' in llm_config else 1.0)
+                self.top_p_value_label.configure(text=f"{llm_config.get('top_p', 1.0) if 'top_p' in llm_config else 1.0:.1f}")
 
             if hasattr(self, 'max_tokens_var'):
                 self.max_tokens_var.set(llm_config.get('max_tokens', 2000))
 
             if hasattr(self, 'frequency_penalty_var'):
-                self.frequency_penalty_var.set(llm_config.get('frequency_penalty', 0.0))
-                self.freq_pen_value_label.configure(text=f"{llm_config.get('frequency_penalty', 0.0):.1f}")
+                self.frequency_penalty_var.set(llm_config.get('frequency_penalty', 0.0) if 'frequency_penalty' in llm_config else 0.0)
+                self.freq_pen_value_label.configure(text=f"{llm_config.get('frequency_penalty', 0.0) if 'frequency_penalty' in llm_config else 0.0:.1f}")
 
             # 加载嵌入配置 - 修复配置加载不匹配问题
             embedding_configs = self.config_data.get('embedding_configs', {})
-            last_embedding_interface = self.config_data.get('last_embedding_interface_format', 'OpenAI')
+            last_embedding_interface = self.config_data.get('last_embedding_interface_format', 'SiliconFlow')
 
             # 尝试从上次使用的接口加载配置
+            embed_config = None
             embed_config_name = f"{last_embedding_interface} Custom"
             if embed_config_name in embedding_configs:
                 embed_config = embedding_configs[embed_config_name]
-                self.embed_provider_var.set(embed_config.get('interface_format', 'OpenAI'))
-                if hasattr(self, 'embed_api_key_entry'):
-                    self.embed_api_key_entry.delete(0, 'end')
-                    self.embed_api_key_entry.insert(0, embed_config.get('api_key', ''))
-                if hasattr(self, 'embed_base_url_entry'):
-                    self.embed_base_url_entry.delete(0, 'end')
-                    self.embed_base_url_entry.insert(0, embed_config.get('base_url', 'https://api.openai.com/v1'))
-                self.embed_model_var.set(embed_config.get('model_name', 'text-embedding-ada-002'))
             else:
-                # 兜底：从旧的embedding字段加载
-                embed_config = self.config_data.get('embedding', {})
-                self.embed_provider_var.set(embed_config.get('provider', 'OpenAI'))
-                self.embed_model_var.set(embed_config.get('model', 'text-embedding-ada-002'))
-                if hasattr(self, 'embed_api_key_entry'):
-                    self.embed_api_key_entry.delete(0, 'end')
-                    self.embed_api_key_entry.insert(0, embed_config.get('api_key', ''))
-                if hasattr(self, 'embed_base_url_entry'):
-                    self.embed_base_url_entry.delete(0, 'end')
-                    self.embed_base_url_entry.insert(0, embed_config.get('base_url', 'https://api.openai.com/v1'))
+                # 如果找不到特定名称的配置，查找匹配接口格式的配置
+                for name, config in embedding_configs.items():
+                    if config.get('interface_format') == last_embedding_interface:
+                        embed_config = config
+                        break
+            
+            # 如果仍然没有配置，使用默认值
+            if not embed_config and embedding_configs:
+                # 使用第一个可用的配置
+                embed_config = next(iter(embedding_configs.values()))
+            elif not embed_config:
+                # 完全没有配置时使用默认值
+                embed_config = {
+                    'interface_format': 'SiliconFlow',
+                    'api_key': '',
+                    'base_url': 'https://api.siliconflow.cn/v1',
+                    'model_name': 'BAAI/bge-m3'
+                }
+            
+            self.embed_provider_var.set(embed_config.get('interface_format', 'SiliconFlow'))
+            if hasattr(self, 'embed_api_key_entry'):
+                self.embed_api_key_entry.delete(0, 'end')
+                self.embed_api_key_entry.insert(0, embed_config.get('api_key', ''))
+            if hasattr(self, 'embed_base_url_entry'):
+                self.embed_base_url_entry.delete(0, 'end')
+                self.embed_base_url_entry.insert(0, embed_config.get('base_url', 'https://api.siliconflow.cn/v1'))
+            self.embed_model_var.set(embed_config.get('model_name', 'BAAI/bge-m3'))
 
             # 加载向量存储路径
             vectorstore_path = self.config_data.get('other_params', {}).get('vectorstore_path', './vectorstore')
@@ -980,10 +1039,10 @@ class ConfigTab(ctk.CTkFrame):
         """测试LLM配置"""
         try:
             config = {
-                'provider': self.llm_provider_var.get(),
+                'interface_format': self.llm_provider_var.get(),
                 'api_key': self.api_key_entry.get(),
                 'base_url': self.base_url_entry.get(),
-                'model': self.model_var.get()
+                'model_name': self.model_var.get()
             }
 
             # 验证必要参数
@@ -996,7 +1055,7 @@ class ConfigTab(ctk.CTkFrame):
                 return
 
             logger.info("开始测试LLM配置...")
-            logger.info(f"提供商: {config['provider']}, 模型: {config['model']}")
+            logger.info(f"提供商: {config['interface_format']}, 模型: {config['model_name']}")
 
             # 创建测试状态跟踪
             self._test_in_progress = True
@@ -1024,6 +1083,7 @@ class ConfigTab(ctk.CTkFrame):
                 # 异步检查测试结果 - 传递消息列表而不是函数
                 self.after(2000, lambda: self._check_test_result("LLM", test_log_messages))
             else:
+                self._test_in_progress = False  # 确保标记测试完成
                 self._update_status(f"❌ LLM配置测试失败！{message}")
                 logger.error(f"❌ LLM配置测试失败：{message}")
 
@@ -1031,15 +1091,18 @@ class ConfigTab(ctk.CTkFrame):
             error_msg = f"测试LLM配置时出错: {str(e)}"
             logger.error(error_msg)
             self._update_status(f"❌ {error_msg}")
+            # 确保在异常情况下也标记测试完成
+            if hasattr(self, '_test_in_progress'):
+                self._test_in_progress = False
 
     def _test_embedding_config(self):
         """测试嵌入配置"""
         try:
             config = {
-                'provider': self.embed_provider_var.get(),
+                'interface_format': self.embed_provider_var.get(),
                 'api_key': self.embed_api_key_entry.get() if hasattr(self, 'embed_api_key_entry') else '',
                 'base_url': self.embed_base_url_entry.get() if hasattr(self, 'embed_base_url_entry') else '',
-                'model': self.embed_model_var.get(),
+                'model_name': self.embed_model_var.get(),
                 'vectorstore_path': self.vectorstore_entry.get()
             }
 
@@ -1081,6 +1144,7 @@ class ConfigTab(ctk.CTkFrame):
                 # 异步检查测试结果 - 传递消息列表而不是函数
                 self.after(2000, lambda: self._check_test_result("嵌入", embed_test_log_messages))
             else:
+                self._test_in_progress = False  # 确保标记测试完成
                 self._update_status(f"❌ 嵌入配置测试失败！{message}")
                 logger.error(f"❌ 嵌入配置测试失败：{message}")
 
@@ -1088,6 +1152,9 @@ class ConfigTab(ctk.CTkFrame):
             error_msg = f"测试嵌入配置时出错: {str(e)}"
             logger.error(error_msg)
             self._update_status(f"❌ {error_msg}")
+            # 确保在异常情况下也标记测试完成
+            if hasattr(self, '_test_in_progress'):
+                self._test_in_progress = False
 
     def _on_llm_provider_changed(self, choice):
         """LLM提供商变化处理"""

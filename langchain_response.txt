@@ -1,0 +1,4 @@
+Langchain Test Result: SUCCESS
+Response Type: <class 'langchain_core.messages.ai.AIMessage'>
+Response Content: Hello! 👋 How can I help you today?
+Response Length: 34

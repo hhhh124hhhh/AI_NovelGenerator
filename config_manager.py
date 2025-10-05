@@ -202,6 +202,12 @@ def save_config(config_data: dict, config_file: str) -> bool:
 def test_llm_config(interface_format, api_key, base_url, model_name, temperature, max_tokens, timeout, log_func, handle_exception_func):
     """测试当前的LLM配置是否可用"""
     def task():
+        # 初始化代理变量
+        old_http_proxy = None
+        old_https_proxy = None
+        old_http_proxy_lower = None
+        old_https_proxy_lower = None
+        
         try:
             # 临时清除代理环境变量以避免连接问题
             import os
@@ -238,6 +244,7 @@ def test_llm_config(interface_format, api_key, base_url, model_name, temperature
 
             finally:
                 # 恢复代理环境变量
+                import os
                 if old_http_proxy:
                     os.environ['HTTP_PROXY'] = old_http_proxy
                 if old_https_proxy:
@@ -249,6 +256,7 @@ def test_llm_config(interface_format, api_key, base_url, model_name, temperature
 
         except Exception as e:
             # 确保在异常情况下也恢复代理设置
+            import os
             if old_http_proxy:
                 os.environ['HTTP_PROXY'] = old_http_proxy
             if old_https_proxy:
@@ -268,10 +276,10 @@ def test_llm_config_with_dict(config_dict, log_func, handle_exception_func):
     """使用配置字典测试LLM配置"""
     try:
         # 从配置字典中提取参数，提供默认值
-        interface_format = config_dict.get('provider', 'OpenAI')
+        interface_format = config_dict.get('interface_format', 'OpenAI')
         api_key = config_dict.get('api_key', '')
         base_url = config_dict.get('base_url', 'https://api.openai.com/v1')
-        model_name = config_dict.get('model', 'gpt-3.5-turbo')
+        model_name = config_dict.get('model_name', 'gpt-3.5-turbo')
         temperature = config_dict.get('temperature', 0.7)
         max_tokens = config_dict.get('max_tokens', 8192)
         timeout = config_dict.get('timeout', 300)
@@ -294,9 +302,16 @@ def test_llm_config_with_dict(config_dict, log_func, handle_exception_func):
         log_func(f"❌ {error_msg}")
         return False, error_msg
 
+
 def test_embedding_config(api_key, base_url, interface_format, model_name, log_func, handle_exception_func):
     """测试当前的Embedding配置是否可用"""
     def task():
+        # 初始化代理变量
+        old_http_proxy = None
+        old_https_proxy = None
+        old_http_proxy_lower = None
+        old_https_proxy_lower = None
+        
         try:
             # 临时清除代理环境变量以避免连接问题
             import os
@@ -369,6 +384,7 @@ def test_embedding_config(api_key, base_url, interface_format, model_name, log_f
 
             finally:
                 # 恢复代理环境变量
+                import os
                 if old_http_proxy:
                     os.environ['HTTP_PROXY'] = old_http_proxy
                 if old_https_proxy:
@@ -380,6 +396,7 @@ def test_embedding_config(api_key, base_url, interface_format, model_name, log_f
 
         except Exception as e:
             # 确保在异常情况下也恢复代理设置
+            import os
             if old_http_proxy:
                 os.environ['HTTP_PROXY'] = old_http_proxy
             if old_https_proxy:
@@ -399,10 +416,10 @@ def test_embedding_config_with_dict(config_dict, log_func, handle_exception_func
     """使用配置字典测试Embedding配置"""
     try:
         # 从配置字典中提取参数，提供默认值
-        interface_format = config_dict.get('provider', 'OpenAI')
+        interface_format = config_dict.get('interface_format', 'OpenAI')
         api_key = config_dict.get('api_key', '')
         base_url = config_dict.get('base_url', 'https://api.openai.com/v1')
-        model_name = config_dict.get('model', 'text-embedding-ada-002')
+        model_name = config_dict.get('model_name', 'text-embedding-ada-002')
         
         # 调用原始测试函数
         test_embedding_config(

@@ -4,6 +4,7 @@
 """
 
 import os
+import json
 import logging
 import sys
 import customtkinter as ctk
@@ -26,6 +27,14 @@ from theme_system.theme_manager import ThemeManager
 # 导入新的状态管理和布局系统
 from .state.state_manager import StateManager
 from .layout.responsive_manager import ResponsiveLayoutManager
+
+# 导入统一项目管理器
+try:
+    from .components.project_manager import initialize_project_manager, get_project_manager
+    PROJECT_MANAGER_AVAILABLE = True
+except ImportError:
+    PROJECT_MANAGER_AVAILABLE = False
+    logger.warning("项目管理器不可用，将使用传统方式")
 
 # 导入UI组件
 from .components.title_bar import TitleBar
@@ -92,11 +101,33 @@ class ModernMainWindow(ctk.CTk):
         self.file_watcher = get_file_watcher()
         self.file_watcher.start_watching()
 
+        # 初始化统一项目管理器
+        if PROJECT_MANAGER_AVAILABLE:
+            try:
+                initialize_project_manager(self.state_manager)
+                self.project_manager = get_project_manager()
+                main_logger.info("统一项目管理器初始化成功")
+            except Exception as e:
+                self.project_manager = None
+                main_logger.error(f"项目管理器初始化失败: {e}")
+        else:
+            self.project_manager = None
+
+        # 初始化UI修复集成器
+        try:
+            from ui_fixes_integration import UIFixesIntegration
+            self.ui_fixes = UIFixesIntegration()
+            main_logger.info("UI修复集成器初始化成功")
+        except Exception as e:
+            self.ui_fixes = None
+            main_logger.warning(f"UI修复集成器初始化失败: {e}")
+
         # 初始化窗口属性
         self._window_state = {
             'initialized': False,
             'components_created': False,
-            'layout_applied': False
+            'layout_applied': False,
+            'ui_fixes_applied': False
         }
 
         # 组件引用
@@ -339,7 +370,7 @@ class ModernMainWindow(ctk.CTk):
                 logger.warning("MainContentArea未初始化")
                 return
                 
-            # 添加默认标签页
+            # 添加完整的8个标签页
             default_tabs = [
                 ("main", "主页"),
                 ("config", "配置"),
@@ -354,7 +385,7 @@ class ModernMainWindow(ctk.CTk):
             for tab_name, tab_title in default_tabs:
                 self.main_content.add_tab(tab_name, tab_title, self._on_tab_callback)
 
-            # 初始化所有标签页
+            # 初始化所有8个标签页
             self._setup_main_tab()
             self._setup_config_tab()
             self._setup_setting_tab()
@@ -364,10 +395,20 @@ class ModernMainWindow(ctk.CTk):
             self._setup_summary_tab()
             self._setup_directory_tab()
 
-            # 设置默认活动标签页
+            # 设置默认活动标签页 - 始终从main标签页开始，确保用户能看到生成按钮
             current_active = self.state_manager.get_state('app.active_tab', 'main')
+            # 强制设置为main标签页，确保用户能看到生成按钮
+            if current_active != 'main':
+                current_active = 'main'
+                self.state_manager.set_state('app.active_tab', 'main')
+
             if current_active in [t[0] for t in default_tabs]:
                 self.main_content.switch_to_tab(current_active)
+                logger.info(f"已切换到默认标签页: {current_active}")
+            else:
+                # 如果出错，强制切换到main标签页
+                self.main_content.switch_to_tab('main')
+                logger.warning("标签页切换异常，强制显示main标签页")
 
             logger.info(f"默认标签页设置完成，共{len(default_tabs)}个标签页")
 
@@ -478,7 +519,8 @@ class ModernMainWindow(ctk.CTk):
                 self.characters_tab = CharactersTab(
                     characters_frame,
                     self.theme_manager,
-                    self.state_manager
+                    self.state_manager,
+                    project_manager=self.project_manager
                 )
                 self.characters_tab.pack(fill="both", expand=True)
 
@@ -547,7 +589,8 @@ class ModernMainWindow(ctk.CTk):
                 self.main_workspace = MainWorkspace(
                     main_frame,
                     self.theme_manager,
-                    self.state_manager
+                    self.state_manager,
+                    project_manager=self.project_manager
                 )
                 self.main_workspace.pack(fill="both", expand=True)
                 logger.info("MainWorkspace组件已创建并打包")
@@ -610,7 +653,8 @@ class ModernMainWindow(ctk.CTk):
                 self.directory_manager = DirectoryManager(
                     directory_frame,
                     self.theme_manager,
-                    self.state_manager
+                    self.state_manager,
+                    project_manager=self.project_manager
                 )
                 self.directory_manager.pack(fill="both", expand=True)
 
@@ -2651,9 +2695,17 @@ A: 使用"导出"功能可以将项目保存为文件。
             self._update_status(f"当前项目: {project_name}")
 
     def _update_status(self, message: str):
-        """更新状态栏"""
+        """更新状态栏 - 重定向到主页状态栏"""
         try:
-            # 优先使用通知系统
+            # 优先更新主页状态栏
+            if hasattr(self, 'main_workspace') and self.main_workspace:
+                if hasattr(self.main_workspace, 'status_label'):
+                    self.main_workspace.status_label.configure(text=message)
+                # 同时记录到主页日志
+                if hasattr(self.main_workspace, '_log'):
+                    self.main_workspace._log(f"📊 {message}")
+
+            # 同时使用通知系统显示重要消息
             if hasattr(self, 'notification_system') and self.notification_system:
                 # 根据消息内容判断通知类型
                 if "✅" in message or "成功" in message:
@@ -2662,11 +2714,9 @@ A: 使用"导出"功能可以将项目保存为文件。
                     self.notification_system.show_error(message, duration=5000)
                 elif "⚠️" in message or "警告" in message:
                     self.notification_system.show_warning(message, duration=4000)
-                else:
-                    # 持续显示状态信息
-                    self.notification_system.show_status(message)
+
+            # 如果主页不可用，回退到传统状态栏
             elif hasattr(self, 'status_label'):
-                # 回退到传统状态栏
                 current_theme = self.state_manager.get_state('app.theme', 'dark')
                 layout_type = self.layout_manager.get_current_layout_type().value
                 self.status_label.configure(
@@ -2798,6 +2848,10 @@ A: 使用"导出"功能可以将项目保存为文件。
             }
             tab_display_name = tab_names.get(tab_name, tab_name)
             self._update_status(f"当前页面: {tab_display_name}")
+
+            # 如果切换到主页，更新项目状态
+            if tab_name == "main" and hasattr(self, 'main_workspace') and self.main_workspace:
+                self.main_workspace.refresh_project_status()
 
         except Exception as e:
             logger.error(f"处理标签页切换后事件失败: {e}")
@@ -3014,29 +3068,77 @@ A: 使用"导出"功能可以将项目保存为文件。
             )
 
             if folder_path:
-                # 检查项目文件并记录
-                project_files = []
-                expected_files = [
-                    "Novel_architecture.txt",
-                    "Novel_directory.txt",
-                    "global_summary.txt",
-                    "character_state.txt"
-                ]
+                # 使用现代化项目管理器检测项目
+                try:
+                    from .project_manager import ProjectManager
+                    project_manager = ProjectManager()
 
+                    # 验证项目目录
+                    validation_result = project_manager.validate_project_directory(folder_path)
 
-                found_files = []
-                for file in project_files:
-                    file_path = os.path.join(folder_path, file)
-                    if os.path.exists(file_path):
-                        found_files.append(file)
+                    if validation_result["is_valid"]:
+                        project_info = validation_result["project_type"]
+                        found_files = validation_result["found_files"]
 
-                if found_files:
-                    logger.info(f"选择的项目文件夹包含文件: {found_files}")
-                    self._load_project_from_path(folder_path)
-                    self._update_status("✅ 项目文件夹加载成功")
-                else:
-                    self._update_status("❌ 选择的文件夹中没有找到项目文件")
-                    logger.warning(f"文件夹中没有找到项目文件: {folder_path}")
+                        logger.info(f"检测到项目类型: {project_info['type']}")
+                        logger.info(f"选择的项目文件夹包含文件: {found_files}")
+
+                        self._load_project_from_path(folder_path)
+                        self._update_status(f"✅ 项目文件夹加载成功 ({project_info['type']})")
+
+                        # 显示建议（如果有）
+                        if validation_result["recommendations"]:
+                            for rec in validation_result["recommendations"]:
+                                logger.info(f"项目建议: {rec}")
+                    else:
+                        # 显示具体问题
+                        issues = validation_result["issues"]
+                        recommendations = validation_result["recommendations"]
+
+                        logger.warning(f"项目验证失败: {folder_path}")
+                        for issue in issues:
+                            logger.warning(f"问题: {issue}")
+                        for rec in recommendations:
+                            logger.info(f"建议: {rec}")
+
+                        self._update_status("⚠️ 所选文件夹不是有效的项目目录")
+
+                except ImportError:
+                    # 回退到原始检测逻辑
+                    logger.warning("项目管理器不可用，使用回退检测逻辑")
+
+                    # 更灵活的文件检测
+                    flexible_files = [
+                        "Novel_architecture.txt",
+                        "Novel_setting.txt",
+                        "Novel_directory.txt",
+                        "character_state.txt",
+                        "global_summary.txt"
+                    ]
+
+                    found_files = []
+                    for file in flexible_files:
+                        file_path = os.path.join(folder_path, file)
+                        if os.path.exists(file_path):
+                            found_files.append(file)
+
+                    # 也检查是否有任何txt文件
+                    txt_files = []
+                    try:
+                        for file in os.listdir(folder_path):
+                            if file.endswith('.txt'):
+                                txt_files.append(file)
+                    except:
+                        pass
+
+                    if found_files or txt_files:
+                        all_found = list(set(found_files + txt_files))
+                        logger.info(f"选择的项目文件夹包含文件: {all_found}")
+                        self._load_project_from_path(folder_path)
+                        self._update_status("✅ 项目文件夹加载成功")
+                    else:
+                        self._update_status("❌ 选择的文件夹中没有找到项目文件")
+                        logger.warning(f"文件夹中没有找到项目文件: {folder_path}")
 
         except Exception as e:
             logger.error(f"打开项目文件夹失败: {e}")
@@ -3066,26 +3168,46 @@ A: 使用"导出"功能可以将项目保存为文件。
             except Exception as e:
                 logger.warning(f"保存项目路径到配置失败: {e}")
 
-            # 检查项目文件并记录
-            project_files = []
-            expected_files = [
-                "Novel_setting.txt",
-                "Novel_directory.txt",
-                "global_summary.txt",
-                "character_state.txt"
-            ]
+            # 使用项目管理器检查项目文件
+            try:
+                from .project_manager import ProjectManager
+                project_manager = ProjectManager()
 
-            for file in expected_files:
-                file_path = os.path.join(project_path, file)
-                if os.path.exists(file_path):
-                    project_files.append(file)
-                    logger.info(f"发现项目文件: {file}")
+                # 获取项目文件
+                project_files = project_manager.get_project_files(project_path)
 
-            if not project_files:
-                self._update_status("⚠️ 项目文件夹为空，但已设置路径")
-                logger.warning("项目文件夹中没有找到任何项目文件")
-            else:
-                self._update_status(f"✅ 发现项目文件: {len(project_files)}个")
+                if project_files:
+                    logger.info(f"发现项目文件: {project_files}")
+                    self._update_status(f"✅ 发现项目文件: {len(project_files)}个")
+                else:
+                    self._update_status("⚠️ 项目文件夹为空，但已设置路径")
+                    logger.warning("项目文件夹中没有找到任何项目文件")
+
+            except ImportError:
+                # 回退到原始检测逻辑
+                logger.warning("项目管理器不可用，使用回退文件检测")
+
+                # 更全面的文件检测
+                possible_files = [
+                    "Novel_architecture.txt",
+                    "Novel_setting.txt",
+                    "Novel_directory.txt",
+                    "character_state.txt",
+                    "global_summary.txt"
+                ]
+
+                project_files = []
+                for file in possible_files:
+                    file_path = os.path.join(project_path, file)
+                    if os.path.exists(file_path):
+                        project_files.append(file)
+
+                if project_files:
+                    logger.info(f"发现项目文件: {project_files}")
+                    self._update_status(f"✅ 发现项目文件: {len(project_files)}个")
+                else:
+                    self._update_status("⚠️ 项目文件夹为空，但已设置路径")
+                    logger.warning("项目文件夹中没有找到任何项目文件")
 
                 # 尝试从项目文件中读取参数并更新UI
                 self._load_project_parameters_from_folder(project_path)
@@ -3296,7 +3418,7 @@ A: 使用"导出"功能可以将项目保存为文件。
             self._update_status("⚠️ 部分组件刷新失败")
 
     def _open_project(self):
-        """打开项目"""
+        """打开项目 - 使用统一项目管理器"""
         try:
             from tkinter import filedialog
             import os
@@ -3313,10 +3435,10 @@ A: 使用"导出"功能可以将项目保存为文件。
             )
 
             if choice is True:
-                # 加载文件夹
-                self._open_project_folder()
+                # 加载文件夹 - 使用统一项目管理器
+                self._open_project_unified()
             elif choice is False:
-                # 加载JSON文件
+                # 加载JSON文件 - 保持原有逻辑
                 project_file = filedialog.askopenfilename(
                     title="选择项目文件",
                     filetypes=[("项目文件", "*.json"), ("所有文件", "*.*")]
@@ -3366,6 +3488,161 @@ A: 使用"导出"功能可以将项目保存为文件。
         except Exception as e:
             logger.error(f"打开项目失败: {e}")
             self._update_status("打开项目失败")
+
+    def _open_project_unified(self):
+        """
+        使用统一项目管理器打开项目文件夹
+
+        Returns:
+            是否加载成功
+        """
+        try:
+            from tkinter import filedialog
+            import os
+
+            # 选择项目文件夹
+            project_path = filedialog.askdirectory(title="选择项目文件夹")
+
+            if not project_path:
+                return False
+
+            self.show_loading("加载项目中...")
+
+            # 使用统一项目管理器加载项目
+            success = self.project_manager.load_project(project_path)
+
+            if success:
+                # 加载项目数据到工作区
+                self._load_project_data_to_workspace()
+
+                # 更新配置文件路径
+                if 'config_manager' in sys.modules:
+                    try:
+                        from config_manager import update_config_path
+                        update_config_path(project_path)
+                    except ImportError:
+                        logger.debug("无法导入config_manager模块")
+
+                # 刷新所有标签页
+                self._refresh_all_tabs()
+
+                self.hide_loading()
+                self.show_success(f"项目加载成功！\n路径: {os.path.basename(project_path)}")
+                logger.info(f"项目统一加载成功: {project_path}")
+                return True
+            else:
+                self.hide_loading()
+                self.show_error("项目加载失败，请检查项目文件。")
+                logger.error(f"项目管理器加载失败: {project_path}")
+                return False
+
+        except Exception as e:
+            self.hide_loading()
+            logger.error(f"统一项目加载失败: {e}")
+            self.show_error(f"项目加载失败: {e}")
+            return False
+
+    def _load_project_data_to_workspace(self):
+        """加载项目数据到工作区"""
+        try:
+            project_path = self.project_manager.get_project_path()
+            if not project_path:
+                return
+
+            # 检查必要文件
+            required_files = [
+                "Novel_architecture.txt",
+                "Novel_directory.txt",
+                "character_state.txt"
+            ]
+
+            missing_files = []
+            for filename in required_files:
+                if not self.project_manager.file_exists(filename):
+                    missing_files.append(filename)
+
+            if missing_files:
+                logger.warning(f"项目缺少必要文件: {missing_files}")
+
+            # 加载配置到全局状态
+            self._load_project_config()
+
+            # 加载内容到工作区标签页
+            self._load_content_to_workspace()
+
+            logger.info("项目数据加载到工作区完成")
+
+        except Exception as e:
+            logger.error(f"加载项目数据到工作区失败: {e}")
+
+    def _load_project_config(self):
+        """加载项目配置"""
+        try:
+            # 尝试加载项目的自定义配置
+            project_config_file = self.project_manager.get_file_path("project_config.json")
+            if project_config_file and os.path.exists(project_config_file):
+                with open(project_config_file, 'r', encoding='utf-8') as f:
+                    project_config = json.load(f)
+
+                # 更新到状态管理器
+                self.state_manager.set_state('novel', project_config)
+                logger.info("项目配置加载完成")
+
+        except Exception as e:
+            logger.debug(f"加载项目配置失败: {e}")
+
+    def _load_content_to_workspace(self):
+        """加载项目内容到工作区标签页"""
+        try:
+            # 加载角色信息到角色标签页
+            if 'characters' in self.tab_instances:
+                characters_tab = self.tab_instances['characters']
+                if hasattr(characters_tab, '_load_characters_data'):
+                    characters_tab._load_characters_data()
+                    if hasattr(characters_tab, '_refresh_characters_display'):
+                        characters_tab._refresh_characters_display()
+
+            # 加载目录信息到目录标签页
+            if 'directory' in self.tab_instances:
+                directory_tab = self.tab_instances['directory']
+                if hasattr(directory_tab, '_initialize_data'):
+                    directory_tab._initialize_data()
+                if hasattr(directory_tab, '_refresh_chapters_display'):
+                    directory_tab._refresh_chapters_display()
+
+            # 加载设定到设定标签页
+            if 'settings' in self.tab_instances:
+                settings_tab = self.tab_instances['settings']
+                # 如果设定标签页有加载方法，调用它们
+                if hasattr(settings_tab, 'load_settings'):
+                    settings_tab.load_settings()
+
+            logger.info("项目内容加载到各标签页完成")
+
+        except Exception as e:
+            logger.error(f"加载项目内容失败: {e}")
+
+    def _refresh_all_tabs(self):
+        """刷新所有标签页"""
+        try:
+            for tab_name, tab_instance in self.tab_instances.items():
+                try:
+                    # 如果标签页有刷新方法，调用它
+                    if hasattr(tab_instance, '_refresh_data'):
+                        tab_instance._refresh_data()
+                    elif hasattr(tab_instance, 'refresh'):
+                        tab_instance.refresh()
+                    elif hasattr(tab_instance, '_load_data'):
+                        tab_instance._load_data()
+
+                    logger.debug(f"标签页 {tab_name} 刷新完成")
+                except Exception as e:
+                    logger.warning(f"刷新标签页 {tab_name} 失败: {e}")
+
+            logger.info("所有标签页刷新完成")
+
+        except Exception as e:
+            logger.error(f"刷新标签页失败: {e}")
 
     def _save_project(self):
         """保存项目"""

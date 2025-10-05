@@ -23,15 +23,19 @@ def build_directory_tab(self):
     # 按钮框架
     btn_frame = ctk.CTkFrame(self.directory_tab)
     btn_frame.grid(row=2, column=0, padx=10, pady=5, sticky="ew")
-    btn_frame.columnconfigure((0, 1), weight=1)
+    btn_frame.columnconfigure((0, 1, 2), weight=1)  # 修改为3列权重
+
+    # 刷新按钮 - 新增
+    refresh_btn = ctk.CTkButton(btn_frame, text=chinese_labels["refresh"], command=self.load_chapter_blueprint, font=("Microsoft YaHei", 12))
+    refresh_btn.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
 
     # 加载按钮
-    load_btn = ctk.CTkButton(btn_frame, text=chinese_labels["refresh"], command=self.load_chapter_blueprint, font=("Microsoft YaHei", 12))
-    load_btn.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
+    load_btn = ctk.CTkButton(btn_frame, text="加载", command=self.load_chapter_blueprint, font=("Microsoft YaHei", 12))
+    load_btn.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
 
     # 保存按钮
     save_btn = ctk.CTkButton(btn_frame, text=chinese_labels["save_chapter_directory"], command=self.save_chapter_blueprint, font=("Microsoft YaHei", 12))
-    save_btn.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
+    save_btn.grid(row=0, column=2, padx=5, pady=5, sticky="ew")
 
 def load_chapter_blueprint(self):
     try:
