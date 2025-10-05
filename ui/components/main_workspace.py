@@ -106,11 +106,11 @@ class MainWorkspace(ctk.CTkFrame):
         self.main_frame = ctk.CTkFrame(self, corner_radius=8)
         self.main_frame.grid(row=0, column=0, sticky="nsew", padx=0)
 
-        # 重新配置网格布局权重
+        # 重新配置网格布局权重 - 优化显示效果
         self.main_frame.grid_rowconfigure(0, weight=0)  # 参数配置区 - 固定高度
         self.main_frame.grid_rowconfigure(1, weight=0)  # 生成操作区 - 固定高度
-        self.main_frame.grid_rowconfigure(2, weight=3)  # 内容区域 - 主要空间
-        self.main_frame.grid_rowconfigure(3, weight=0)  # 状态栏 - 固定高度
+        self.main_frame.grid_rowconfigure(2, weight=4)  # 内容区域 - 增加权重，更多空间
+        self.main_frame.grid_rowconfigure(3, weight=1)  # 状态栏 - 增加权重，确保可见
         self.main_frame.grid_columnconfigure(0, weight=1)
 
         # 按新顺序创建组件
@@ -203,18 +203,20 @@ class MainWorkspace(ctk.CTkFrame):
         )
         clear_log_btn.grid(row=0, column=1, sticky="e", padx=(5, 0))
 
-        # 日志输出框
+        # 日志输出框 - 增加高度和改善显示
         self.log_output = ctk.CTkTextbox(
             log_frame,
             wrap="word",
             font=ctk.CTkFont(size=11),
-            height=300,
+            height=400,  # 增加高度，确保可见性
             activate_scrollbars=True
         )
         self.log_output.grid(row=1, column=0, sticky="nsew", padx=10, pady=(0, 10))
 
-        # 配置日志框为只读（可选）
-        self.log_output.configure(state="disabled")
+        # 配置日志框为只读，但允许滚动
+        self.log_output.configure(state="normal")  # 先设为normal以添加初始内容
+        self.log_output.insert("0.0", "🚀 欢迎使用AI小说生成器\n请输入小说参数并点击生成按钮开始创作...\n")
+        self.log_output.configure(state="disabled")  # 然后设为disabled
 
         # 初始化日志内容
         self._initialize_log_output()
@@ -389,17 +391,28 @@ class MainWorkspace(ctk.CTkFrame):
     def _validate_parameters(self):
         """验证生成参数"""
         try:
-            # 检查主题
-            topic = getattr(self, 'topic_entry', None)
-            if topic and not topic.get().strip():
-                messagebox.showwarning("参数错误", "请输入小说主题")
-                return False
+            # 检查主题 - 修正组件引用
+            topic_text = getattr(self, 'topic_text', None)
+            if topic_text:
+                topic_content = topic_text.get("0.0", "end").strip()
+                if not topic_content:
+                    messagebox.showwarning("参数错误", "请输入小说主题")
+                    return False
 
-            # 检查输出路径
-            filepath = getattr(self, 'filepath_entry', None)
-            if filepath and not filepath.get().strip():
-                messagebox.showwarning("参数错误", "请选择输出路径")
-                return False
+            # 检查输出路径 - 修正组件引用
+            filepath_var = getattr(self, 'filepath_var', None)
+            if filepath_var:
+                filepath = filepath_var.get().strip()
+                if not filepath:
+                    messagebox.showwarning("参数错误", "请选择输出路径")
+                    return False
+                # 检查路径是否有效
+                if not os.path.exists(filepath):
+                    try:
+                        os.makedirs(filepath, exist_ok=True)
+                    except Exception as e:
+                        messagebox.showwarning("参数错误", f"无法创建输出路径: {e}")
+                        return False
 
             return True
 

@@ -1585,16 +1585,19 @@ A: 查看项目目录下的logs文件夹
         # 创建设置窗口
         settings_window = ctk.CTkToplevel(self)
         settings_window.title("应用设置")
-        settings_window.geometry("650x550")  # 增加窗口大小以适应中文界面
+        settings_window.geometry("700x700")  # 增加窗口高度以适应完整内容显示
         settings_window.resizable(True, True)  # 允许调整大小
         settings_window.transient(self)
         settings_window.grab_set()
 
         # 设置窗口在父窗口中央显示
         settings_window.update_idletasks()
-        x = (settings_window.winfo_screenwidth() // 2) - (650 // 2)
-        y = (settings_window.winfo_screenheight() // 2) - (550 // 2)
-        settings_window.geometry(f"650x550+{x}+{y}")
+        x = (settings_window.winfo_screenwidth() // 2) - (700 // 2)
+        y = (settings_window.winfo_screenheight() // 2) - (700 // 2)
+        settings_window.geometry(f"700x700+{x}+{y}")
+
+        # 设置最小窗口尺寸
+        settings_window.minsize(600, 500)
 
         # 创建设置选项卡
         settings_tabview = ctk.CTkTabview(
